@@ -1,52 +1,68 @@
 
 import { Link } from 'react-router-dom';
 import logo from '../logo.png'
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import cart from '../cart.gif'
 import { EmptyCart } from './EmptyCart';
 import FullCart from './FullCart';
+import { search } from '../Store/action';
 
 
 
-export function Navbbar(){
-    const cartTotal=useSelector((state)=>state.cartTotal)
-    const cartItems=useSelector((state)=>state.cartItems)
+export function Navbbar() {
+    const dispatcher = useDispatch()
+    const cartTotal = useSelector((state) => state.cartTotal)
+    const cartItems = useSelector((state) => state.cartItems)
 
-    return(
+    const handelSearch = (e) => {
+        dispatcher(search(e.target.value))
+
+    };
+
+    return (
         <>
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <a className="navbar-brand" href="#">
-            <img src={logo} height={20}></img>
-        </a>
-        {/* <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span classN ame="navbar-toggler-icon"></span>
-        </button> */}
-        {/* <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div className="navbar-nav">
-            <a className="nav-item nav-link active" href="#">Home <span className="sr-only">(current)</span></a>
-            <a className="nav-item nav-link" href="#">Features</a>
-            <a className="nav-item nav-link" href="#">Pricing</a>
-            <a className="nav-item nav-link disabled" href="#">Disabled</a>
-            </div>
-            
-        </div> */}
-        
-        <button className="btn btn-dark rounded-pill" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i className="fa-solid fa-bag-shopping"></i>{cartTotal}</button>
+            <nav className="navbar navbar-expand-lg navbar-light bg-light d-flex justify-content-between">
+                <Link to='/'>
+                    <a className="navbar-brand" href="/">
+                        <img src={logo} height={20}></img>
+                    </a>
 
-       
+                </Link>
+                <div className='d-flex justify-content-around'>
 
-        </nav>
 
-        <div className="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+                    <input className="form-control me-2 col-8 rounded-pill" type="search" placeholder="Search" onChange={handelSearch} />
+
+                    <button className="btn btn-dark rounded-pill" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i className="fa-solid fa-bag-shopping pr-1"></i> <strong>{cartTotal}$</strong></button>
+                </div>
+
+
+            </nav>
+
+            <div className="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
                 <div className="offcanvas-header">
                     <h3 id="offcanvasRightLabel" className='mx-auto fw-bolder'>My Cart</h3>
-                    <button type="button" className="btn btn-danger rounded-circle fw-bolder" data-bs-dismiss="offcanvas" aria-label="Close">X</button>
+                    <button type="button" className="btn btn-danger rounded-circle fw-bolder exit-cart" data-bs-dismiss="offcanvas" aria-label="Close">X</button>
                 </div>
-                <div className="offcanvas-body">
-                    {cartItems.length===0?<EmptyCart/>:<FullCart/>}
-               
+                <div className="offcanvas-body body">
+
+                    {cartItems.length === 0 ? <EmptyCart /> : <FullCart />}
+
+
+
                 </div>
+                <div className={(cartItems.length === 0 ? "invisible":"")}>
+
+                
+                <div className="d-flex justify-content-evenly gap-2 rounded-pill p-3 mb-3 border border-gray-1 ">
+                    <h6 className="capitalize text-sm font-medium ">Subtotal</h6>
+                    <h6 className='text-success'><strong>{cartTotal}$</strong></h6>
                 </div>
+                <button className='btn btn-primary rounded-pill col-12 m-2 p-3'>
+                    CheckOut
+                </button>
+                </div>
+            </div>
         </>
     )
 }

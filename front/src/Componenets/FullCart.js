@@ -2,42 +2,43 @@ import { useDispatch, useSelector } from "react-redux";
 import { CartCard } from "./CartCard";
 import { increaseItemQuant , decreaseItemQuant, changeCartTotal} from "../Store/action";
 import { useEffect, useState } from "react";
+import Cart from "./Cart";
 
 
 export default function FullCart(){
     const cart=useSelector((state)=>state.cartItems)
-    const[quants,setQuants]=useState([])
-
+    const cartTotal=useSelector((state)=>state.cartTotal)
+    
     const dispatcher=useDispatch()
 
-    useEffect(() => {
-        setQuants(cart)
-
-      }, [cart]);
-
+  
     function increaseItems(item){
-        dispatcher(increaseItemQuant(item.title))
-        dispatcher(changeCartTotal(item.price))
-        return item
+        dispatcher(increaseItemQuant(item.id))
+        dispatcher(changeCartTotal(item.hitpoints))
     }
     function decreaseItems(item){
-        dispatcher(decreaseItemQuant(item.title))
-        dispatcher(changeCartTotal(-item.price))
+        dispatcher(decreaseItemQuant(item.id))
+        dispatcher(changeCartTotal(-item.hitpoints))
 
-    }
+    } 
     return(
         <>
+        <div className="h-[calc(100vh-200px)] lg:h-[calc(100vh-220px)] thin-scrolling overflow-y-auto p-4 relative">
         {cart.map((item, index) => (
             <CartCard
                 key={index}
-                src={item.image}
-                title={item.title}
-                price={item.price}
+                src={item.image_url}
+                title={item.pokemon}
+                price={item.hitpoints}
                 quant={item.quant}
                 increase={()=>increaseItems(item)}
                 decrease={()=>decreaseItems(item)}
             />
+           
+
 ))}
+ </div>
+
         </>
     )
 }

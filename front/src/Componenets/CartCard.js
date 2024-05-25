@@ -2,7 +2,7 @@
 export function CartCard(props){
     return(
         <>
-        <div className="card mb-3 col-12"  >
+        {/* <div className="card mb-3 col-12"  >
         <div className="row ">
             <div className="col-md-4">
             <img src={props.src}  className=" rounded-start" height={75} width={75} alt="..."/>
@@ -24,6 +24,26 @@ export function CartCard(props){
             </div>
             </div>
         </div>
+        </div> */}
+
+<div  className="cart-card d-flex" >
+          <img src={props.src} alt={props.pokemon}  width={100}/>
+          <div className="cart-details">
+            <h5>{props.title}</h5>
+            <p className="text-black-50 para">With a side of fried rice or supreme soy noodles, and steamed chi..</p>
+            <div className="d-flex justify-content-between align-items-center">
+              <p className="price">$ {props.price}</p>
+              <span>
+                    <button className="btn inc" onClick={(props.increase)}>
+                    <i class="fa-solid fa-plus fa-xs"></i>
+                    </button>
+                    {props.quant}
+                    <button className="btn dec" onClick={(props.decrease)}>
+                    <i class="fa-solid fa-minus fa-xs"></i>    
+                    </button>
+                </span>
+            </div>
+          </div>
         </div>
         </>
     )

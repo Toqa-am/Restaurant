@@ -18,3 +18,19 @@ export const decreaseItemQuant=(payload)=>{
         payload:payload
     }
 }
+
+export const addToCart = (pokemon) => {
+  return {
+    type: 'ADD_TO_CART',
+    payload: pokemon
+  };
+};
+
+export const search = (payload) => {
+    return {
+      type: 'SEARCH',
+      payload: payload
+    };
+  };
+
+
