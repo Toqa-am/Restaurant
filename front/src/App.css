@@ -27,6 +27,9 @@
 .App-link {
   color: #61dafb;
 }
+h3{
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
 
 @keyframes App-logo-spin {
   from {
