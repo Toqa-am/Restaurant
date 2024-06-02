@@ -17,11 +17,8 @@ return new class extends Migration
             $table->string('size');
             $table->double('cost');
             $table->text('description');
-            // $table->unsignedBigInteger('category_id'); 
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade')->onUpdate('cascade');
-
             $table->timestamps();
-            
         });
     }
 
@@ -33,4 +30,3 @@ return new class extends Migration
         Schema::dropIfExists('meals');
     }
 };
-
