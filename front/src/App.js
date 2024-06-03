@@ -1,31 +1,37 @@
 import { Route } from 'react-router-dom';
 import './App.css';
-import { Navbbar} from './Componenets/Navbar';
+import { Navbar} from './Componenets/Navbar';
 import { BrowserRouter, Switch } from 'react-router-dom/cjs/react-router-dom.min';
-import store from './Store/srore';
-import { Provider } from 'react-redux';
 import './App.css';
 import FetchData from './Pages/FetchData';
-// import 'bootstrap/dist/css/bootstrap.min.css';
-import Cart from './Componenets/Cart';
+import Cart from './Pages/Cart';
+import DiningTables from './Pages/DiningTables';
 
 
 function App() {
   return (
-    <Provider store={store}>
-    <div className="container">
-      <BrowserRouter>
-      <Navbbar/>
-      <FetchData />
+    // <Provider store={store}>
+    // <div className="container">
+    //   <BrowserRouter>
+    //   <Navbar/>
+    //   {/* <FetchData />
+    //   <Cart/> */}
+    //   <div className='container'>
+    //   <Switch>
+    //     <Route exact path="/" component={FetchData} />
+    //     <Route path="/checkout" component={Cart} />
+    //     <Route path="admin/dining-tables/list" component={DiningTables}/>
+    //   </Switch>
+    //   </div>
 
-      <Switch>
-        {/* <Route Component={Cart} path='/cart'/> */}
+    //   </BrowserRouter>
 
-      </Switch>
-      </BrowserRouter>
-
+    // </div>
+    <div className='container'>
+      
+      <DiningTables/>
     </div>
-    </Provider>
+    
   );
 }
 

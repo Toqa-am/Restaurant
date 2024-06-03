@@ -67,7 +67,7 @@ const FetchData = () => {
     return (
        
   <div>
-    <div className="button-container d-flex justify-content-between align-items-center">
+    <div className=" d-flex justify-content-around scrollmenu">
     <FilterCard title="ALL" filterr={(()=>handleFilterChange('all'))}/>
     <FilterCard title="checken" filterr={(()=>handleFilterChange('checken'))}/>
     <FilterCard title="Beef" filterr={(()=>handleFilterChange('Beef'))}/>

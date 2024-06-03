@@ -6,10 +6,11 @@ import cart from '../cart.gif'
 import { EmptyCart } from './EmptyCart';
 import FullCart from './FullCart';
 import { search } from '../Store/action';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 
 
-export function Navbbar() {
+export function Navbar() {
     const dispatcher = useDispatch()
     const cartTotal = useSelector((state) => state.cartTotal)
     const cartItems = useSelector((state) => state.cartItems)
@@ -19,15 +20,22 @@ export function Navbbar() {
 
     };
 
+    const history = useHistory();
+
+    const handleNavigation = () => {
+        history.push('/checkout');
+    };
+
     return (
         <>
-            <nav className="navbar navbar-expand-lg navbar-light bg-light d-flex justify-content-between">
+            <nav className="navbar sticky-top navbar-expand-lg navbar-light bg-light d-flex justify-content-between">
                 <Link to='/'>
                     <a className="navbar-brand" href="/">
                         <img src={logo} height={20}></img>
                     </a>
 
                 </Link>
+
                 <div className='d-flex justify-content-around'>
 
 
@@ -57,10 +65,12 @@ export function Navbbar() {
                 <div className="d-flex justify-content-evenly gap-2 rounded-pill p-3 mb-3 border border-gray-1 ">
                     <h6 className="capitalize text-sm font-medium ">Subtotal</h6>
                     <h6 className='text-success'><strong>{cartTotal}$</strong></h6>
-                </div>
-                <button className='btn btn-primary rounded-pill col-12 m-2 p-3'>
-                    CheckOut
+                </div>'
+                <button className='btn btn-primary rounded-pill col-12 m-2 p-3' onClick={handleNavigation} data-bs-dismiss="offcanvas"> 
+                   Proceed to CheckOut
+                   
                 </button>
+
                 </div>
             </div>
         </>
