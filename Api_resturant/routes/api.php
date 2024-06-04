@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
-
+use  App\Http\Controllers\CustomerController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,3 +18,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::post('auth/register', [CustomerController::class, 'register']);
+
+Route::group(['middleware' => 'auth:api'], function() {
+    // Protected routes
+});
+Route::post('auth/login', [CustomerController::class, 'login']);
+Route::post('auth/verify-user-email',[CustomerController::class,'verifyCustomerEmail']);
+Route::post('auth/resend-email-verification-link',[CustomerController::class,'resendVerificationEmailLink']);
