@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException;
 use Symfony\Component\HttpFoundation\Response;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class CheckAdminToken
 {
@@ -19,30 +20,22 @@ class CheckAdminToken
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = null;
         try{
-           // $user = JWTAuth::parseToken()->authenticate();
-        }catch (\Exception $e)
+            $user=auth('admin-api')->user();
+                if(!$user || !$user->is_admin)
+                {
+                    return response()->json([
+                        'status'=>'falied',
+                        'message'=>'Unauthorized',
+                    ]);
+                }
+        }catch(JWTException $e)
         {
-            if($e instanceof TokenInvalidException)
-            {
-                return $this->returnError('E3001','INVALID_TOKEN');
-            } 
-            else if($e instanceof TokenExpiredException)
-            {
-                return $this->returnError('E3001','EXPIRED_TOKEN');
-                
-            }
-            else
-            {
-                return $this->returnError('E3001','TOKEN_NOTFOUND');
-                
-            }
+            return response()->json(['status'=>'failed',
+            'error'=>'Invalid Token'
+        ],401);
         }
-        if (!$user)
-        {
-          return   $this->returnError('E3001',trans('Unauthenticated'));
-        }
+       
         return $next($request);
     }
 }

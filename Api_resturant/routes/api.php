@@ -18,11 +18,12 @@ use  App\Http\Controllers\CustomerController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::post('auth/register', [CustomerController::class, 'register']);
 
 Route::group(['middleware' => 'auth:api'], function() {
-    // Protected routes
+    // Protected routes// test authentication 
+    Route::get('test',[CustomerController::class,'test']);
 });
+Route::post('auth/register', [CustomerController::class, 'register']);
 Route::post('auth/login', [CustomerController::class, 'login']);
 Route::post('auth/verify-user-email',[CustomerController::class,'verifyCustomerEmail']);
 Route::post('auth/resend-email-verification-link',[CustomerController::class,'resendVerificationEmailLink']);

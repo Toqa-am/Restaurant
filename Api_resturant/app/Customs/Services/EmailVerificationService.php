@@ -13,6 +13,7 @@ class EmailVerificationService
     */
     public function sendVerificationlink($user)
     {
+
         Notification::send($user, new EmailVerificationNotification($this->generateVerificationLink($user->email)));
     }
     /**
@@ -67,7 +68,8 @@ class EmailVerificationService
         $verifiedToken = $this->verifyToken($email,$token);
         if($user->markEmailAsVerified())
         {
-            $verifiedToken->delete();
+            if($verifiedToken instanceof EmailVerificationToken)
+                $verifiedToken->delete();
             return response()->json([
                 'status'=>'success',
                 'message'=> 'Email has been verified successfully'

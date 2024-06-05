@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ValidEmail;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegistrationRequest extends FormRequest
@@ -23,7 +24,7 @@ class RegistrationRequest extends FormRequest
     {
         return [
             'name'=>['required','string','min:3'],
-            'email'=>['required','email:filter','unique:customers'],
+            'email'=>['required','email:filter','unique:customers',new ValidEmail()],
             'password'=>['required','string','min:8','confirmed'],
             'phone'=>['string','min:12']
         ];

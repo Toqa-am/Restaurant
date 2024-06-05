@@ -21,6 +21,13 @@ class CustomerController extends Controller
     //
     use Notifiable;
     protected $service;
+    /**
+     *test auth middleware  
+     */
+    public function test(Request $req)
+    {
+        return response()->json(["message"=>"success"]);
+    }
     public function __construct(EmailVerificationService $service)
     {
         $this->service=$service;
@@ -52,9 +59,6 @@ class CustomerController extends Controller
             ],500);
         }
 
-        // Auth::login($customer);
-
-        // return response()->json(['message' => 'Registration successful', 'customer' => $customer], 201);
     }
     /**
      * get token response
@@ -99,6 +103,7 @@ class CustomerController extends Controller
     public function logout(Request $request)
     {
         // Auth::logout();
+        //havenot implemented yet
         return response()->json(['message' => 'Logout successful'], 200);
     }
 }
