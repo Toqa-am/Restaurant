@@ -14,6 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middelware'=>'api','namespace'=>'App\Http\Controllers\Api'],function(){
+    Route::get('/meals','MealController@getAllMeals');
+    Route::get('/meal/{id}', 'MealController@getMealById');
+    Route::post('/addmeal', 'MealController@addMeal');
+    Route::put('/update-meal/{id}', 'MealController@updateMeal');
+    Route::delete('/deletemeal/{id}','MealController@deleteMeal');
+    Route::get('/meals/category/{categoryId}','MealController@filterByCategory');
+    Route::get('/meals/type/{type}','MealController@filterByType');    
 });

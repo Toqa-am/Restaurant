@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('size');
             $table->double('cost');
             $table->text('description');
+            $table->enum('type', ['vegetarian', 'non-vegetarian']);
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
