@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Models\Meal;
 use App\Http\Controllers\Controller;
@@ -78,7 +78,7 @@ class MealController extends Controller
                 $image = $request->file('image');
                 $imageName = Str::random(40) . '.' . $image->getClientOriginalExtension();
                 $imagePath = $image->storeAs('meals', $imageName, 'public');
-                $meal->image = $imageName;
+                $meal->image = $imagePath;
             }
 
             $meal->update($request->except('image')); 
