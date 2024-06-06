@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Facade;
 
+if (env('APP_KEY') === null) {
+    logger('APP_KEY is not set');
+}
+
 return [
 
     /*
@@ -14,6 +18,7 @@ return [
     | any other location as required by the application or its packages.
     |
     */
+
 
     'name' => env('APP_NAME', 'Laravel'),
 
@@ -180,7 +185,7 @@ return [
         Illuminate\Session\SessionServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
-        Illuminate\View\ViewServiceProvider::class,
+        Illuminate\View\ViewServiceProvider::class, 
 
         /*
          * Package Service Providers...
@@ -210,6 +215,9 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+    
     ])->toArray(),
 
+
+    
 ];

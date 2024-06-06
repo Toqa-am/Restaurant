@@ -18,7 +18,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
-
-
+//New to check if the application key is being read correctly
+Route::get('/check-key', function() {
+    return response()->json(['app_key' => config('app.key')]);
+});
 
