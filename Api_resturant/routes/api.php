@@ -14,6 +14,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+//namespace for new folder "Controllers\Api"
+
+Route::group(['middleware' => 'api', 'namespace' => 'App\Http\Controllers\Api'], function () {
+
+    Route::get('categories', 'CategoriesController@getAllCategories');
+    Route::get('/categories/{id}', 'CategoriesController@getCategoryById');
+    Route::post('/addNewCategory', 'CategoriesController@addNewCategory');
+    Route::put('/updateCategories/{id}', 'CategoriesController@updateCategory');
+    Route::delete('/deleteCategory/{id}','CategoriesController@deleteCategory');
+    
+
 });
+
+
+
