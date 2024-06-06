@@ -38,7 +38,7 @@ class MealController extends Controller
             'category_id' => 'required|exists:categories,id',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate the image
         ]);
-
+        
         // Handle the image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -107,7 +107,15 @@ class MealController extends Controller
     public function filterByCategory($categoryId)
     {
         $meals = Meal::where('category_id', $categoryId)->get();
-        return response()->json($meals);
+        if($meals->empty())
+        {
+            return response()->json([
+                'status'=>'falied',
+                'message'=>'category is empty'
+            ],404);
+        }
+        return response()->json(['status'=>'success',
+            'data'=>$meals]);
     }
 
     // Filter meals by type (vegetarian or non-vegetarian)
@@ -115,7 +123,8 @@ class MealController extends Controller
     {
         if (in_array($type, ['vegetarian', 'non-vegetarian'])) {
             $meals = Meal::where('type', $type)->get();
-            return response()->json($meals);
+            return response()->json(['status'=>'success',
+            'data'=>$meals]);
         }
         return response()->json(['error' => 'Invalid type'], 400);
     }
