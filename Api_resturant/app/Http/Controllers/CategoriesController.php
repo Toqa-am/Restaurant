@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator; 
 
 class CategoriesController extends Controller
 {
+    
     public function getAllCategories()
     {
         $categories = Category::all();
@@ -34,8 +36,8 @@ class CategoriesController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'description' => 'required|string',
-            'image' => 'nullable|sometimes|string', // For Base64-encoded image
-            'image_file' => 'nullable|sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // For image file
+            //'image' => 'nullable|sometimes|string', // For Base64-encoded image
+            //'image_file' => 'nullable|sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // For image file
         ]);
 
         if ($validator->fails()) {
@@ -84,8 +86,8 @@ class CategoriesController extends Controller
     public function updateCategory(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'description' => 'required|string',
+            'name' => 'string',
+            'description' => 'string',
             'image' => 'nullable|string',
         ]);
 

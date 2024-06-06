@@ -67,6 +67,5 @@ class Kernel extends HttpKernel
         'checkAdminToken' => \App\Http\Middleware\CheckAdminToken::class,
         // 'auth:sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
 
-
     ];
 }

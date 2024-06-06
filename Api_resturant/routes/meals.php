@@ -14,12 +14,12 @@ use  App\Http\Controllers\MealController;
 |
 */
 
-Route::group(['middelware'=>'api'],function(){
-    Route::get('/meals',[MealController::class,'getAllMeals']);
-    Route::get('/meal/{id}', [MealController::class,'getMealById']);
-    Route::post('/addmeal',[MealController::class,'addMeal']);
-    Route::put('/update-meal/{id}', [MealController::class,'updateMeal']);
-    Route::delete('/deletemeal/{id}',[MealController::class,'deleteMeal']);
-    Route::get('/meals/category/{categoryId}',[MealController::class,'filterByCategory']);
-    Route::get('/meals/type/{type}',[MealController::class,'filterByType']);    
+Route::group(['middleware'=>'auth:admin-api'],function(){
+    Route::post('/meals',[MealController::class,'addMeal']);
+    Route::put('/meals/{id}', [MealController::class,'updateMeal']);
+    Route::delete('/meals/{id}',[MealController::class,'deleteMeal']);
 });
+Route::get('/meals',[MealController::class,'getAllMeals']);
+Route::get('/meal/{id}', [MealController::class,'getMealById']);
+Route::get('/categories/{categoryId}/meals',[MealController::class,'filterByCategory']);
+Route::get('/meals/type/{type}',[MealController::class,'filterByType']);    
