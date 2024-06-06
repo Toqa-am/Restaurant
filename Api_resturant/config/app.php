@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Facade;
 
+if (env('APP_KEY') === null) {
+    logger('APP_KEY is not set');
+}
+
 return [
 
     /*
@@ -14,6 +18,7 @@ return [
     | any other location as required by the application or its packages.
     |
     */
+
 
     'name' => env('APP_NAME', 'Laravel'),
 
@@ -212,4 +217,6 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+
+    
 ];
