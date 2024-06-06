@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Http\Request;
@@ -23,3 +24,4 @@ Route::post('auth/register', [CustomerController::class, 'register']);
 Route::post('auth/login', [CustomerController::class, 'login']);
 Route::post('auth/verify-user-email',[CustomerController::class,'verifyCustomerEmail']);
 Route::post('auth/resend-email-verification-link',[CustomerController::class,'resendVerificationEmailLink']);
+
