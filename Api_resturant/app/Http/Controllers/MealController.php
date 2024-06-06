@@ -106,8 +106,11 @@ class MealController extends Controller
     // Filter meals by category
     public function filterByCategory($categoryId)
     {
-        $meals = Meal::where('category_id', $categoryId)->get();
-        if($meals->empty())
+            //$categoryId=$request->id;
+            $meals = Meal::where('category_id',$categoryId )->get();
+           // dd($meals);
+            
+        if($meals->isEmpty())
         {
             return response()->json([
                 'status'=>'falied',
