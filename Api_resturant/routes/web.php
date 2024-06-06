@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,3 +22,4 @@ Route::get('/', function () {
 Route::get('/check-key', function() {
     return response()->json(['app_key' => config('app.key')]);
 });
+
