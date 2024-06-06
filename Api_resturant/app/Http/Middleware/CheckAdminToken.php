@@ -22,6 +22,7 @@ class CheckAdminToken
     {
         try{
             $user=auth('admin-api')->user();
+            dd($user);
                 if(!$user || !$user->is_admin)
                 {
                     return response()->json([
