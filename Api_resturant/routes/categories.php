@@ -16,15 +16,15 @@ use  App\Http\Controllers\CategoriesController;
 |
 */
 
-//namespace for new folder "Controllers\Api"
+
 
 
     Route::get('/categories',[CategoriesController::class,'getAllCategories'] );
     Route::get('/categories/{id}', [CategoriesController::class, 'getCategoryById']);
     // Authorize for admin only  
     Route::group(['middleware'=>'auth:admin-api'],function(){
-    Route::post('/categories', [CategoriesController::class,'addNewCategory']);
-    Route::put('/categories/{id}', [CategoriesController::class,'updateCategory']);
-    Route::delete('/categories/{id}',[CategoriesController::class,'deleteCategory']);    
+        Route::post('/categories', [CategoriesController::class,'addNewCategory']);
+        Route::put('/categories/{id}', [CategoriesController::class,'updateCategory']);
+        Route::delete('/categories/{id}',[CategoriesController::class,'deleteCategory']);    
     });
 
