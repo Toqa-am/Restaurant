@@ -78,14 +78,14 @@ export default function cartReducer(
             case "ADD_TO_CART":
                 if(state.cartItems.filter((item)=>(item.id===action.payload[0].id)).length===0){
                     // action.payload.quant=1
-                    state.cartTotal+=action.payload[0].hitpoints*action.payload[1]
+                    state.cartTotal+=action.payload[0].cost*action.payload[1]
                     action.payload[0].quant=action.payload[1]
                     state.cartItems.push(action.payload[0])
 
                 }
                 else{
                     state.cartItems.find((item)=>(item.id===action.payload[0].id)).quant+=action.payload[1]
-                    state.cartTotal+=action.payload[0].hitpoints*action.payload[1]
+                    state.cartTotal+=action.payload[0].cost*action.payload[1]
 
                 }
                 

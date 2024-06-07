@@ -35,12 +35,7 @@ export function Navbar() {
                     </a>
 
                 </Link>
-                <Link to="admin/dining-tables/list">
-                    db
-                {/* <a className="navbar-brand" href="/">
-
-                    </a> */}
-                </Link>
+                
 
                 <div className='d-flex justify-content-around'>
 

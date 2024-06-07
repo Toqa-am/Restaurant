@@ -26,7 +26,8 @@
 }
 
 .quant{
-    translate: 30px;
+    translate: 5px;
+    z-index: 1;
 }
 
 .border{

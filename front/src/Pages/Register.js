@@ -1,17 +1,21 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 
 
 export function Register() {
+    const [registered,setRegistered]=useState(0)
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: '',
-        confPassword: ''
+        phone:"",
+        password_confirmation: ''
     });
     const [errors, setErrors] = useState({
         nameError: "",
         emailError: "",
         passError: "",
+        phoneError:"",
         cpassError: ""
     })
 
@@ -41,6 +45,16 @@ export function Register() {
                 emailError: event.target.value.length === 0 ? "This Field is required" : !event.target.validity.valid && "Please enter a vaild email"
             })
         }
+        else if (event.target.name === "phone") {
+            setFormData({
+                ...formData,
+                phone: event.target.value
+            })
+            setErrors({
+                ...errors,
+                phoneError: event.target.value.length === 0 ? "This Field is required" : !event.target.validity.valid && "Please enter a vaild phone Number"
+            })
+        }
 
         else if (event.target.name === "password") {
             setFormData({
@@ -52,10 +66,10 @@ export function Register() {
                 passError: event.target.value.length === 0 ? "This Field is required" : !event.target.validity.valid && "Please enter a vaild password"
             })
         }
-        else if (event.target.name === "confPassword") {
+        else if (event.target.name === "password_confirmation") {
             setFormData({
                 ...formData,
-                confPassword: event.target.value
+                password_confirmation: event.target.value
             })
             setErrors({
                 ...errors,
@@ -65,8 +79,17 @@ export function Register() {
         }
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/api/auth/register', formData);
+            console.log('Form submitted successfully:', response.data);
+            setRegistered(1)
+            
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            setRegistered(0)
+        }
         console.log('Form data:', formData);
     };
 
@@ -109,6 +132,23 @@ export function Register() {
                     />
                 </div>
                 <div>
+                    <label for="phone">phone:</label>
+                    <br></br>
+                    <span className="text-danger">{errors.phoneError}</span>
+
+                    <input
+                        className="form-control"
+                        type="text"
+                        id="phone"
+                        name="phone"
+                        pattern="^[0-9]{14}$"
+                        value={formData.phone}
+                        onBlur={handleInputChange}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+                <div>
                     <label for="password">Password:</label>
                     <br></br>
                     {console.log(errors.passError)}
@@ -128,17 +168,17 @@ export function Register() {
                 </div>
 
                 <div>
-                    <label for="confPassword">Confirm your Password:</label>
+                    <label for="password_confirmation">Confirm your Password:</label>
                     <br></br>
                     <span className="text-danger">{errors.cpassError}</span>
 
                     <input
                         className="form-control"
                         type="password"
-                        id="confPassword"
-                        name="confPassword"
+                        id="password_confirmation"
+                        name="password_confirmation"
 
-                        value={formData.confPassword}
+                        value={formData.password_confirmation}
                         onBlur={handleInputChange}
                         onChange={handleInputChange}
                         required
@@ -149,9 +189,14 @@ export function Register() {
 
 
                 <button className="btn btn-primary my-3 mx-auto" type="button" onClick={(e) => handleSubmit(e)} disabled={errors.emailError || errors.nameError || errors.passError || errors.cpassError
-                    || formData.name === '' || formData.confPassword === '' || formData.password === '' || formData.email === ''}>Submit</button>
+                    || formData.name === '' || formData.password_confirmation === '' || formData.password === '' || formData.email === ''}>Submit</button>
+
             </form>
+            <div className={"alert alert-info mt-3 "+(registered?"visible":"invisible")} role="alert">
+                                Now you can sign in
+            </div>
         </div>
+        
     );
 
 

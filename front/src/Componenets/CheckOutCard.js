@@ -7,13 +7,19 @@ export default function CheckOutCard(props) {
 
                 <div className="row g-0">
                     <div className="col-md-4 d-flex">
-                        <img src={props.img} className=" rounded-start align-self-center" alt="..." />
-                    </div>
+                    <img
+                    className=" rounded-start align-self-center"
+                    key={props.img}
+                    width={75}
+                    height={100}
+                    src={`http://127.0.0.1:8000/storage/${props.img}`}
+                />                    </div>
+
                     <div className="col-md-8">
                         <div className="card-body">
                             <strong><p className="card-title">{props.title}</p></strong>  
                             <p className="card-text"><small className="text-body-secondary">{props.desc}</small></p>
-                            <h6>{props.price}</h6>
+                            <h6>piece: <strong>{props.price} $</strong></h6>
                         </div>
                     </div>
                 </div>
