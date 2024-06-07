@@ -23,3 +23,22 @@ Route::get('/check-key', function() {
     return response()->json(['app_key' => config('app.key')]);
 });
 
+// routes/web.php or routes/api.php
+
+Route::get('/storage/{filename}', function ($filename) {
+    $path = storage_path('../storage/app/public/' . $filename);
+
+    if (!File::exists($path)) {
+        abort(404);
+    }
+
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    $response = Response::make($file, 200);
+    $response->header("Content-Type", $type);
+
+    return $response;
+})->name('storage');
+
+

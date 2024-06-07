@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Jun 05, 2024 at 07:46 PM
+-- Generation Time: Jun 06, 2024 at 05:58 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -44,9 +44,23 @@ CREATE TABLE `addons` (
 CREATE TABLE `categories` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`id`, `name`, `description`, `image`, `created_at`, `updated_at`) VALUES
+(1, 'Test', 'test_description', NULL, '2024-06-06 10:51:59', '2024-06-06 10:51:59'),
+(2, 'Test2', 'test_description', NULL, '2024-06-06 10:55:17', '2024-06-06 10:55:17'),
+(3, 'Checken', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s', NULL, '2024-06-06 12:24:05', '2024-06-06 12:24:05'),
+(4, 'Pizza', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s', NULL, '2024-06-06 12:24:43', '2024-06-06 12:24:43'),
+(5, 'Burger', 'update description', NULL, '2024-06-06 12:24:58', '2024-06-06 12:28:53'),
+(7, 'soup', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s', NULL, '2024-06-06 12:25:56', '2024-06-06 12:25:56');
 
 -- --------------------------------------------------------
 
@@ -149,7 +163,7 @@ INSERT INTO `email_verification_tokens` (`id`, `email`, `token`, `expired_at`, `
 (18, 'sosdnpssdssds@gmail.com', '619a5083-dc0c-4776-8b8d-106bc1410d69', '2024-06-04 18:34:43', '2024-06-04 17:34:43', '2024-06-04 17:34:43'),
 (19, 'sosdnpssdsssds@gmail.com', '6678913e-5aad-4f38-adbb-973d8595223c', '2024-06-04 18:38:12', '2024-06-04 17:38:12', '2024-06-04 17:38:12'),
 (20, 'eng.ahmedkamal357@gmail.com', '987f46e8-25d7-4a8f-bb69-f241df453cc7', '2024-06-04 18:40:16', '2024-06-04 17:40:16', '2024-06-04 17:40:16'),
-(22, 'eng.ahmedkamal3s57@gmail.com', '8f7a88f1-a458-4348-a161-3d1036e50502', '2024-06-05 07:06:00', '2024-06-05 06:06:00', '2024-06-05 06:06:00');
+(23, 'eng.ahmedkamal3s57@gmail.com', 'dcab814f-545b-4f39-9a77-b809677e23e5', '2024-06-06 07:26:31', '2024-06-06 06:26:31', '2024-06-06 06:26:31');
 
 -- --------------------------------------------------------
 
@@ -186,11 +200,26 @@ CREATE TABLE `meals` (
   `name` varchar(255) NOT NULL,
   `size` varchar(255) NOT NULL,
   `cost` double NOT NULL,
+  `type` enum('vegetarian','non-vegetarian') NOT NULL,
   `description` text NOT NULL,
+  `image` varchar(255) NOT NULL,
   `category_id` bigint(20) UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `meals`
+--
+
+INSERT INTO `meals` (`id`, `name`, `size`, `cost`, `type`, `description`, `image`, `category_id`, `created_at`, `updated_at`) VALUES
+(1, 'Margarita', 'Big', 105, 'vegetarian', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem', 'meals/eVToMJzFOxM1OQ7HDcKLj4j9SyMNBL41pnZiN6ZT.jpeg', 4, '2024-06-06 12:32:19', '2024-06-06 12:32:19'),
+(2, 'Margarita', 'small', 50, 'vegetarian', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem', 'meals/tTfRRzaooH5dqfISNz51DIA9grPPQTQDfbbVf5k7.jpeg', 4, '2024-06-06 12:32:52', '2024-06-06 12:32:52'),
+(4, 'Margarita', 'large', 55, 'non-vegetarian', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem', 'meals/Oxue8UHDFZdGhubJFDsOnl8fkMjTdDuAhy4Xxtwq.jpeg', 5, '2024-06-06 12:34:30', '2024-06-06 12:34:30'),
+(5, 'Margarita', 'large', 100, 'non-vegetarian', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem', 'meals/aXeozt7XyFqmlEQftqOXJYq2kxFhupnNeo932eIv.jpeg', 5, '2024-06-06 12:34:56', '2024-06-06 12:34:56'),
+(6, 'Margarita', 'large', 100, 'non-vegetarian', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem', 'meals/cg7NOQEZyXs2wLf7jq4hKaGh6kPwzEiwyDPHe3OS.jpg', 5, '2024-06-06 12:35:10', '2024-06-06 12:35:10'),
+(7, 'Margarita', 'large', 100, 'non-vegetarian', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem', 'meals/WZUpISt5auZWittm0MHCiSZ19RiCbUqbqcj2pr5x.jpeg', 1, '2024-06-06 12:36:40', '2024-06-06 12:36:40'),
+(8, 'Margarita', 'xlarge', 120, 'non-vegetarian', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem', 'meals/w1jlJGgUNxslJO8iA6XDOvFXQHJZSbVtqTMRy3Ue.jpeg', 1, '2024-06-06 12:37:06', '2024-06-06 12:37:06');
 
 -- --------------------------------------------------------
 
@@ -233,7 +262,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (9, '2024_06_02_112838_create_orders_table', 1),
 (10, '2024_06_02_113106_create_order_meals_table', 1),
 (11, '2024_06_02_113327_create_order_addons_table', 1),
-(12, '2024_06_04_085108_create_email_verification_tokens_table', 2);
+(12, '2024_06_04_085108_create_email_verification_tokens_table', 2),
+(13, '2024_06_04_092226_create_sessions_table', 3);
 
 -- --------------------------------------------------------
 
@@ -294,6 +324,21 @@ CREATE TABLE `personal_access_tokens` (
   `expires_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sessions`
+--
+
+CREATE TABLE `sessions` (
+  `id` varchar(255) NOT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text DEFAULT NULL,
+  `payload` longtext NOT NULL,
+  `last_activity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -389,6 +434,14 @@ ALTER TABLE `personal_access_tokens`
   ADD KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`);
 
 --
+-- Indexes for table `sessions`
+--
+ALTER TABLE `sessions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sessions_user_id_index` (`user_id`),
+  ADD KEY `sessions_last_activity_index` (`last_activity`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -402,7 +455,7 @@ ALTER TABLE `addons`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `customers`
@@ -420,7 +473,7 @@ ALTER TABLE `diningtables`
 -- AUTO_INCREMENT for table `email_verification_tokens`
 --
 ALTER TABLE `email_verification_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `employees`
@@ -432,13 +485,13 @@ ALTER TABLE `employees`
 -- AUTO_INCREMENT for table `meals`
 --
 ALTER TABLE `meals`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `orders`

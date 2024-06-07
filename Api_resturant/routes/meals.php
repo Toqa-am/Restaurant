@@ -20,6 +20,6 @@ Route::group(['middleware'=>'auth:admin-api'],function(){
     Route::delete('/meals/{id}',[MealController::class,'deleteMeal']);
 });
 Route::get('/meals',[MealController::class,'getAllMeals']);
-Route::get('/meal/{id}', [MealController::class,'getMealById']);
+Route::get('/meals/{id}', [MealController::class,'getMealById']);
 Route::get('/categories/{categoryId}/meals',[MealController::class,'filterByCategory']);
 Route::get('/meals/type/{type}',[MealController::class,'filterByType']);    
