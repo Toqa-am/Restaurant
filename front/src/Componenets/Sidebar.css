@@ -1,0 +1,66 @@
+/* Sidebar.css */
+icon{
+    color: gray;
+}
+.text-black {
+    width: 50%;
+}
+
+.list-group-item .link {
+    text-decoration: none;
+}
+
+.bg-white.sidebar {
+    width: 250px;
+    /* Set sidebar width */
+    height: 100%;
+    /* Set sidebar height */
+    position: fixed;
+    /* Position the sidebar */
+    /* top: 0; */
+    /* Align to the top */
+    left: 0;
+    /* Align to the left */
+    padding-top: 60px;
+    /* Add padding at the top to avoid overlapping with navbar */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    border-right: 1px solid #ddd;
+    /* Add border on the right side */
+}
+
+.brand-name {
+    color: #333;
+}
+
+.list-group-item {
+    border: none;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Add styles for active link */
+.list-group-item.active {
+    background-color: #007bff;
+    /* Set background color for active link */
+    color: #fff;
+    /* Set text color for active link */
+}
+
+.link:hover {
+    color: rgb(59, 36, 210);
+}
+
+a {
+    color: black;
+}
+
+/* Adjust styles for content on the right side */
+.content-wrapper {
+    margin-left: 250px;
+    /* Adjust this value to match the width of the sidebar */
+    padding: 20px;
+    /* Add padding to provide space for content */
+}

@@ -8,22 +8,24 @@ import './App.css';
 import FetchData from './Pages/FetchData';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import Cart from './Componenets/Cart';
-
+import SideBar from './Componenets/SideBar';
+import Dashboard from './Componenets/Dashboard';
 
 function App() {
   return (
     <Provider store={store}>
-    <div className="container">
-      <BrowserRouter>
+    <div className="container-fluide">
+      {/* <BrowserRouter>
       <Navbbar/>
       <FetchData />
 
       <Switch>
-        {/* <Route Component={Cart} path='/cart'/> */}
+        
 
       </Switch>
-      </BrowserRouter>
-
+      </BrowserRouter> */}
+<Dashboard></Dashboard>
+        {/* <SideBar></SideBar> */}
     </div>
     </Provider>
   );
