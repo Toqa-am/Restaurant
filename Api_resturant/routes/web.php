@@ -25,20 +25,20 @@ Route::get('/check-key', function() {
 
 // routes/web.php or routes/api.php
 
-Route::get('/storage/{filename}', function ($filename) {
-    $path = storage_path('../storage/app/public/' . $filename);
+// Route::get('/storage/{filename}', function ($filename) {
+//     $path = storage_path('../storage/app/public/' . $filename);
 
-    if (!File::exists($path)) {
-        abort(404);
-    }
+//     if (!File::exists($path)) {
+//         abort(404);
+//     }
 
-    $file = File::get($path);
-    $type = File::mimeType($path);
+//     $file = File::get($path);
+//     $type = File::mimeType($path);
 
-    $response = Response::make($file, 200);
-    $response->header("Content-Type", $type);
+//     $response = Response::make($file, 200);
+//     $response->header("Content-Type", $type);
 
-    return $response;
-})->name('storage');
+//     return $response;
+// })->name('storage');
 
 
