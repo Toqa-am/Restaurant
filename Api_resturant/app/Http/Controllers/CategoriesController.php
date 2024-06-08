@@ -36,104 +36,67 @@ class CategoriesController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'description' => 'required|string',
-            //'image' => 'nullable|sometimes|string', // For Base64-encoded image
-            //'image_file' => 'nullable|sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // For image file
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // For image file
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()], 400);
         }
-
+    
         if (Category::where('name', $request->name)->exists()) {
             return response()->json(['message' => 'Category already exists'], 409);
         }
-
+    
         $data = $request->only('name', 'description');
-
-        // Handle Base64-encoded image
-        if ($request->has('image')) {
-            $imageData = $request->input('image');
-
-            // Check if the image is Base64-encoded
-            if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $type)) {
-                $imageData = substr($imageData, strpos($imageData, ',') + 1);
-                $type = strtolower($type[1]); // jpg, png, gif, etc.
-
-                $imageData = base64_decode($imageData);
-
-                // Generate a unique filename
-                $fileName = uniqid() . '.' . $type;
-
-                // Save the image to storage
-                Storage::disk('public')->put("images/{$fileName}", $imageData);
-
-                // Set the new image path
-                $data['image'] = "images/{$fileName}";
-            } else {
-                return response()->json(['message' => 'Invalid image data', 'status' => 400], 400);
-            }
-        }
-
+    
         // Handle image file from form data
         if ($request->hasFile('image_file')) {
-            $data['image'] = $request->file('image_file')->store('images', 'public');
+            $data['image'] = $request->file('image_file')->store('categories', 'public');
         }
-
+    
         $newCategory = Category::create($data);
         return response()->json(['data' => $newCategory, 'status' => 201], 201);
     }
+    
 
     public function updateCategory(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'string',
-            'description' => 'string',
-            'image' => 'nullable|string',
+            'name' => 'nullable|string',
+            'description' => 'nullable|string',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors(), 'status' => 400], 400);
         }
-
+    
         $category = Category::find($id);
         if (!$category) {
             return response()->json(['message' => 'Category not found', 'status' => 404], 404);
-        
         }
-
+    
         $data = $request->only('name', 'description');
-
-        if ($request->has('image')) {
-            $imageData = $request->get('image');
-
-            // Extract the base64 part from the data URL if necessary
-            if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $type)) {
-                $imageData = substr($imageData, strpos($imageData, ',') + 1);
-                $type = strtolower($type[1]); // jpg, png, gif, etc.
-
-                $imageData = base64_decode($imageData);
-
-                // Generate a unique filename
-                $fileName = uniqid() . '.' . $type;
-
-                // Save the image to storage
-                Storage::disk('public')->put("images/{$fileName}", $imageData);
-
-                // Delete the old image if it exists
-                if ($category->image) {
-                    Storage::disk('public')->delete($category->image);
-                }
-
-                // Set the new image path
-                $data['image'] = "images/{$fileName}";
-            } else {
-                return response()->json(['message' => 'Invalid image data', 'status' => 400], 400);
+    
+     
+        if ($request->hasFile('image_file')) {
+        
+            if ($category->image) {
+                Storage::disk('public')->delete($category->image);
             }
+            
+            
+            $data['image'] = $request->file('image_file')->store('categories', 'public');
         }
-
+    
         $category->update($data);
-        return response()->json(['data' => $category, 'status' => 200], 200);
+        
+        
+        $updatedCategory = Category::find($id);
+        return response()->json(['data' => $updatedCategory, 'status' => 200], 200);
     }
+    
+    
     public function deleteCategory($id)
     {
         $category = Category::find($id);

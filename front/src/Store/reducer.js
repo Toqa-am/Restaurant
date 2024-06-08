@@ -3,7 +3,8 @@
 const VALUE = {
     cartTotal: 0,
     cartItems: [],
-    searchStatement:""
+    searchStatement:"",
+    itemQuant:1
     
 
 }
@@ -17,6 +18,8 @@ export default function cartReducer(
             }
 
         case "INC_ITEM":
+            
+            
             return {
                 ...state,
                 cartItems: state.cartItems.map(product =>
@@ -26,6 +29,16 @@ export default function cartReducer(
                 )
 
             }
+            case "INC_ITEM_B_CART":
+                
+            
+            return {
+                ...state,
+
+                itemQuant:state.itemQuant+1
+
+            }
+        
         case "DEC_ITEM":
             if (state.cartItems.find((item) => (item.id === action.payload)).quant == 1) {
                 return {
@@ -47,11 +60,32 @@ export default function cartReducer(
             }
 
 
+            case "DEC_ITEM_B_CART":
+                if(state.itemQuant>0){
+                return {
+                    ...state,
+                    itemQuant:state.itemQuant-1
+            }
+        }
+
+            case "ZERO_QUANT":
+                return {
+                    ...state,
+                    itemQuant:1
+            }
+
+
             case "ADD_TO_CART":
-                if(state.cartItems.filter((item)=>(item.id===action.payload.id)).length===0){
-                    action.payload.quant=1
-                    state.cartTotal+=action.payload.hitpoints
-                    state.cartItems.push(action.payload)
+                if(state.cartItems.filter((item)=>(item.id===action.payload[0].id)).length===0){
+                    // action.payload.quant=1
+                    state.cartTotal+=action.payload[0].cost*action.payload[1]
+                    action.payload[0].quant=action.payload[1]
+                    state.cartItems.push(action.payload[0])
+
+                }
+                else{
+                    state.cartItems.find((item)=>(item.id===action.payload[0].id)).quant+=action.payload[1]
+                    state.cartTotal+=action.payload[0].cost*action.payload[1]
 
                 }
                 

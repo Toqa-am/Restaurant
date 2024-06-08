@@ -27,9 +27,10 @@ export default function FullCart(){
         {cart.map((item, index) => (
             <CartCard
                 key={index}
-                src={item.image_url}
-                title={item.pokemon}
-                price={item.hitpoints}
+                src={item.image}
+                title={item.name}
+                // description={item.description}
+                price={item.cost}
                 quant={item.quant}
                 increase={()=>increaseItems(item)}
                 decrease={()=>decreaseItems(item)}
