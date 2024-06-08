@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\ValidEmail;
 use Illuminate\Foundation\Http\FormRequest;
 
-class VerifyEmailRequest extends FormRequest
+class RegisterEmployee extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +22,9 @@ class VerifyEmailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email'=>['required','email','max:255'], //new ValidEmail()
-            'token'=>['required','string','max:255']
+            //
+            'name'=>['required','min:3','max:20'],
+            'identity_card'=>['required','']
         ];
     }
 }
