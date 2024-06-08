@@ -43,4 +43,8 @@ class EmployeeController extends Controller
             'type'=>'bearer'
         ]);
     }
+    /**
+     * add Employee
+    */
+    // public function store($)
 }

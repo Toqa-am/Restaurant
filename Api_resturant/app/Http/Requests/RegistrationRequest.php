@@ -24,8 +24,7 @@ class RegistrationRequest extends FormRequest
     {
         return [
             'name'=>['required','string','min:3'],
-            'email'=>['required','email','unique:customers,email'],
-            // ,new ValidEmail()],
+            'email'=>['required','unique:customers,email','email'],//new ValidEmail()],
             'password'=>['required','string','min:8','confirmed'],
             'phone'=>['string','min:12']
         ];

@@ -2,14 +2,14 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 
 
-class Customer extends Authenticatable implements JWTSubject
+class Customer extends Authenticatable implements JWTSubject,MustVerifyEmail
 {
 
     use Notifiable;
@@ -18,15 +18,17 @@ class Customer extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'phone'
+        'phone',
+        'email_verified_at'
     ];
     protected $hidden = [
         'password',
         
     ];
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    // if you want to cast timestamp to datetime  
+    // protected $casts = [
+    //     'email_verified_at' => 'datetime',
+    // ];
     public function getJWTIdentifier()
     {
         return $this->getKey();

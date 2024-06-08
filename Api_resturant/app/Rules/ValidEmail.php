@@ -38,9 +38,13 @@ class ValidEmail implements ValidationRule
                 $fail('The :attribute must be a valid email address.');
             }
         } catch (\Exception $e) {
+            
+            $fail('The :attribute must be a valid email address.');
+            
             //$e->getMessage()
-            $fail('Could not verify email address : ' .$value );
+            // $fail('Could not verify email address : ' .$value. $e->getMessage()  );
         }
     }
     
 }
+?>
