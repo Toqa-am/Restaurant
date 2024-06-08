@@ -12,6 +12,26 @@ export const increaseItemQuant=(payload)=>{
     }
 }
 
+export const increaseItemBCart=(payload)=>{
+  return{
+      type:"INC_ITEM_B_CART",
+      payload:payload
+  }
+}
+
+export const decreaseItemBCart=(payload)=>{
+  return{
+      type:"DEC_ITEM_B_CART",
+      payload:payload
+  }
+}
+
+export const zeroQuant=()=>{
+  return{
+      type:"ZERO_QUANT",
+      
+  }
+}
 export const decreaseItemQuant=(payload)=>{
     return{
         type:"DEC_ITEM",

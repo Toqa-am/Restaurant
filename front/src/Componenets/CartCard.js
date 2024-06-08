@@ -27,10 +27,16 @@ export function CartCard(props){
         </div> */}
 
 <div  className="cart-card d-flex" >
-          <img src={props.src} alt={props.pokemon}  width={100}/>
+<img
+                    key={props.src}
+                    src={`http://127.0.0.1:8000/storage/${props.src}`
+                }
+                width={100}
+                />
+          {/* <img src={props.src} alt={props.pokemon}  width={100}/> */}
           <div className="cart-details">
             <h5>{props.title}</h5>
-            <p className="text-black-50 para">With a side of fried rice or supreme soy noodles, and steamed chi..</p>
+            <p className="text-black-50 para">{props.description}</p>
             <div className="d-flex justify-content-between align-items-center">
               <p className="price">$ {props.price}</p>
               <span>

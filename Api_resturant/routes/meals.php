@@ -19,7 +19,9 @@ Route::group(['middleware' => 'auth:admin-api'], function () {
     Route::put('/meals/{id}', [MealController::class, 'updateMeal']);
     Route::delete('/meals/{id}', [MealController::class, 'deleteMeal']);
 });
+
 Route::get('/meals', [MealController::class, 'getAllMeals']);
 Route::get('/meals/{id}', [MealController::class, 'getMealById']);
 Route::get('/categories/{categoryId}/meals', [MealController::class, 'filterByCategory']);
 Route::get('/meals/type/{type}', [MealController::class, 'filterByType']);
+

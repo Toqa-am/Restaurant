@@ -3,9 +3,9 @@ export function FilterCard(props){
     return(
         <>
         
-        <button className="cart-card btn custom-button" onClick={props.filterr}>
-            {/* <img src={props.img}></img> */}
-            <h4>{props.title}</h4>
+        <button className="btn filter-button" onClick={props.filterr}>
+            <img src={props.img} height={50} width={75} ></img>
+            <strong> <p>{props.title}</p></strong>
         </button>
         </>
     )
