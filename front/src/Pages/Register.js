@@ -1,9 +1,11 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 
 export function Register() {
     const [registered,setRegistered]=useState(0)
+    const history = useHistory();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -84,6 +86,10 @@ export function Register() {
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/auth/register', formData);
             console.log('Form submitted successfully:', response.data);
+            console.log("Token",response.data.access_token);
+            // const verficationResponse = await axios.post(`http://127.0.0.1:8000/api/auth/verify-user-email?token=12087c&email=${response.data.customer.email}`, formData);
+
+            window.open('https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox', '_blank'); 
             setRegistered(1)
             
         } catch (error) {
