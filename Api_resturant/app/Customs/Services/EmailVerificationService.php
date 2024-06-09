@@ -1,11 +1,14 @@
 <?php 
 namespace App\Customs\Services;
 
+use App\Mail\VerifyEmail;
 use App\Models\Customer;
 use App\Models\EmailVerificationToken;
 use App\Notifications\EmailVerificationNotification;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
+
 class EmailVerificationService 
 {
     /**
@@ -13,8 +16,9 @@ class EmailVerificationService
     */
     public function sendVerificationlink($user)
     {
+        Mail::to($user->email)->send(new VerifyEmail($user,$this->generateVerificationLink($user->email)));
 
-        Notification::send($user, new EmailVerificationNotification($this->generateVerificationLink($user->email)));
+      //  Notification::send($user, new EmailVerificationNotification($this->generateVerificationLink($user->email)));
     }
     /**
      * Resend link with token
@@ -73,7 +77,7 @@ class EmailVerificationService
             return response()->json([
                 'status'=>'success',
                 'message'=> 'Email has been verified successfully'
-            ]);
+            ],200);
         }else{
             return response()->json([
                 'status'=>'failed',
@@ -97,7 +101,7 @@ class EmailVerificationService
                 return response()->json([
                     'status'=>'failed',
                     'message'=>'Token expired',
-                ]);
+                ],400);
             }
         }
         else
@@ -117,7 +121,7 @@ class EmailVerificationService
             $checkIfTokenExists = EmailVerificationToken::where('email',$email)->first();
             if($checkIfTokenExists) $checkIfTokenExists->delete();
             $token = Str::uuid(); 
-            $url = config('app.url'). "?token=".$token."&email=".$email;
+            $url =  "http://127.0.0.1:8000/api/auth/verify-user-email?token=".$token."&email=".$email;
             $saveToken = EmailVerificationToken::create([
                 "email"=>$email,
                 "token"=>$token,
