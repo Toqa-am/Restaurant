@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\VerifiedController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -42,3 +43,5 @@ Route::get('/check-key', function() {
 // })->name('storage');
 
 
+// Route::get('/verified', 'VerifiedController@index')->name('verified');
+Route::get('/verified', [VerifiedController::class, 'index']);
