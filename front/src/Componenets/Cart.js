@@ -17,7 +17,7 @@ const Cart = () => {
               <img src={item.image_url} alt={item.pokemon} />
               <div className="cart-details">
                 <h5>{item.pokemon}</h5>
-                <p>Price: $ {item.hitpoints}</p>
+                <p>Price: OMR {item.hitpoints}</p>
               </div>
             </li>
           ))}

@@ -188,7 +188,7 @@ const FetchData = () => {
       <h5>{` ${pokemon.name} - ${pokemon.size}`} </h5>
       <p className="text-black-50 para">{pokemon.description}</p>
       <div className="d-flex justify-content-between align-items-center">
-        <p className="price">$ {pokemon.cost}</p>
+        <p className="price"> OMR {pokemon.cost}</p>
         <button
           className="button"
           data-bs-toggle="modal"

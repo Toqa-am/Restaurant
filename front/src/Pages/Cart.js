@@ -1,11 +1,19 @@
 import { useDispatch, useSelector } from "react-redux"
 import CheckOutCard from "../Componenets/CheckOutCard"
 import { Link } from "react-router-dom/cjs/react-router-dom.min"
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { AuthContext } from "../contextes/AuthContext";
+import useAuth from "../contextes/CustomHook";
 
 export default function Cart() {
     const [signed, setSigned] = useState(0)
+    // const { setCurrentUser } = useContext(AuthContext);
+    // const { isLoggedIn, login, logout } = useAuth();
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const [accessToken, setAccessToken] = useState(null)
+
+
     const [formData, setFormData] = useState({
 
         email: '',
@@ -43,26 +51,38 @@ export default function Cart() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const accessToken = sessionStorage.getItem('accessToken');
-        if (accessToken === '') {
-            setSigned(0)
-            console.log(signed);
 
-            // const response = await axios.post('http://127.0.0.1:8000/api/auth/login',formData);
-            try {
-                const response = await axios.post('http://127.0.0.1:8000/api/auth/login', formData);
-                const accessToken = response.data.access_token;
-                sessionStorage.setItem('accessToken', accessToken);
 
-                console.log('Form submitted successfully:', response.data);
-            } catch (error) {
-                console.error('Error submitting form:', error);
-            }
+        //  accessToken =  JSON.parse(localStorage.getItem('accessToken'));
+        // if (accessToken === '') {
+        setSigned(0)
+
+        console.log(accessToken);
+
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/api/auth/login', formData);
+            setIsLoggedIn(true)
+
+
+            localStorage.setItem('accessToken', JSON.stringify(response.data.access_token));
+            setAccessToken(JSON.parse(localStorage.getItem('accessToken')));
+
+
+            // sessionStorage.setItem('accessToken', accessToken);
+            // setCurrentUser(response.data.customer);
+            console.log(response.data.customer);
+
+            console.log('Form submitted successfully:', response.data);
+        } catch (error) {
+            console.error('Error submitting form:', error);
         }
-        else {
-            setSigned(1)
-            console.log(signed);
-        }
+
+        // }
+        // else {
+        //     setSigned(1)
+
+        //     console.log("jkgghdcg"+signed);
+        // }
         // console.log(response.data.access_token + "//////////////");
 
     };
@@ -83,6 +103,17 @@ export default function Cart() {
         // setPaymentData({ ...paymentData, items:cartItems})
 
         console.log(paymentData)
+        setAccessToken(JSON.parse(localStorage.getItem('accessToken')));
+        console.log(JSON.parse(localStorage.getItem('accessToken')) + "loooggg/////////");
+        if (accessToken !== null) {
+            setIsLoggedIn(true)
+            console.log(isLoggedIn)
+        }
+        else if (accessToken === null) {
+            setIsLoggedIn(false)
+            console.log(isLoggedIn)
+
+        }
 
 
     }
@@ -90,7 +121,7 @@ export default function Cart() {
     const cartTotal = useSelector((state) => state.cartTotal)
     return (
         <>
-            <div className="d-flex justify-content-around container pt-5">
+            <div className="d-flex justify-content-around container pt-5 flex-wrap">
                 <div className="col-6">
                     <Link to="/" > <i className="fa-solid fa-backward pb-3"></i> Back to Home</Link>
                     <div className="col-6">
@@ -122,13 +153,30 @@ export default function Cart() {
                                     Digital payment
                                 </label>
                             </div>
-                            <button type="submit" className="btn btn-primary rounded-pill col-6" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={(e) => checkOut(e)}>Place order</button>
-                            <div className={"alert alert-info mt-3 "+(signed? "visible":"invisible")} role="alert">
-                                Your order have been placed
+                           
+                         
+                            <button
+                                type="submit"
+                                className="btn btn-primary rounded-pill col-6"
+                                data-bs-toggle={isLoggedIn ? "" : "modal"}
+                                data-bs-target={(isLoggedIn ? "" : "#loginModal")}
+                                onClick={(e) => {
+                                    checkOut(e);
+                                    if (isLoggedIn) {
+                                        window.alert("Done");
+                                    }
+                                }}
+                            >
+                                Place order
+                            </button>
+
+                            {/* } */}
+                            <div className={"alert alert-info mt-3 " + (isLoggedIn ? "visible" : "invisible")} role="alert">
+                                Your order has been placed
                             </div>
 
                             {/* Log in Modal */}
-                            <div  className="modal fade h-75" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="false">
+                            <div className="modal fade h-75" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="false">
                                 <div class="modal-dialog">
                                     <div class="modal-content ">
                                         {/* <div className={" text-center "+(signed? "visible":"invisible")}>
@@ -139,7 +187,7 @@ export default function Cart() {
                                         </div> */}
                                         <div className="">
                                             <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Please log in first!</h1>
+                                                <h1 class="modal-title fs-5" id="loginModalLabel">Please log in first!</h1>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">

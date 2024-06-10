@@ -38,7 +38,7 @@ export function CartCard(props){
             <h5>{props.title}</h5>
             <p className="text-black-50 para">{props.description}</p>
             <div className="d-flex justify-content-between align-items-center">
-              <p className="price">$ {props.price}</p>
+              <p className="price"> OMR {props.price}</p>
               <span>
                     <button className="btn inc" onClick={(props.increase)}>
                     <i class="fa-solid fa-plus fa-xs"></i>

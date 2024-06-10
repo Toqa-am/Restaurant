@@ -21,7 +21,7 @@ export function MealCard(props){
       <h5>{props.name}</h5>
       <p className="text-black-50 para">{props.description}</p>
       <div className="d-flex justify-content-between align-items-center">
-        <p className="price">$ {props.cost}</p>
+        <p className="price"> OMR {props.cost}</p>
         <button
           className="button"
           data-bs-toggle="modal"

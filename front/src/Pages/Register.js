@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { Link, useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 
 export function Register() {
@@ -199,7 +199,7 @@ export function Register() {
 
             </form>
             <div className={"alert alert-info mt-3 "+(registered?"visible":"invisible")} role="alert">
-                                Now you can sign in
+                                Please verify your E-mail, after verification you can continue to <Link to="/checkout">checkOut page</Link> checkOut page
             </div>
         </div>
         

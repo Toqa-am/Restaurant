@@ -42,7 +42,7 @@ export function Navbar() {
 
                     <input className="form-control me-2 col-8 rounded-pill" type="search" placeholder="Search" onChange={handelSearch} />
 
-                    <button className="btn btn-dark rounded-pill" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i className="fa-solid fa-bag-shopping pr-1"></i> <strong>{cartTotal}$</strong></button>
+                    <button className="btn btn-dark rounded-pill" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i className="fa-solid fa-bag-shopping pr-1"></i> <strong>{cartTotal} OMR</strong></button>
                 </div>
 
 
@@ -65,7 +65,7 @@ export function Navbar() {
                 
                 <div className="d-flex justify-content-evenly gap-2 rounded-pill p-3 mb-3 border border-gray-1 ">
                     <h6 className="capitalize text-sm font-medium ">Subtotal</h6>
-                    <h6 className='text-success'><strong>{cartTotal}$</strong></h6>
+                    <h6 className='text-success'><strong>{cartTotal} OMR</strong></h6>
                 </div>'
                 <button className='btn btn-primary rounded-pill col-12 m-2 p-3' onClick={handleNavigation} data-bs-dismiss="offcanvas"> 
                    Proceed to CheckOut

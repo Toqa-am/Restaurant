@@ -19,7 +19,7 @@ export default function CheckOutCard(props) {
                         <div className="card-body">
                             <strong><p className="card-title">{props.title}</p></strong>  
                             <p className="card-text"><small className="text-body-secondary">{props.desc}</small></p>
-                            <h6>piece: <strong>{props.price} $</strong></h6>
+                            <h6>piece: <strong>{props.price} OMR</strong></h6>
                         </div>
                     </div>
                 </div>

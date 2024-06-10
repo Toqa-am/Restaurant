@@ -7,11 +7,12 @@ import FetchData from './Pages/FetchData';
 import Cart from './Pages/Cart';
 import DiningTables from './Pages/DiningTables';
 import { Register } from './Pages/Register';
+import { AuthProvider } from './contextes/AuthContext';
 
 
 function App() {
   return (
-    // <Provider store={store}>
+    // <AuthProvider>
     <div className="container">
       <BrowserRouter>
       <Navbar/>
@@ -30,10 +31,8 @@ function App() {
       </BrowserRouter>
 
     </div>
-    // <div className='container'>
-    //   <DiningTables/>
-    // </div>
     
+    // </AuthProvider>
   );
 }
 
