@@ -1,17 +1,25 @@
 import { useDispatch, useSelector } from "react-redux"
-import CheckOutCard from "../Componenets/CheckOutCard"
+import CheckOutCard from "../../Componenets/Customer/CheckOutCard"
 import { Link } from "react-router-dom/cjs/react-router-dom.min"
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { AuthContext } from "../contextes/AuthContext";
-import useAuth from "../contextes/CustomHook";
+import { AuthContext } from "../../contextes/AuthContext";
+import useAuth from "../../contextes/CustomHook";
 
 export default function Cart() {
+    const cartTotal = useSelector((state) => state.cartTotal)
+    const cartItems = useSelector((state) => state.cartItems)
+
     const [signed, setSigned] = useState(0)
+    const modalRef = useRef(null);
     // const { setCurrentUser } = useContext(AuthContext);
     // const { isLoggedIn, login, logout } = useAuth();
+    const [shouldDismissModal, setShouldDismissModal] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [accessToken, setAccessToken] = useState(null)
+    const [requestedToReset, setRequestedToReset] = useState(false)
+    localStorage.setItem('cartTotal', JSON.stringify(cartTotal));
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
 
 
     const [formData, setFormData] = useState({
@@ -22,8 +30,30 @@ export default function Cart() {
     const [errors, setErrors] = useState({
         emailError: "",
         passError: "",
+        loginError: ""
     })
+    const resetPassword = async (e) => {
+        console.log(formData.email);
+        if (formData.email === '') {
 
+            setErrors({
+                ...errors,
+                emailError: "please enter your email to reset your password"
+            })
+        }
+
+        e.preventDefault()
+        var email = { "email": formData.email }
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/api/auth/forgot-password", email)
+            setRequestedToReset(true)
+
+        }
+        catch {
+
+        }
+
+    }
     const handleInputChange = (event) => {
 
         if (event.target.name === "email") {
@@ -35,6 +65,7 @@ export default function Cart() {
                 ...errors,
                 emailError: event.target.value.length === 0 ? "This Field is required" : !event.target.validity.valid && "Please enter a vaild email"
             })
+
         }
 
         else if (event.target.name === "password") {
@@ -62,6 +93,19 @@ export default function Cart() {
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/auth/login', formData);
             setIsLoggedIn(true)
+            // setShouldDismissModal(true);
+            modalRef.current.classList.remove('show');
+            document.body.classList.remove('modal-open');
+            // document.getElementsByClassName('modal-backdrop')[0]?.remove();
+            const modalBackdrop = document.getElementsByClassName('modal-backdrop')[0];
+            if (modalBackdrop) {
+                modalBackdrop.remove();
+            }
+
+            setErrors({
+                ...errors,
+                loginError: ""
+            })
 
 
             localStorage.setItem('accessToken', JSON.stringify(response.data.access_token));
@@ -75,6 +119,12 @@ export default function Cart() {
             console.log('Form submitted successfully:', response.data);
         } catch (error) {
             console.error('Error submitting form:', error);
+            // setShouldDismissModal(false);
+
+            setErrors({
+                ...errors,
+                loginError: "invalid email or password"
+            })
         }
 
         // }
@@ -86,7 +136,6 @@ export default function Cart() {
         // console.log(response.data.access_token + "//////////////");
 
     };
-    const cartItems = useSelector((state) => state.cartItems)
 
     const [paymentData, setPaymentData] = useState({
         items: cartItems,
@@ -118,12 +167,11 @@ export default function Cart() {
 
     }
 
-    const cartTotal = useSelector((state) => state.cartTotal)
     return (
         <>
             <div className="d-flex justify-content-around container pt-5 flex-wrap">
                 <div className="col-6">
-                    <Link to="/" > <i className="fa-solid fa-backward pb-3"></i> Back to Home</Link>
+                    <Link to="/customer/menu" > <i className="fa-solid fa-backward pb-3"></i> Back to Home</Link>
                     <div className="col-6">
                         <strong><p>Table</p></strong>
                         <hr className="col-12"></hr>
@@ -153,8 +201,8 @@ export default function Cart() {
                                     Digital payment
                                 </label>
                             </div>
-                           
-                         
+
+
                             <button
                                 type="submit"
                                 className="btn btn-primary rounded-pill col-6"
@@ -176,7 +224,7 @@ export default function Cart() {
                             </div>
 
                             {/* Log in Modal */}
-                            <div className="modal fade h-75" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="false">
+                            <div className="modal fade h-75" ref={modalRef} id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content ">
                                         {/* <div className={" text-center "+(signed? "visible":"invisible")}>
@@ -198,6 +246,9 @@ export default function Cart() {
 
 
                                                     <div>
+                                                        <span className="text-danger">{errors.loginError}</span>
+                                                        <br></br>
+
                                                         <label for="email" className="form-label">Email:</label>
                                                         <br></br>
                                                         <span className="text-danger">{errors.emailError}</span>
@@ -230,15 +281,26 @@ export default function Cart() {
                                                             required
                                                         />
                                                     </div>
-                                                    <Link to="/register"> <p data-bs-dismiss="modal">Register</p> </Link>
+                                                    <Link to="/customer/register"> <p data-bs-dismiss="modal">Register</p> </Link>
+                                                    <div className="d-flex ">
+                                                        <a href="" className="pr-5" onClick={resetPassword}><p>Forgot password</p></a>
+                                                        <span className={"text-danger " + (requestedToReset ? "visible" : "invisible")}>Check your email</span>
+                                                    </div>
+
 
 
                                                     <div class="modal-footer mt-3">
                                                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
                                                         {/* ||  errors.passError */}
-                                                        <button className="btn btn-primary " data-bs-dismiss="modal" onClick={handleSubmit} type="button" disabled={errors.emailError ||
-                                                            formData.password === '' || formData.email === ''}>Log in</button>
+                                                        <button
+                                                            className="btn btn-primary"
 
+                                                            onClick={handleSubmit}
+                                                            type="button"
+                                                            disabled={errors.emailError || formData.password === '' || formData.email === ''}
+                                                        >
+                                                            Log in
+                                                        </button>
                                                     </div>
                                                 </form>
                                                 {/* Form */}

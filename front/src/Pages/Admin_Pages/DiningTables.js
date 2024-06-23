@@ -21,11 +21,11 @@ export default function DiningTables() {
 
                             <div>
                                 {/* buttons */}
-                                <button class="btn btn-primary rounded" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="fa-solid fa-plus"></i> Add table</button>
+                                <button class="btn btn-primary rounded" type="button" data-bs-toggle="offcanvas" data-bs-target="#tablesOffcanvasRight" aria-controls="tablesOffcanvasRight"><i class="fa-solid fa-plus"></i> Add table</button>
 
-                                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+                                <div class="offcanvas offcanvas-end" tabindex="-1" id="tablesOffcanvasRight" aria-labelledby="tablesOffcanvasRightLabel">
                                     <div class="offcanvas-header">
-                                        <h5 class="offcanvas-title" id="offcanvasRightLabel">Add  new Table</h5>
+                                        <h5 class="offcanvas-title" id="tablesOffcanvasRightLabel">Add  new Table</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                                     </div>
                                     <div class="offcanvas-body">

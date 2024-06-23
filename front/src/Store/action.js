@@ -45,6 +45,12 @@ export const addToCart = (pokemon) => {
     payload: pokemon
   };
 };
+export const updateAfterRefresh = (payload) => {
+  return {
+    type: 'UPDATE',
+    payload: payload
+  };
+};
 
 export const search = (payload) => {
     return {

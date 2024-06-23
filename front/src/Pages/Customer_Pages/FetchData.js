@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart, decreaseItemBCart, increaseItemBCart, zeroQuant } from '../Store/action';
+import { addToCart, decreaseItemBCart, increaseItemBCart, zeroQuant } from '../../Store/action';
 import './Fetchdata.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
-import { FilterCard } from '../Componenets/FilterCard';
-import { CartCard } from '../Componenets/CartCard';
-import pizza from '../pizza.jpg'
-import burger from '../burger.webp'
-import all_cat from '../all.jpg'
-import po from '../pokemon.json'
-import { increaseItemQuant , decreaseItemQuant, changeCartTotal} from "../Store/action";
-import { SizeCard } from '../Componenets/SizeCard';
+import { FilterCard } from '../../Componenets/Customer/FilterCard';
+import { CartCard } from '../../Componenets/Customer/CartCard';
+import pizza from '../../Images/pizza.jpg'
+import burger from '../../Images/burger.webp'
+import all_cat from '../../Images/all.jpg'
+import { SizeCard } from '../../Componenets/Customer/SizeCard';
+import { AddonsExtra } from '../../Componenets/Customer/AddonsExtra';
 
 const FetchData = () => {
   const [data, setData] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [addons, setAddons] = useState([]);
+  
+
   const [all, setAll] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -39,6 +42,25 @@ const FetchData = () => {
         dispatch(decreaseItemBCart(item.id))
 
     } 
+    useEffect(() =>  {
+    const getCategories=async()=>{
+      try{
+        const cats = await axios.get('http://127.0.0.1:8000/api/categories');
+        setCategories(cats.data.data)
+        console.log(categories)
+
+
+      }
+      catch(error){
+        console.log(error)
+
+
+      }
+    };
+    getCategories();
+  }, []);
+
+   
  
    
 
@@ -46,8 +68,10 @@ const FetchData = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:8000/api/meals');
-        setData(response.data);
-        setAll(response.data);
+        console.log(response)
+      
+        setData(response.data.data);
+        setAll(response.data.data);
         setLoading(false);
       } catch (error) {
         setError(error);
@@ -61,18 +85,32 @@ const FetchData = () => {
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
   };
-  
   const handleCategoryFilter = async (catId) => {
     if(catId==='all'){
+      setFilter('all')
+
       setData(all)
-      console.log(all);
+    
+
+    }
+    else if(catId==='add-ons'){
+      try {
+        const addons = await axios.get(`http://127.0.0.1:8000/api/addons`)
+        setData(addons.data.data);
+        setFilter('addons')
+
+        // setLoading(false);
+      } catch (error) {
+        // setError(error);
+        // setLoading(false);
+      }
     }
     else{
 
     try {
       const catResponse = await axios.get(`http://127.0.0.1:8000/api/categories/${catId}/meals`);
-      // console.log(catResponse.data.data);
       setData(catResponse.data.data);
+      setFilter('category')
       // setLoading(false);
     } catch (error) {
       // setError(error);
@@ -97,31 +135,23 @@ const FetchData = () => {
     dispatch(zeroQuant())
 
   }
+
   const filteredData = data.filter(pokemon => {
     if (searchQ === '') {
 
       if (filter === 'vegetarian')
+        {console.log("vege");
         return pokemon.type === 'vegetarian';
+        }
       else if (filter === 'non-vegetarian')
         return pokemon.type === 'non-vegetarian';
-      else if(filter==='all'){    
+      else
+        return data
+      // else if(filter==='all'){    
             
-        return (pokemon.type === 'non-vegetarian' | pokemon.type == 'vegetarian')
-      }
+      //   return (pokemon.type === 'non-vegetarian' | pokemon.type == 'vegetarian')
+      // }
      
-
-      // else if (filter === 'checken')
-      //   return pokemon.location.includes("Safari")
-      // else if (filter === 'Beef')
-      //   return pokemon.location.includes("Saffron")
-      // else if (filter === 'SeaFood')
-      //   return pokemon.location.includes("Route 21")
-      // else if (filter === 'chinees')
-      //   return pokemon.location.includes("Silph")
-      // else if (filter === 'soup')
-      //   return pokemon.location.includes("Mansion")
-      // else if (filter === 'grilled')
-      //   return pokemon.location.includes("Tower")
     }
     else {
       console.log(searchQ);
@@ -137,12 +167,14 @@ const FetchData = () => {
 
     <div>
       <div className=" d-flex justify-content-around scrollmenu">
-        <FilterCard title="ALL" img={all_cat} filterr={(() => handleCategoryFilter('all'))} />
-        {/* <FilterCard title="checken" filterr={(() => handleCategoryFilter('3'))} /> */}
-        <FilterCard title="Burger" img={burger} filterr={(() => handleCategoryFilter('5'))} />
-        {/* <FilterCard title="Sea Food" filterr={(() => handleFilterChange('SeaFood'))} /> */}
-        <FilterCard title="Pizza" img={pizza} filterr={(() => handleCategoryFilter('4'))} />
-        {/* <FilterCard title="Soups" filterr={(() => handleCategoryFilter('7'))} /> */}
+      <FilterCard title="Meals" img={all_cat} filterr={(() => handleCategoryFilter('all'))} />
+        {categories.map((category) => (
+      <FilterCard title={category.name} img={category.image} filterr={(() => handleCategoryFilter(category.id))} />
+
+        ))}
+      <FilterCard title="Add-ons" img={all_cat} filterr={(() => handleCategoryFilter('add-ons'))} />
+
+
       </div >
 
 
@@ -185,7 +217,7 @@ const FetchData = () => {
 
     {/* <img src={pokemon.image_url} alt={pokemon.pokemon} /> */}
     <div className="pokemon-details">
-      <h5>{` ${pokemon.name} - ${pokemon.size}`} </h5>
+      <h5>{` ${pokemon.name}`} </h5>
       <p className="text-black-50 para">{pokemon.description}</p>
       <div className="d-flex justify-content-between align-items-center">
         <p className="price"> OMR {pokemon.cost}</p>
@@ -219,12 +251,47 @@ const FetchData = () => {
               <div className="modal-body">
                 <CartCard src={pokemon.image} title={` ${pokemon.name} ${pokemon.size}`} price={pokemon.cost}  description={pokemon.description} quant={itemQuant}  increase={()=>increaseItems(pokemon)}  decrease={()=>decreaseItems(pokemon)}   />
                 {/* <h1>{pokemon.image} jkhu</h1> */}
-                {/* <strong>Size</strong>
+                {pokemon.meal_size_costs && (
+                  <>
                 <div className='d-flex ' >
+                  {pokemon.meal_size_costs.map((size)=>(
+                    
+                
+                  <SizeCard size={size.size} price={size.cost} nop={size.number_of_pieces}/>
                   
-                  <SizeCard size="medium"/>
-                  <SizeCard size="Large"/>
-                   </div> */}
+                  ))}
+                  
+                  
+                   </div>
+                  </>)}
+
+                  {pokemon.extras && (
+                  <>
+                <div className='d-flex ' >
+                  {pokemon.extras.map((item)=>(
+                    
+                
+                  <AddonsExtra name={item.name} price={item.cost} />
+                  
+                  ))}
+                  
+                  
+                   </div>
+                  </>)}
+                  {/* {pokemon.addons && (
+                  <>
+                <div className='d-flex ' >
+                  {pokemon.addons.map((item)=>(
+                    
+                
+                  <AddonsExtra name={item.name} price={item.cost} img={item.image} />
+                  
+                  ))}
+                  
+                  
+                   </div>
+                  </>)} */}
+                
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={()=>handleCancel()}>
