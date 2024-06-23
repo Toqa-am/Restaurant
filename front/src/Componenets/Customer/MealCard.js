@@ -1,10 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
-import { FilterCard } from '../Componenets/FilterCard';
-import { CartCard } from '../Componenets/CartCard';
-import po from '../pokemon.json'
-import { increaseItemQuant , decreaseItemQuant, changeCartTotal} from "../Store/action";
-import { SizeCard } from '../Componenets/SizeCard';
+import { CartCard } from './CartCard'
+import { SizeCard } from './SizeCard';
 import { useSelector } from 'react-redux';
 export function MealCard(props){
     const itemQuant = useSelector(state => state.itemQuant);

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { CartCard } from "./CartCard";
-import { increaseItemQuant , decreaseItemQuant, changeCartTotal} from "../Store/action";
+import { increaseItemQuant , decreaseItemQuant, changeCartTotal} from "../../Store/action";
 import { useEffect, useState } from "react";
 import Cart from "./Cart";
 

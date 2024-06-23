@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import verifyLogo from '../check.png'
-import verifiedLogo from '../verified.png'
-import loading from '../loading.png'
+import verifyLogo from '../../Images/check.png'
+import verifiedLogo from '../../Images/verified.png'
+import loading from '../../Images/loading.png'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min'
 import { useLocation } from 'react-router-dom';
 import axios from 'axios'
@@ -65,7 +65,7 @@ export function Verification() {
                         <img src={verifiedLogo} height={100} width={100}></img>
                         <br>
                         </br>
-                    Congratulations! your email got verified now you can continue to <Link to="/checkout"><strong className='text-success'>Checkout</strong></Link>  page.
+                    Congratulations! your email got verified now you can continue to <Link to="/customer/checkout"><strong className='text-success'>Checkout</strong></Link>  page.
                     </div>
 
                  

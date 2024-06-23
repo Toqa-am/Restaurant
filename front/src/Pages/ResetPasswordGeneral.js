@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import reset from '../reset.png'
+import reset from '../Images/reset.png'
 
 import { Link } from 'react-router-dom/cjs/react-router-dom.min'
 import { useLocation } from 'react-router-dom';
@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { updateAfterRefresh } from '../Store/action';
 
 
-export function ResetPassword() {
+export function ResetPasswordGeneral(props) {
     const [changed, setChanged] = useState(false)
 
     const location = useLocation();
@@ -68,7 +68,8 @@ export function ResetPassword() {
         
         try {
 
-            const response = await axios.post("http://127.0.0.1:8000/api/auth/reset-password", resetPasswordData);
+            // "http://127.0.0.1:8000/api/auth/reset-password"
+            const response = await axios.post(props.endpoint, resetPasswordData);
             setChanged(true) 
         } catch (error) {
 
@@ -76,20 +77,6 @@ export function ResetPassword() {
     };
 
 
-
-    // console.log(allParams);
-    // console.log(resetPasswordData)
-
-    const reset2 = async () => {
-        try {
-
-            
-
-
-        } catch (error) {
-
-        }
-    };
 
 
 
@@ -143,7 +130,7 @@ export function ResetPassword() {
                         <div  className={(changed?"visible":"invisible")} >
                         <br>
                         </br>
-                    You Reseted your password successfully, now you can continue to <Link to="/checkout"><strong className='text-success'>Checkout</strong></Link>  page and log in.
+                    You Reseted your password successfully, now you can continue to <Link to="/customer/checkout"><strong className='text-success'>Checkout</strong></Link>  page and log in.
                     </div>
 
 

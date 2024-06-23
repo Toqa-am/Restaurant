@@ -1,12 +1,12 @@
 
 import { Link } from 'react-router-dom';
-import logo from '../logo.png'
+import logo from '../../Images/logo.png'
 import { useDispatch, useSelector } from "react-redux";
-import cart from '../cart.gif'
 import { EmptyCart } from './EmptyCart';
 import FullCart from './FullCart';
-import { search, updateAfterRefresh } from '../Store/action';
+import { search, updateAfterRefresh } from '../../Store/action';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useEffect } from 'react';
 
 
 
@@ -14,13 +14,14 @@ export function Navbar() {
     const dispatcher = useDispatch()
     const cartTotal = useSelector((state) => state.cartTotal)
     const cartItems = useSelector((state) => state.cartItems)
-    localStorage.setItem('cartTotal', JSON.stringify(cartTotal));
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-    // console.log(JSON.parse(localStorage.getItem('cartItems')));
-    // console.log(JSON.parse(localStorage.getItem('cartTotal')));
-    // dispatcher(updateAfterRefresh([JSON.parse(localStorage.getItem('cartItems')),JSON.parse(localStorage.getItem('cartTotal'))]))
+    
+    useEffect(() => {
+        localStorage.setItem("cartItems", JSON.stringify(cartItems))
+      }, [cartItems])
 
-
+      useEffect(() => {
+        localStorage.setItem("cartTotal", JSON.stringify(cartTotal))
+      }, [cartTotal])
 
     const handelSearch = (e) => {
         dispatcher(search(e.target.value))
@@ -30,13 +31,13 @@ export function Navbar() {
     const history = useHistory();
 
     const handleNavigation = () => {
-        history.push('/checkout');
+        history.push('/customer/checkout');
     };
 
     return (
         <>
             <nav className="navbar sticky-top navbar-expand-lg navbar-light bg-light d-flex justify-content-between">
-                <Link to='/menu'>
+                <Link to='/customer/menu'>
                     <a className="navbar-brand" href="/">
                         <img src={logo} height={20}></img>
                     </a>

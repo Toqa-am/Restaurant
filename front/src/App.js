@@ -1,27 +1,37 @@
 import { Route } from 'react-router-dom';
 import './App.css';
-import { Navbar} from './Componenets/Navbar';
+import { Navbar} from './Componenets/Customer/Navbar';
 import { BrowserRouter, Switch } from 'react-router-dom/cjs/react-router-dom.min';
 import './App.css';
-import FetchData from './Pages/FetchData';
-import Cart from './Pages/Cart';
-import DiningTables from './Pages/DiningTables';
-import { Register } from './Pages/Register';
-import { AuthProvider } from './contextes/AuthContext';
-import { Verification } from './Pages/Verification';
-import { ResetPassword } from './Pages/ResetPassword';
-import { Customer } from './Pages/Customer';
+
+import { Customer } from './Pages/Customer_Pages/Customer';
+import { Admin } from './Pages/Admin_Pages/Admin';
+import { useState } from 'react';
 
 
 function App() {
+ 
   return (
-    // <AuthProvider>
+
     <div className="container">
-      <Customer/>
+      <BrowserRouter>
+     
+      <div className='container'>
+      <Switch>
+
+        <Route path="/customer" component={Customer}/>
+        <Route path="/admin" component={Admin}/>
+     
+
+
+      </Switch>
+      </div>
+
+      </BrowserRouter>
+    
 
     </div>
     
-    // </AuthProvider>
   );
 }
 

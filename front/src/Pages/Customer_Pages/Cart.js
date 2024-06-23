@@ -1,12 +1,15 @@
 import { useDispatch, useSelector } from "react-redux"
-import CheckOutCard from "../Componenets/CheckOutCard"
+import CheckOutCard from "../../Componenets/Customer/CheckOutCard"
 import { Link } from "react-router-dom/cjs/react-router-dom.min"
 import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { AuthContext } from "../contextes/AuthContext";
-import useAuth from "../contextes/CustomHook";
+import { AuthContext } from "../../contextes/AuthContext";
+import useAuth from "../../contextes/CustomHook";
 
 export default function Cart() {
+    const cartTotal = useSelector((state) => state.cartTotal)
+    const cartItems = useSelector((state) => state.cartItems)
+
     const [signed, setSigned] = useState(0)
     const modalRef = useRef(null);
     // const { setCurrentUser } = useContext(AuthContext);
@@ -133,7 +136,6 @@ export default function Cart() {
         // console.log(response.data.access_token + "//////////////");
 
     };
-    const cartItems = useSelector((state) => state.cartItems)
 
     const [paymentData, setPaymentData] = useState({
         items: cartItems,
@@ -165,12 +167,11 @@ export default function Cart() {
 
     }
 
-    const cartTotal = useSelector((state) => state.cartTotal)
     return (
         <>
             <div className="d-flex justify-content-around container pt-5 flex-wrap">
                 <div className="col-6">
-                    <Link to="/menu" > <i className="fa-solid fa-backward pb-3"></i> Back to Home</Link>
+                    <Link to="/customer/menu" > <i className="fa-solid fa-backward pb-3"></i> Back to Home</Link>
                     <div className="col-6">
                         <strong><p>Table</p></strong>
                         <hr className="col-12"></hr>
@@ -280,7 +281,7 @@ export default function Cart() {
                                                             required
                                                         />
                                                     </div>
-                                                    <Link to="/register"> <p data-bs-dismiss="modal">Register</p> </Link>
+                                                    <Link to="/customer/register"> <p data-bs-dismiss="modal">Register</p> </Link>
                                                     <div className="d-flex ">
                                                         <a href="" className="pr-5" onClick={resetPassword}><p>Forgot password</p></a>
                                                         <span className={"text-danger " + (requestedToReset ? "visible" : "invisible")}>Check your email</span>

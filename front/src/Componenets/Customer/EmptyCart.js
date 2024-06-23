@@ -1,4 +1,4 @@
-import cart from '../cart.gif'
+import cart from '../../Images/cart.gif'
 
 
 export function EmptyCart(props){

@@ -1,8 +1,30 @@
 
+const getCartData=()=>{
+    const currentCart=localStorage.getItem("cartItems")
+    if (currentCart==[]){
+        return [];
+    }
+    else{
+        return JSON.parse(currentCart);
+    }
+
+}
+
+const getCartTotal=()=>{
+    const currentTotal=localStorage.getItem("cartTotal")
+    if (currentTotal==[]){
+        return [];
+    }
+    else{
+        return JSON.parse(currentTotal);
+    }
+
+}
+
 
 const VALUE = {
-    cartTotal: 0,
-    cartItems: [],
+    cartTotal: getCartTotal(),
+    cartItems: getCartData(),
     searchStatement: "",
     itemQuant: 1
 
