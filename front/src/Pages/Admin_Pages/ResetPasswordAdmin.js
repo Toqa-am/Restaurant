@@ -156,6 +156,6 @@ import { ResetPasswordGeneral } from "../ResetPasswordGeneral";
 
 export function ResetPasswordAdmin() {
     return(<>
-    <ResetPasswordGeneral endpoint="http://127.0.0.1:8000/api/admin/employees/reset-password"/>
+    <ResetPasswordGeneral endpoint="http://127.0.0.1:8000/api/admin/employees/reset-passowrd"/>
     </>)
 }

@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom/cjs/react-router-dom.min"
 import axios from "axios";
+import { useHistory } from "react-router-dom";
+import bg from '../../Images/bg.jpg'
+
 
 export function AdminLogin(){
     const [signed, setSigned] = useState(0)
@@ -11,6 +14,8 @@ export function AdminLogin(){
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [accessToken, setAccessToken] = useState(null)
     const [requestedToReset, setRequestedToReset] = useState(false)
+    let history = useHistory();
+
     // localStorage.setItem('cartTotal', JSON.stringify(cartTotal));
     // localStorage.setItem('cartItems', JSON.stringify(cartItems));
 
@@ -63,6 +68,10 @@ export function AdminLogin(){
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/admin/login', formData);
             setIsLoggedIn(true)
+            setAccessToken(response.access_token)
+            localStorage.setItem('Access-token', JSON.stringify(accessToken));
+            history.push("/admin/dashboard}");
+            console.log(response);
             
 
             setErrors({
@@ -102,7 +111,7 @@ export function AdminLogin(){
         e.preventDefault()
         var email = { "email": formData.email }
         try {
-            const response = await axios.post("http://127.0.0.1:8000/api/auth/forgot-password", email)
+            const response = await axios.post("http://127.0.0.1:8000/api/admin/employees/forgot-password", email)
             setRequestedToReset(true)
 
         }
@@ -112,15 +121,15 @@ export function AdminLogin(){
 
     }
     return(<>
-    <div className="w-50 ">
-    <form className="margin-auto"  onSubmit={handleSubmit}>
+    <div className="w-75 color-dark admin-login mx-auto my-5 rounded-pill text-center">
+    <form className="mx-auto w-75 p-5"  onSubmit={handleSubmit}>
 
 
 <div>
     <span className="text-danger">{errors.loginError}</span>
     <br></br>
 
-    <label for="email" className="form-label ">Email:</label>
+    <label for="email" className="form-label mt-3">Email:</label>
     <br></br>
     <span className="text-danger">{errors.emailError}</span>
     <input
@@ -136,7 +145,7 @@ export function AdminLogin(){
 </div>
 
 <div>
-    <label for="password" className="form-label">Password:</label>
+    <label for="password" className="form-label mt-3">Password:</label>
     <br></br>
     <span className="text-danger">{errors.passError}</span>
 
@@ -152,17 +161,17 @@ export function AdminLogin(){
         required
     />
 </div>
-<Link to="/register"> <p data-bs-dismiss="modal">Register</p> </Link>
+{/* <Link to="/register"> <p data-bs-dismiss="modal">Register</p> </Link> */}
 <div className="d-flex ">
-    <a href="" className="pr-5" onClick={resetPassword}><p>Forgot password</p></a>
-    <span className={"text-danger " + (requestedToReset ? "visible" : "invisible")}>Check your email</span>
+    <a href="" className="" onClick={resetPassword}><p>Forgot password</p></a>
+    <span className={"text-danger ml-5 " + (requestedToReset ? "visible" : "invisible")}>Check your email</span>
 </div>
 
 
 
     {/* ||  errors.passError */}
     <button
-        className="btn btn-primary"
+        className="btn btn-dark rounded-pill"
 
         onClick={handleSubmit}
         type="button"

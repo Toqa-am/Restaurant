@@ -146,6 +146,9 @@ div.scrollmenu {
     /* overflow: hidden; */
     white-space: nowrap;
   }
+  ::-webkit-scrollbar {
+    display: none;
+}
   
   div.scrollmenu a {
     display: inline-block;
@@ -221,4 +224,45 @@ th{
         margin: 0 auto;
         float: none;
     }
+}
+
+.containerr{
+    display: flex;
+    list-style: none;
+}
+
+.pagee{
+	padding: 10px;
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.disabledd{
+    cursor: not-allowed;
+    
+}
+
+.activee{
+	border: 2px solid #000;
+    font-weight: bold;
+}
+
+.previous{
+    padding: 10px;
+    border-radius: 6px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.break{
+    padding: 10px;
+}
+
+.next{
+    padding: 10px;
+    border-radius: 6px;
+    margin-right: 10px;
+    cursor: pointer;
 }
