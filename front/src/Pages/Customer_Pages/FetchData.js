@@ -12,10 +12,19 @@ import burger from '../../Images/burger.webp'
 import all_cat from '../../Images/all.jpg'
 import { SizeCard } from '../../Componenets/Customer/SizeCard';
 import { AddonsExtra } from '../../Componenets/Customer/AddonsExtra';
+import ReactPaginate from 'react-paginate';
 
 const FetchData = () => {
   const [data, setData] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [isLoaded, setisLoaded] = useState(false);
+  const [CartFormData, setCartFormData] = useState({
+
+    item: '',
+    addons:[],
+    size: [],
+    extras: [],
+});
   const [addons, setAddons] = useState([]);
   
 
@@ -26,10 +35,34 @@ const FetchData = () => {
   const [filter, setFilter] = useState('all');
   const searchQ = useSelector(state => state.searchStatement);
   const itemQuant = useSelector(state => state.itemQuant);
-
+  const [currentPage, setcurrentPage] = useState(0);
+  const [pageCount, setPageCount] = useState(1); 
 
   const dispatch = useDispatch();
+  const handlePageChange =  (selectedObject) =>  {
 
+		setcurrentPage(selectedObject.selected);
+    console.log(currentPage)
+		handleFetch();
+	};
+  const handleCheckboxChange = (size,e) => {
+    console.log(e);
+    const { name, checked } = e.target;
+    setCartFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: checked ? [...prevFormData[name], size] : prevFormData[name].filter((value) => value !== e.target.value),
+    }));
+};
+  const handleFetch = async () => {
+    try{
+      const response= await axios.get(`http://127.0.0.1:8000/api/meals?page=${currentPage}`)
+      setData(response.data.data)
+    }
+    catch{
+
+    }
+
+  }
   
     function increaseItems(item){
     
@@ -42,6 +75,11 @@ const FetchData = () => {
         dispatch(decreaseItemBCart(item.id))
 
     } 
+
+    function changeSize(size){
+      console.log(size);
+
+    }
     useEffect(() =>  {
     const getCategories=async()=>{
       try{
@@ -69,10 +107,17 @@ const FetchData = () => {
       try {
         const response = await axios.get('http://127.0.0.1:8000/api/meals');
         console.log(response)
-      
-        setData(response.data.data);
-        setAll(response.data.data);
+        const addons = await axios.get('http://127.0.0.1:8000/api/addons');
+
+        setData([...response.data.data,...addons.data.data]);
+
+        setAll(data);
+        console.log(all);
+        setisLoaded(true);
         setLoading(false);
+        setPageCount(response.data.pagination.last_page)
+        console.log(response.data.pagination.last_page);
+
       } catch (error) {
         setError(error);
         setLoading(false);
@@ -97,12 +142,12 @@ const FetchData = () => {
       try {
         const addons = await axios.get(`http://127.0.0.1:8000/api/addons`)
         setData(addons.data.data);
+        setPageCount(addons.data.pagination.last_page)
+
         setFilter('addons')
 
-        // setLoading(false);
       } catch (error) {
-        // setError(error);
-        // setLoading(false);
+        
       }
     }
     else{
@@ -111,23 +156,27 @@ const FetchData = () => {
       const catResponse = await axios.get(`http://127.0.0.1:8000/api/categories/${catId}/meals`);
       setData(catResponse.data.data);
       setFilter('category')
-      // setLoading(false);
+      setPageCount(catResponse.data.pagination.last_page)
     } catch (error) {
-      // setError(error);
-      // setLoading(false);
+     
     }
   }
   };
   
-
-
   
 
   const handleAddToCart = (pokemon,itemQuant) => {
 
 
     dispatch(addToCart([pokemon,itemQuant]));
+    CartFormData.addons.map((item)=>(
+      // console.log(item)
+      dispatch(addToCart([item,1]))
+
+    ))
+
     dispatch(zeroQuant())
+    console.log(CartFormData);
     
   };
 
@@ -147,15 +196,12 @@ const FetchData = () => {
         return pokemon.type === 'non-vegetarian';
       else
         return data
-      // else if(filter==='all'){    
-            
-      //   return (pokemon.type === 'non-vegetarian' | pokemon.type == 'vegetarian')
-      // }
+      
      
     }
     else {
       console.log(searchQ);
-      return pokemon.name.toLowerCase().includes(searchQ.toLowerCase()) | pokemon.size.toLowerCase().includes(searchQ.toLowerCase())
+      return pokemon.name.toLowerCase().includes(searchQ.toLowerCase()) 
     }
     return true;
   });
@@ -253,11 +299,13 @@ const FetchData = () => {
                 {/* <h1>{pokemon.image} jkhu</h1> */}
                 {pokemon.meal_size_costs && (
                   <>
-                <div className='d-flex ' >
+                <div className='d-flex justify-content-around scrollmenu ' >
+
                   {pokemon.meal_size_costs.map((size)=>(
                     
-                
-                  <SizeCard size={size.size} price={size.cost} nop={size.number_of_pieces}/>
+
+                  <SizeCard size={size.size} price={size.cost} nop={size.number_of_pieces} changeSize={(e)=>handleCheckboxChange(size,e)}/>
+                  
                   
                   ))}
                   
@@ -267,30 +315,30 @@ const FetchData = () => {
 
                   {pokemon.extras && (
                   <>
-                <div className='d-flex ' >
+                <div className='d-flex justify-content-around scrollmenu ' >
                   {pokemon.extras.map((item)=>(
                     
                 
-                  <AddonsExtra name={item.name} price={item.cost} />
+                  <AddonsExtra name={item.name} inputName="extras" price={item.cost} change={(e)=>handleCheckboxChange(item,e)} />
                   
                   ))}
                   
                   
                    </div>
                   </>)}
-                  {/* {pokemon.addons && (
+                  {pokemon.addons && (
                   <>
                 <div className='d-flex ' >
                   {pokemon.addons.map((item)=>(
                     
                 
-                  <AddonsExtra name={item.name} price={item.cost} img={item.image} />
+                  <AddonsExtra name={item.name} inputName="addons" price={item.cost} img={item.image} change={(e)=>handleCheckboxChange(item,e)}/>
                   
                   ))}
                   
                   
                    </div>
-                  </>)} */}
+                  </>)}
                 
               </div>
               <div className="modal-footer">
@@ -315,7 +363,27 @@ const FetchData = () => {
   </div>
 ))}
       </div>
+      {isLoaded ? (
+        <div className='w-50 m-auto'>
+				<ReactPaginate
+					pageCount={pageCount}
+					pageRange={2}
+					marginPagesDisplayed={2}
+					onPageChange={handlePageChange}
+					containerClassName={'containerr'}
+					previousLinkClassName={'pagee'}
+					breakClassName={'pagee'}
+					nextLinkClassName={'pagee'}
+					pageClassName={'pagee'}
+					disabledClassNae={'disabledd'}
+					activeClassName={'activee'}
+				/>
+        </div>
+			) : (
+				<div>Nothing to display</div>
+			)} 
     </div>
+    
   );
 
 

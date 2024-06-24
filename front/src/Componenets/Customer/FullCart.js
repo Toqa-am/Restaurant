@@ -10,15 +10,14 @@ export default function FullCart(){
     const cartTotal=useSelector((state)=>state.cartTotal)
     
     const dispatcher=useDispatch()
-
   
     function increaseItems(item){
         dispatcher(increaseItemQuant(item.id))
-        dispatcher(changeCartTotal(item.hitpoints))
+        dispatcher(changeCartTotal(item.cost))
     }
     function decreaseItems(item){
         dispatcher(decreaseItemQuant(item.id))
-        dispatcher(changeCartTotal(-item.hitpoints))
+        dispatcher(changeCartTotal(-item.cost))
 
     } 
     return(
@@ -26,12 +25,12 @@ export default function FullCart(){
         <div className="h-[calc(100vh-200px)] lg:h-[calc(100vh-220px)] thin-scrolling overflow-y-auto p-4 relative">
         {cart.map((item, index) => (
             <CartCard
-                key={index}
+                key={index} 
                 src={item.image}
                 title={item.name}
                 // description={item.description}
                 price={item.cost}
-                quant={item.quant}
+                quant={item.quant} 
                 increase={()=>increaseItems(item)}
                 decrease={()=>decreaseItems(item)}
             />

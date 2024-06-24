@@ -3,6 +3,7 @@ import { AdminLogin } from "./AdminLogin";
 import DiningTables from "./DiningTables";
 import Add_ons from "./Add-ons";
 import Extras from "./Extras";
+import './Admin.css'
 
 
 export function Admin(){
@@ -13,9 +14,9 @@ export function Admin(){
       <div className='container '>
       <Switch>
 <Route path="/admin/login" component={AdminLogin}/>
-        <Route path="/admin/dining-tables/list" component={DiningTables}/>
-        <Route path="/admin/add-ons/list" component={Add_ons}/>
-        <Route path="/admin/extras/list" component={Extras}/>
+        <Route path="/admin/dashboard/dining-tables" component={DiningTables}/>
+        <Route path="/admin/dashboard/add-ons" component={Add_ons}/>
+        <Route path="/admin/dashboard/extras" component={Extras}/>
      
 
 

@@ -16,15 +16,15 @@ export function SizeCard(props){
 
     return(
         <>
-        <div  className="cart-card d-flex "  >
+        <div  className="cart-card d-flex mx-2"  onChange={props.changeSize}>
         
         <div className="form-check">
-        <input className="form-check-input" type="radio" name="size" id={`radio-${size}`} onch/>
+        <input className="form-check-input" type="radio" name="size" id={`radio-${size}`} />
         <label className="form-check-label" for={`radio-${size}`} >
           {size}
         </label>
         <p>Cost: <strong>{props.price}</strong> </p>
-        <p>Number of pieces:{props.nop}</p>
+        <p>NOP:{props.nop}</p>
       </div>
         
         

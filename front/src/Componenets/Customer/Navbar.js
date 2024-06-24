@@ -66,7 +66,6 @@ export function Navbar() {
                     {cartItems.length === 0 ? <EmptyCart /> : <FullCart />}
 
 
-
                 </div>
                 <div className={(cartItems.length === 0 ? "invisible":"")}>
 

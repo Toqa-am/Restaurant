@@ -1,5 +1,14 @@
+import axios from "axios"
 
 export default function Extras() {
+    const getExtras= async () => {
+        try{
+            const extras=await axios.get("")
+        }
+        catch(error){
+
+        }
+    }
 
     function saveData(e) {
         e.preventDefault()
