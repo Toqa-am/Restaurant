@@ -68,6 +68,7 @@ export default function cartReducer(
                 console.log(state.cartItems.find((item) => (item.id === action.payload)).cost)
                 console.log(state.cartTotal)
 
+
                 return {
                     ...state,
 
@@ -104,18 +105,22 @@ export default function cartReducer(
                 itemQuant: 1
             }
 
-
         case "ADD_TO_CART":
             if (state.cartItems.filter((item) => (item.id === action.payload[0].id)).length === 0) {
-                // action.payload.quant=1
+                action.payload.quant=1
                 state.cartTotal += action.payload[0].cost * action.payload[1]
                 action.payload[0].quant = action.payload[1]
                 state.cartItems.push(action.payload[0])
+                console.log(state.cartItems);
+                localStorage.setItem("cartItems", JSON.stringify(state.cartItems))
+
 
             }
             else {
                 state.cartItems.find((item) => (item.id === action.payload[0].id)).quant += action.payload[1]
                 state.cartTotal += action.payload[0].cost * action.payload[1]
+                localStorage.setItem("cartItems", JSON.stringify(state.cartItems))
+
 
             }
 

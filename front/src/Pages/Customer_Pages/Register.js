@@ -77,7 +77,6 @@ export function Register() {
                 ...errors,
                 cpassError: event.target.value.length === 0 ? "This Field is required" : event.target.value !== formData.password && "Password and re-type should match"
             })
-
         }
     };
 

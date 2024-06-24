@@ -70,7 +70,7 @@ export function AdminLogin(){
             setIsLoggedIn(true)
             setAccessToken(response.access_token)
             localStorage.setItem('Access-token', JSON.stringify(accessToken));
-            history.push("/admin/dashboard}");
+            history.push("/admin/dashboard/add-ons}");
             console.log(response);
             
 

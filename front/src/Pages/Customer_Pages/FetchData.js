@@ -45,11 +45,12 @@ const FetchData = () => {
     console.log(currentPage)
 		handleFetch();
 	};
-  const handleCheckboxChange = (event,size) => {
-    const { name, checked } = event.target;
-    setFormData((prevFormData) => ({
+  const handleCheckboxChange = (size,e) => {
+    console.log(e);
+    const { name, checked } = e.target;
+    setCartFormData((prevFormData) => ({
         ...prevFormData,
-        [name]: checked ? [...prevFormData[name], size] : prevFormData[name].filter((value) => value !== event.target.value),
+        [name]: checked ? [...prevFormData[name], size] : prevFormData[name].filter((value) => value !== e.target.value),
     }));
 };
   const handleFetch = async () => {
@@ -145,10 +146,8 @@ const FetchData = () => {
 
         setFilter('addons')
 
-        // setLoading(false);
       } catch (error) {
-        // setError(error);
-        // setLoading(false);
+        
       }
     }
     else{
@@ -158,24 +157,26 @@ const FetchData = () => {
       setData(catResponse.data.data);
       setFilter('category')
       setPageCount(catResponse.data.pagination.last_page)
-
-      // setLoading(false);
     } catch (error) {
-      // setError(error);
-      // setLoading(false);
+     
     }
   }
   };
   
-
-
   
 
   const handleAddToCart = (pokemon,itemQuant) => {
 
 
     dispatch(addToCart([pokemon,itemQuant]));
+    CartFormData.addons.map((item)=>(
+      // console.log(item)
+      dispatch(addToCart([item,1]))
+
+    ))
+
     dispatch(zeroQuant())
+    console.log(CartFormData);
     
   };
 
@@ -195,15 +196,12 @@ const FetchData = () => {
         return pokemon.type === 'non-vegetarian';
       else
         return data
-      // else if(filter==='all'){    
-            
-      //   return (pokemon.type === 'non-vegetarian' | pokemon.type == 'vegetarian')
-      // }
+      
      
     }
     else {
       console.log(searchQ);
-      return pokemon.name.toLowerCase().includes(searchQ.toLowerCase()) | pokemon.size.toLowerCase().includes(searchQ.toLowerCase())
+      return pokemon.name.toLowerCase().includes(searchQ.toLowerCase()) 
     }
     return true;
   });
@@ -306,7 +304,7 @@ const FetchData = () => {
                   {pokemon.meal_size_costs.map((size)=>(
                     
 
-                  <SizeCard size={size.size} price={size.cost} nop={size.number_of_pieces} changeSize={(event)=>handleCheckboxChange(size,event)}/>
+                  <SizeCard size={size.size} price={size.cost} nop={size.number_of_pieces} changeSize={(e)=>handleCheckboxChange(size,e)}/>
                   
                   
                   ))}
@@ -321,7 +319,7 @@ const FetchData = () => {
                   {pokemon.extras.map((item)=>(
                     
                 
-                  <AddonsExtra name={item.name} price={item.cost} />
+                  <AddonsExtra name={item.name} inputName="extras" price={item.cost} change={(e)=>handleCheckboxChange(item,e)} />
                   
                   ))}
                   
@@ -334,7 +332,7 @@ const FetchData = () => {
                   {pokemon.addons.map((item)=>(
                     
                 
-                  <AddonsExtra name={item.name} price={item.cost} img={item.image} />
+                  <AddonsExtra name={item.name} inputName="addons" price={item.cost} img={item.image} change={(e)=>handleCheckboxChange(item,e)}/>
                   
                   ))}
                   

@@ -1,5 +1,7 @@
 .admin-login{
-    /* background-color: antiquewhite; */
+    background-color: rgb(215, 229, 250);
+    border: 0.5px solid black;
+    border-radius: 50px;
 }
 body{
     /* background-image: url("../../Images/bg.jpg");

@@ -11,10 +11,11 @@ export function AddonsExtra(props){
             )}
           
           <div className="form-check">
-          <input className="form-check-input" type="checkbox" name={props.name} id={`radio-${props.name}`}  />
+          <input className="form-check-input" type="checkbox" name={props.inputName} id={`radio-${props.name}`} onChange={props.change} />
           <label className="form-check-label" for={`radio-${props.name}`} >
             {props.name}
           </label>
+
           <p><strong>{props.price}</strong> </p>
 
           
