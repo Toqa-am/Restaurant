@@ -70,6 +70,7 @@ export function ResetPasswordGeneral(props) {
 
             // "http://127.0.0.1:8000/api/auth/reset-password"
             const response = await axios.post(props.endpoint, resetPasswordData);
+            console.log(response.data)
             setChanged(true) 
         } catch (error) {
 

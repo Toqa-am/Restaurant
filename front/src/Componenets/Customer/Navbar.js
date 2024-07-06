@@ -8,24 +8,22 @@ import { search, updateAfterRefresh } from '../../Store/action';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { useEffect } from 'react';
 
-
-
 export function Navbar() {
     const dispatcher = useDispatch()
     const cartTotal = useSelector((state) => state.cartTotal)
     const cartItems = useSelector((state) => state.cartItems)
+    console.log(cartItems)
     
     useEffect(() => {
         localStorage.setItem("cartItems", JSON.stringify(cartItems))
       }, [cartItems])
-
+ 
       useEffect(() => {
         localStorage.setItem("cartTotal", JSON.stringify(cartTotal))
       }, [cartTotal])
-
+ 
     const handelSearch = (e) => {
         dispatcher(search(e.target.value))
-
     };
 
     const history = useHistory();

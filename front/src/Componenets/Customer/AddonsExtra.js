@@ -16,7 +16,16 @@ export function AddonsExtra(props){
             {props.name}
           </label>
 
-          <p><strong>{props.price}</strong> </p>
+          <p><strong>{props.price} OMR</strong> </p>
+          <span>
+                    <button className="btn inc" onClick={(props.increase)}>
+                    <i class="fa-solid fa-plus fa-xs"></i>
+                    </button>
+                    {props.q}
+                    <button className="btn dec" onClick={(props.decrease)}>
+                    <i class="fa-solid fa-minus fa-xs"></i>    
+                    </button>
+                </span>
 
           
         </div>

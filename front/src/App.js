@@ -7,6 +7,7 @@ import './App.css';
 import { Customer } from './Pages/Customer_Pages/Customer';
 import { Admin } from './Pages/Admin_Pages/Admin';
 import { useState } from 'react';
+import Test from './Pages/Admin_Pages/Test';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
   return (
 
     <div className="container">
+      {/* <Test/> */}
       <BrowserRouter>
      
       <div className='container'>

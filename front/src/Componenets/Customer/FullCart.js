@@ -12,12 +12,15 @@ export default function FullCart(){
     const dispatcher=useDispatch()
   
     function increaseItems(item){
-        dispatcher(increaseItemQuant(item.id))
-        dispatcher(changeCartTotal(item.cost))
+        console.log(item)
+        dispatcher(increaseItemQuant(item))
+        // dispatcher(changeCartTotal(item.cost))
     }
     function decreaseItems(item){
-        dispatcher(decreaseItemQuant(item.id))
-        dispatcher(changeCartTotal(-item.cost))
+        console.log(item)
+
+        dispatcher(decreaseItemQuant(item))
+        // dispatcher(changeCartTotal(-item.cost))
 
     } 
     return(
@@ -27,7 +30,7 @@ export default function FullCart(){
             <CartCard
                 key={index} 
                 src={item.image}
-                title={item.name}
+                title={`${item.size!=="undefined"?item.size:""} ${item.name}`}
                 // description={item.description}
                 price={item.cost}
                 quant={item.quant} 

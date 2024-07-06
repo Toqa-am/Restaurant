@@ -198,7 +198,7 @@ export function Register() {
 
             </form>
             <div className={"alert alert-info mt-3 "+(registered?"visible":"invisible")} role="alert">
-                                Please verify your E-mail, after verification you can continue to <Link to="/customer/checkout">checkOut page</Link> checkOut page
+                                Please verify your E-mail, after verification you can continue to <Link to="/customer/checkout">checkOut page</Link> 
             </div>
         </div>
         

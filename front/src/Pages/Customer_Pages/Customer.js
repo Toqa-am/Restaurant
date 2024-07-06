@@ -6,6 +6,7 @@ import { Register } from "./Register";
 import { Verification } from "./Verification";
 import { ResetPassword } from "./ResetPassword";
 import FetchData from "./FetchData";
+import { CustomerLogin } from "./CustomerLogin";
 
 export function Customer(){
     return(
@@ -17,6 +18,7 @@ export function Customer(){
           <Route path="/customer/checkout" component={Cart} />
           <Route path="/customer/register" component={Register} />
           <Route path="/customer/verify" component={Verification} />
+          <Route path="/customer/login" component={CustomerLogin} />
           <Route path="/customer/resetpassword" component={ResetPassword} />
         </Switch>
       </div>
