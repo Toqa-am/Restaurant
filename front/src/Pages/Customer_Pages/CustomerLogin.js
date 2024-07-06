@@ -7,9 +7,9 @@ import bg from '../../Images/bg.jpg'
 import { Login } from "../Login";
 
 
-export function AdminLogin(){
+export function CustomerLogin(){
     return(
-        <Login loginEP='http://127.0.0.1:8000/api/admin/login' tokenName="AdminToken" redirect="/admin/dashboard/add-ons" fpEndpoint="http://127.0.0.1:8000/api/admin/employees/forgot-password" customer="false" />
+        <Login loginEP='http://127.0.0.1:8000/api/auth/login' tokenName="CustomerToken" redirect="/customer/checkout" fpEndpoint="http://127.0.0.1:8000/api/auth/forgot-password" customer="true" />
     )
 //     const [signed, setSigned] = useState(0)
 //     // const { setCurrentUser } = useContext(AuthContext);

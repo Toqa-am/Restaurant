@@ -1,21 +1,23 @@
 
-const getCartData=()=>{
-    const currentCart=localStorage.getItem("cartItems")
-    if (currentCart==[]){
+import cloneDeep from 'lodash/cloneDeep'
+
+const getCartData = () => {
+    const currentCart = localStorage.getItem("cartItems")
+    if (currentCart == []) {
         return [];
     }
-    else{
+    else {
         return JSON.parse(currentCart);
     }
 
 }
 
-const getCartTotal=()=>{
-    const currentTotal=localStorage.getItem("cartTotal")
-    if (currentTotal==[]){
-        return [];
+const getCartTotal = () => {
+    const currentTotal = localStorage.getItem("cartTotal")
+    if (currentTotal == 0) {
+        return 0;
     }
-    else{
+    else {
         return JSON.parse(currentTotal);
     }
 
@@ -40,19 +42,87 @@ export default function cartReducer(
             }
 
         case "INC_ITEM":
+            console.log(action.payload)
+            if (action.payload.table_name === "meals") {
+                const existingItem = state.cartItems.filter(item => item.name === action.payload.name && item.size === action.payload.size);
+
+                if (existingItem.length !== 0) {
+                    
+                        return {
+                            ...state,
+                            cartItems: state.cartItems.map(item =>
+                                item.name === action.payload.name && item.size === action.payload.size
+                                    ? { ...item, quant: item.quant + 1 }
+                                    : item
+                            ),
+                            cartTotal: state.cartTotal + existingItem[0].cost,
+                        };
+                    }
+                
+            } else {
+                const existingItem = state.cartItems.find(item => item.name === action.payload.name);
+                console.log(existingItem)
+                if (existingItem.length !== 0) {
+                    
+                        // Decrease the item quantity by 1
+                        return {
+                            ...state,
+                            cartItems: state.cartItems.map(item =>
+                                item.name === action.payload.name
+                                    ? { ...item, quant: item.quant + 1 }
+                                    : item
+                            ),
+                            cartTotal: state.cartTotal + existingItem.cost,
+                        };
+                    
+                }
+            }
+            localStorage.setItem("cartItems", JSON.stringify(state.cartItems))
 
 
-            return {
-                ...state,
-                cartItems: state.cartItems.map(product =>
-                    product.id === action.payload
-                        ? { ...product, quant: product.quant + 1 }
-                        : product
+            // Default return if no changes were made
+            return state;
+            /////////////////////
+            if (action.payload.table_name === "meals") {
 
-                )
-
+                console.log(state.cartTotal)
+                return {
+                    ...state,
+                    cartItems: state.cartItems.map(product =>
+                        product.name === action.payload.name && product.size === action.payload.size
+                            ? { ...product, quant: product.quant + 1, cartTotal: Number(state.cartTotal) + Number(product.cost) }
+                            : product
+                    )
+                }
 
             }
+            else {
+                console.log(state.cartItems.find((item) => (item.name === action.payload.name)))
+
+
+                console.log(state.cartTotal)
+                return {
+                    ...state,
+                    cartItems: state.cartItems.map(product =>
+                        product.name === action.payload.name
+                            ? { ...product, quant: product.quant + 1, cartTotal: Number(state.cartTotal) + Number(product.cost) }
+                            : product
+                    )
+                }
+
+            }
+
+        // return {
+        //     ...state,
+        //     cartItems: state.cartItems.map(product =>
+        //         product.id === action.payload
+        //             ? { ...product, quant: product.quant + 1 }
+        //             : product
+
+        //     )
+
+
+        // }
         case "INC_ITEM_B_CART":
 
 
@@ -64,31 +134,118 @@ export default function cartReducer(
             }
 
         case "DEC_ITEM":
-            if (state.cartItems.find((item) => (item.id === action.payload)).quant == 1) {
-                console.log(state.cartItems.find((item) => (item.id === action.payload)).cost)
-                console.log(state.cartTotal)
+            console.log(action.payload)
+            if (action.payload.table_name === "meals") {
+                const existingItem = state.cartItems.filter(item => item.name === action.payload.name && item.size === action.payload.size);
 
-
-                return {
-                    ...state,
-
-                    cartItems: state.cartItems.filter((item) => (item.id !== action.payload)),
-                    cartTotal:state.cartTotal-state.cartItems.find((item) => (item.id === action.payload)).cost
+                if (existingItem.length !== 0) {
+                    if (existingItem[0].quant === 1) {
+                        // Remove the item from the cart if quantity is 1
+                        // state.cartItems = 
+                        console.log(state.cartItems)
+                        return {
+                            ...state,
+                            cartItems: state.cartItems.filter((item) => (item !== existingItem[0])),
+                            cartTotal: state.cartTotal - existingItem[0].cost,
+                        };
+                    } else {
+                        // Decrease the item quantity by 1
+                        return {
+                            ...state,
+                            cartItems: state.cartItems.map(item =>
+                                item.name === action.payload.name && item.size === action.payload.size
+                                    ? { ...item, quant: item.quant - 1 }
+                                    : item
+                            ),
+                            cartTotal: state.cartTotal - existingItem[0].cost,
+                        };
+                    }
                 }
-
-            }
-            else {
-            console.log(state.cartTotal)
-                return {
-                    ...state,
-                    cartItems: state.cartItems.map(product =>
-                        product.id === action.payload
-                            ? { ...product, quant: product.quant - 1,cartTotal: Number(state.cartTotal)-Number(product.cost)}
-                            : product
-                    )
-                    // cartTotal:state.cartTotal-
+            } else {
+                const existingItem = state.cartItems.find(item => item.name === action.payload.name);
+                console.log(existingItem)
+                if (existingItem.length !== 0) {
+                    if (existingItem.quant === 1) {
+                        // Remove the item from the cart if quantity is 1
+                        return {
+                            ...state,
+                            cartItems: state.cartItems.filter(item => item.name !== action.payload.name),
+                            cartTotal: state.cartTotal - existingItem.cost,
+                        };
+                    } else {
+                        // Decrease the item quantity by 1
+                        return {
+                            ...state,
+                            cartItems: state.cartItems.map(item =>
+                                item.name === action.payload.name
+                                    ? { ...item, quant: item.quant - 1 }
+                                    : item
+                            ),
+                            cartTotal: state.cartTotal - existingItem.cost,
+                        };
+                    }
                 }
             }
+            localStorage.setItem("cartItems", JSON.stringify(state.cartItems))
+
+
+            // Default return if no changes were made
+            return state;
+        // if(action.payload.table_name==="meals"){
+        //     if (state.cartItems.find((item) => (item.name === action.payload.name && item.size === action.payload.size)).quant === 1) {
+        //         console.log(state.cartItems.find((item) => ( item.name === action.payload.name && item.size === action.payload.size )))
+        //         console.log(state.cartTotal)
+
+
+        //         return {
+        //             ...state,
+
+        //             cartItems: state.cartItems.filter((item) => (item.name !== action.payload.name & item.size !== action.payload.size)),
+        //             cartTotal:state.cartTotal-action.payload.cost
+        //         }
+
+        //     }
+        //     else {
+        //     console.log(state.cartTotal)
+        //         return {
+        //             ...state,
+        //             cartItems: state.cartItems.map(product =>
+        //                 product.name === action.payload.name && product.size === action.payload.size
+        //                     ? { ...product, quant: product.quant - 1,cartTotal: Number(state.cartTotal)-Number(product.cost)}
+        //                     : product
+        //             )
+        //         }
+        //     }
+        // }
+        // else{
+        //     console.log(state.cartItems.find((item) => ( item.name === action.payload.name )))
+
+        //     if (state.cartItems.find((item) => (item.name === action.payload.name)).quant == 1) {
+        //         console.log(state.cartItems.find((item) => ( item.name === action.payload.name )))
+        //         console.log(state.cartTotal)
+
+
+        //         return {
+        //             ...state,
+
+        //             cartItems: state.cartItems.filter((item) => (item.name !== action.payload.name)),
+        //             cartTotal:state.cartTotal-state.cartItems.find((item) => (item.name === action.payload.name)).cost
+        //         }
+
+        //     }
+        //     else {
+        //     console.log(state.cartTotal)
+        //         return {
+        //             ...state,
+        //             cartItems: state.cartItems.map(product =>
+        //                 product.name === action.payload.name
+        //                     ? { ...product, quant: product.quant - 1,cartTotal: Number(state.cartTotal)-Number(product.cost)}
+        //                     : product
+        //             )
+        //         }
+        //     }
+        // }
+
 
 
         case "DEC_ITEM_B_CART":
@@ -106,29 +263,52 @@ export default function cartReducer(
             }
 
         case "ADD_TO_CART":
-            if (state.cartItems.filter((item) => (item.id === action.payload[0].id)).length === 0) {
-                action.payload.quant=1
-                state.cartTotal += action.payload[0].cost * action.payload[1]
-                action.payload[0].quant = action.payload[1]
-                state.cartItems.push(action.payload[0])
-                console.log(state.cartItems);
-                localStorage.setItem("cartItems", JSON.stringify(state.cartItems))
 
+            let payload = cloneDeep(action.payload)
 
+            if (payload[0].table_name === "meals") {
+                console.log(payload[0].table_name)
+                let sizeEx = state.cartItems.filter((item) => (item.size === payload[0].size));
+                if (sizeEx.length !== 0) {
+                    let nameEx = sizeEx.filter((item) => (item.name === payload[0].name))
+                    if (nameEx.length !== 0) {
+
+                        state.cartItems.find((item) => (item === nameEx[0])).quant += payload[1]
+                        state.cartTotal = state.cartTotal + nameEx[0].cost * payload[1]
+                    }
+                    else {
+                        payload[0].quant = payload[1]
+                        state.cartItems.push(payload[0])
+                        state.cartTotal = state.cartTotal + payload[0].cost * payload[1]
+
+                    }
+                }
+                else {
+                    payload[0].quant = payload[1]
+                    state.cartItems.push(payload[0])
+                    state.cartTotal = state.cartTotal + payload[0].cost * payload[1]
+                }
             }
             else {
-                state.cartItems.find((item) => (item.id === action.payload[0].id)).quant += action.payload[1]
-                state.cartTotal += action.payload[0].cost * action.payload[1]
-                localStorage.setItem("cartItems", JSON.stringify(state.cartItems))
-
+                let nameEx = state.cartItems.filter((item) => (item.name === payload[0].name))
+                if (nameEx.length !== 0) {
+                    state.cartItems.find(item => (item.name === payload[0].name)).quant += payload[0].quant
+                    state.cartTotal = state.cartTotal + payload[0].cost * payload[1]
+                }
+                else {
+                    payload[0].quant = payload[1]
+                    state.cartItems.push(payload[0])
+                    state.cartTotal = state.cartTotal + payload[0].cost * payload[1]
+                }
 
             }
+            localStorage.setItem("cartItems", JSON.stringify(state.cartItems))
 
-            console.log(state.cartItems);
             return {
                 ...state,
                 cartItems: state.cartItems
-            };
+            }
+
 
         case "SEARCH":
             state.searchStatement = action.payload
@@ -137,6 +317,13 @@ export default function cartReducer(
                 searchStatement: state.searchStatement
 
             }
+        // case "INC":
+        // action.payload.quant++
+        // return {
+        //     ...state,
+        //     searchStatement: state.searchStatement
+
+        // }
         // case "UPDATE":
         //     state.cartItems = action.payload[0]
         //     console.log(action.payload)

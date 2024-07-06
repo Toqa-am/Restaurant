@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart, decreaseItemBCart, increaseItemBCart, zeroQuant } from '../../Store/action';
+import { addToCart, decreaseItemBCart, increaseItemBCart, increaseItemQuant, zeroQuant } from '../../Store/action';
 import './Fetchdata.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
@@ -18,12 +18,14 @@ const FetchData = () => {
   const [data, setData] = useState([]);
   const [categories, setCategories] = useState([]);
   const [isLoaded, setisLoaded] = useState(false);
+  const [cartItemWSize,setCartItemWSize]=useState({})
+  const [cartItem,setCartItem]=useState({})
+
   const [CartFormData, setCartFormData] = useState({
 
-    item: '',
-    addons:[],
-    size: [],
-    extras: [],
+    items: {},
+    addons:[]
+    
 });
   const [addons, setAddons] = useState([]);
   
@@ -36,38 +38,78 @@ const FetchData = () => {
   const searchQ = useSelector(state => state.searchStatement);
   const itemQuant = useSelector(state => state.itemQuant);
   const [currentPage, setcurrentPage] = useState(0);
-  const [pageCount, setPageCount] = useState(1); 
+  const [pageCount, setPageCount] = useState(); 
+  const [addon,setAddon]=useState(true)
 
   const dispatch = useDispatch();
   const handlePageChange =  (selectedObject) =>  {
 
-		setcurrentPage(selectedObject.selected);
+		setcurrentPage((selectedObject.selected)+1);
+    console.log(selectedObject);
     console.log(currentPage)
 		handleFetch();
 	};
-  const handleCheckboxChange = (size,e) => {
+  const handleCheckboxChange = (item,e) => {
     console.log(e);
-    const { name, checked } = e.target;
-    setCartFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: checked ? [...prevFormData[name], size] : prevFormData[name].filter((value) => value !== e.target.value),
-    }));
+    console.log(item);
+    item.quant=1;
+    if(e.target.checked){
+    setCartFormData({...CartFormData,addons:[...CartFormData.addons,item]})
+
+    }
+    else{
+          setCartFormData({...CartFormData,addons:[...CartFormData.addons.filter(function(addon) { 
+        return addon.name !== item.name })]})
+
+    }
+    // console.log(CartFormData.addons);
+
+
+    console.log(CartFormData);
 };
   const handleFetch = async () => {
     try{
-      const response= await axios.get(`http://127.0.0.1:8000/api/meals?page=${currentPage}`)
+      const response= await axios.get(`http://127.0.0.1:8000/api/AllItems?page=${currentPage}`)
       setData(response.data.data)
+      console.log(response.data.data)
+      setData(prevData => prevData.map(item => ({
+        ...item,
+        addons: item.addons?.map(addon => ({
+          ...addon,
+          quant: 1
+        }))
+      })));
+      setData(prevData => prevData.map(item => ({
+        ...item,
+        extras: item.extras?.map(extra => ({
+          ...extra,
+          quant: 1
+        }))
+      })));
+
     }
     catch{
 
     }
 
   }
-  
+  function increaseAddon(item){
+    item.quant++
+    console.log(item)
+    setAddon(!addon)
+ 
+}
+
+function decreaseAddon(item){
+  item.quant--
+  console.log(item)
+  setAddon(!addon)
+
+}
     function increaseItems(item){
     
         dispatch(increaseItemBCart(item))
-        console.log(item.quant);
+        console.log(item); 
       
         
     }
@@ -76,8 +118,40 @@ const FetchData = () => {
 
     } 
 
-    function changeSize(size){
+    function changeSize(size,item,e){
       console.log(size);
+      console.log(item);
+      let i=item
+      console.log(e.target.checked);
+
+if(e.target.checked===true){
+      if(size.size===1){
+        i.size="Small"
+
+      }
+      else if(size.size===2){
+        i.size="Medium"
+
+      }
+      else if(size.size===3){
+        i.size="Big"
+
+      }
+      else if(size.size===4){
+        i.size="Family"
+
+      }
+      i.cost=size.cost
+      i.nop=size.number_of_pieces
+      console.log(item);
+      console.log("kjhgf")
+      setCartItemWSize(i);
+      console.log(cartItemWSize)
+
+      setCartFormData({...CartFormData,items:i})
+      console.log(CartFormData.items)
+    }
+
 
     }
     useEffect(() =>  {
@@ -85,7 +159,7 @@ const FetchData = () => {
       try{
         const cats = await axios.get('http://127.0.0.1:8000/api/categories');
         setCategories(cats.data.data)
-        console.log(categories)
+        console.log(categories) 
 
 
       }
@@ -105,18 +179,34 @@ const FetchData = () => {
   useEffect(() =>  {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/meals');
+        const response = await axios.get(`http://127.0.0.1:8000/api/AllItems`);
         console.log(response)
-        const addons = await axios.get('http://127.0.0.1:8000/api/addons');
+        // const addons = await axios.get('http://127.0.0.1:8000/api/addons');
 
-        setData([...response.data.data,...addons.data.data]);
+        // setData([...response.data.data,...addons.data.data]);
+        setData(response.data.data)
+        setData(prevData => prevData.map(item => ({
+          ...item,
+          addons: item.addons?.map(addon => ({
+            ...addon,
+            quant: 1
+          }))
+        })));
+        setData(prevData => prevData.map(item => ({
+          ...item,
+          extras: item.extras?.map(extra => ({
+            ...extra,
+            quant: 1
+          }))
+        })));
 
-        setAll(data);
-        console.log(all);
+        setAll(response.data);
+        console.log(response.data);
         setisLoaded(true);
         setLoading(false);
         setPageCount(response.data.pagination.last_page)
         console.log(response.data.pagination.last_page);
+        console.log(data);
 
       } catch (error) {
         setError(error);
@@ -133,28 +223,31 @@ const FetchData = () => {
   const handleCategoryFilter = async (catId) => {
     if(catId==='all'){
       setFilter('all')
+      setPageCount(all.pagination.last_page)
 
-      setData(all)
+      setData(all.data)
     
 
     }
-    else if(catId==='add-ons'){
-      try {
-        const addons = await axios.get(`http://127.0.0.1:8000/api/addons`)
-        setData(addons.data.data);
-        setPageCount(addons.data.pagination.last_page)
+    // else if(catId==='add-ons'){
+    //   try {
+    //     const addons = await axios.get(`http://127.0.0.1:8000/api/addons`)
+    //     setData(addons.data.data);
+    //     setPageCount(addons.data.pagination.last_page)
 
-        setFilter('addons')
+    //     setFilter('addons')
 
-      } catch (error) {
+    //   } catch (error) {
         
-      }
-    }
+    //   }
+    // }
     else{
 
     try {
-      const catResponse = await axios.get(`http://127.0.0.1:8000/api/categories/${catId}/meals`);
+      const catResponse = await axios.get(`http://127.0.0.1:8000/api/AllItems?category_id=${catId}`);
       setData(catResponse.data.data);
+      console.log(catResponse.data.data)
+
       setFilter('category')
       setPageCount(catResponse.data.pagination.last_page)
     } catch (error) {
@@ -166,14 +259,24 @@ const FetchData = () => {
   
 
   const handleAddToCart = (pokemon,itemQuant) => {
+if(JSON.stringify(CartFormData.items) === '{}'){
+  dispatch(addToCart([pokemon,itemQuant]));
 
 
-    dispatch(addToCart([pokemon,itemQuant]));
-    CartFormData.addons.map((item)=>(
-      // console.log(item)
-      dispatch(addToCart([item,1]))
-
-    ))
+}
+else{
+  dispatch(addToCart([CartFormData.items,itemQuant]));
+  console.log(CartFormData.items)
+  CartFormData.addons.map((item)=>(
+    // console.log(item)
+    dispatch(addToCart([item,item.quant]))
+  ))
+}
+    
+    setCartFormData({
+      items: {},
+    addons:[]
+    })
 
     dispatch(zeroQuant())
     console.log(CartFormData);
@@ -213,12 +316,12 @@ const FetchData = () => {
 
     <div>
       <div className=" d-flex justify-content-around scrollmenu">
-      <FilterCard title="Meals" img={all_cat} filterr={(() => handleCategoryFilter('all'))} />
+      <FilterCard title="All" img={all_cat} filterr={(() => handleCategoryFilter('all'))} />
         {categories.map((category) => (
-      <FilterCard title={category.name} img={category.image} filterr={(() => handleCategoryFilter(category.id))} />
+      <FilterCard title={category.name} img={`http://127.0.0.1:8000/storage/${category.image}`} filterr={(() => handleCategoryFilter(category.id))} />
 
         ))}
-      <FilterCard title="Add-ons" img={all_cat} filterr={(() => handleCategoryFilter('add-ons'))} />
+      {/* <FilterCard title="Add-ons" img={all_cat} filterr={(() => handleCategoryFilter('add-ons'))} /> */}
 
 
       </div >
@@ -263,10 +366,13 @@ const FetchData = () => {
 
     {/* <img src={pokemon.image_url} alt={pokemon.pokemon} /> */}
     <div className="pokemon-details">
-      <h5>{` ${pokemon.name}`} </h5>
+      <h6>{` ${pokemon.name}`} </h6>
       <p className="text-black-50 para">{pokemon.description}</p>
       <div className="d-flex justify-content-between align-items-center">
-        <p className="price"> OMR {pokemon.cost}</p>
+        {pokemon.cost?<p className="price"> OMR {pokemon.cost}</p>:
+        <p className="price"> OMR {pokemon.meal_size_costs[0].cost}</p>
+        }
+        
         <button
           className="button"
           data-bs-toggle="modal"
@@ -276,7 +382,7 @@ const FetchData = () => {
           }}
         >
           <FontAwesomeIcon icon={faShoppingCart} style={{ marginRight: '5px' }}  />
-          <span>Add</span>
+          <span >Add</span>
         </button>
         {/* <!-- Modal --> */}
         <div
@@ -295,16 +401,18 @@ const FetchData = () => {
                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={()=>handleCancel()}></button>
               </div>
               <div className="modal-body">
-                <CartCard src={pokemon.image} title={` ${pokemon.name} ${pokemon.size}`} price={pokemon.cost}  description={pokemon.description} quant={itemQuant}  increase={()=>increaseItems(pokemon)}  decrease={()=>decreaseItems(pokemon)}   />
+                <CartCard src={pokemon.image} title={`${typeof pokemon.size==="undefined"?"":pokemon.size} ${pokemon.name} `} price={pokemon.cost}  description={pokemon.description} quant={itemQuant}  increase={()=>increaseItems(pokemon)}  decrease={()=>decreaseItems(pokemon)}   />
                 {/* <h1>{pokemon.image} jkhu</h1> */}
                 {pokemon.meal_size_costs && (
                   <>
+             
+                  
                 <div className='d-flex justify-content-around scrollmenu ' >
 
                   {pokemon.meal_size_costs.map((size)=>(
                     
 
-                  <SizeCard size={size.size} price={size.cost} nop={size.number_of_pieces} changeSize={(e)=>handleCheckboxChange(size,e)}/>
+                  <SizeCard size={size.size} price={size.cost} nop={size.number_of_pieces} changeSize={(e)=>changeSize(size,pokemon,e)}/>
                   
                   
                   ))}
@@ -319,7 +427,7 @@ const FetchData = () => {
                   {pokemon.extras.map((item)=>(
                     
                 
-                  <AddonsExtra name={item.name} inputName="extras" price={item.cost} change={(e)=>handleCheckboxChange(item,e)} />
+                  <AddonsExtra name={item.name} inputName="extras" price={item.cost} change={(e)=>handleCheckboxChange(item,e)} increase={()=>increaseAddon(item)}  decrease={()=>decreaseAddon(item)} q={item.quant}/>
                   
                   ))}
                   
@@ -330,9 +438,8 @@ const FetchData = () => {
                   <>
                 <div className='d-flex ' >
                   {pokemon.addons.map((item)=>(
-                    
                 
-                  <AddonsExtra name={item.name} inputName="addons" price={item.cost} img={item.image} change={(e)=>handleCheckboxChange(item,e)}/>
+                  <AddonsExtra name={item.name} inputName="addons" price={item.cost} img={item.image} change={(e)=>handleCheckboxChange(item,e)} q={item.quant} increase={()=>increaseAddon(item)}  decrease={()=>decreaseAddon(item)}/>
                   
                   ))}
                   
@@ -377,6 +484,8 @@ const FetchData = () => {
 					pageClassName={'pagee'}
 					disabledClassNae={'disabledd'}
 					activeClassName={'activee'}
+          previousLabel={"<<"}
+  nextLabel={">>"}
 				/>
         </div>
 			) : (

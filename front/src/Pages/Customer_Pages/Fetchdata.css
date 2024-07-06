@@ -43,13 +43,15 @@
 
 .pokemon-card{
     display: inline-block;
+    height: 150px;
     width: calc(33.33% - 20px);
-    margin-bottom: 20px;
+    margin: 10px;
     vertical-align: top;
     text-align: left;
     border: 2px solid #f9f7f7;
     border-radius: 10px;
-    padding: 20px;
+    /* padding: 20px; */
+    padding-right: 20px;
     transition: border-color 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -101,13 +103,19 @@
 }
 .pokemon-card img {
     border-radius: 5px;
-    max-width: 100px;
-    height: auto;
+    /* max-width: 100px;
+    height: auto; */
+    width: 100px;
+    height: 150px;
     float: left;
+    padding: 0px;
 }
 
 .pokemon-details {
     margin-left: 120px;
+    height: 100px;
+    padding-top: 5px;
+
 }
 
 .price {
@@ -198,6 +206,10 @@ th{
     .pokemon-list {
         padding: 0 50px;
     }
+    .pokemon-details .button {
+        padding: 5px;
+        translate: 0px -15px ;
+    }
 }
 
 @media (max-width: 768px) {
@@ -217,12 +229,18 @@ th{
     .pokemon-details {
         margin-left: 0;
         margin-top: 10px;
+        translate: 10px -10px ;
+
+    }
+    .pokemon-details .button {
+        padding: 5px;
+        translate: 0px -10px ;
     }
 
     .pokemon-card img {
         display: block;
         margin: 0 auto;
-        float: none;
+        float: left;
     }
 }
 

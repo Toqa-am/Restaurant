@@ -88,7 +88,7 @@ export function Register() {
             console.log("Token",response.data.access_token);
             // const verficationResponse = await axios.post(`http://127.0.0.1:8000/api/auth/verify-user-email?token=12087c&email=${response.data.customer.email}`, formData);
 
-            window.open('https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox', '_blank'); 
+            // window.open('https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox', '_blank'); 
             setRegistered(1)
             
         } catch (error) {
@@ -198,7 +198,7 @@ export function Register() {
 
             </form>
             <div className={"alert alert-info mt-3 "+(registered?"visible":"invisible")} role="alert">
-                                Please verify your E-mail, after verification you can continue to <Link to="/customer/checkout">checkOut page</Link> checkOut page
+                                Please verify your E-mail, after verification you can continue to <Link to="/customer/checkout">checkOut page</Link> 
             </div>
         </div>
         
