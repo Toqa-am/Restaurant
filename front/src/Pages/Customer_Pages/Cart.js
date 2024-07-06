@@ -157,11 +157,12 @@ export default function Cart() {
         console.log(paymentData)
         setAccessToken(JSON.parse(localStorage.getItem('CustomerToken')));
         console.log(JSON.parse(localStorage.getItem('CustomerToken')) + "loooggg/////////");
-        if (accessToken !== null) {
+        if (JSON.parse(localStorage.getItem('CustomerToken'))) {
             setIsLoggedIn(true)
+            console.log(accessToken);
             console.log(isLoggedIn)
         }
-        else if (accessToken === null) {
+        else if (!JSON.parse(localStorage.getItem('CustomerToken'))) {
             setIsLoggedIn(false)
             console.log(isLoggedIn)
             history.push("/customer/login");
