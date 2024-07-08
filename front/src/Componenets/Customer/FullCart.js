@@ -30,7 +30,7 @@ export default function FullCart(){
             <CartCard
                 key={index} 
                 src={item.image}
-                title={`${item.size!=="undefined"?item.size:""} ${item.name}`}
+                title={`${typeof item.size!=="undefined"?item.size:""} ${item.name}`}
                 // description={item.description}
                 price={item.cost}
                 quant={item.quant} 

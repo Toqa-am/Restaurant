@@ -58,5 +58,11 @@ export const search = (payload) => {
       payload: payload
     };
   };
+  export const emptyCart = (payload) => {
+    return {
+      type: 'EMP_CART',
+      payload: payload
+    };
+  };
 
 

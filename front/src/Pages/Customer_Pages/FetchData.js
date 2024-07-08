@@ -44,10 +44,14 @@ const FetchData = () => {
   const dispatch = useDispatch();
   const handlePageChange =  (selectedObject) =>  {
 
-		setcurrentPage((selectedObject.selected)+1);
+		setcurrentPage((selectedObject.selected));
     console.log(selectedObject);
     console.log(currentPage)
-		handleFetch();
+    handleFetch();
+
+    
+
+  
 	};
   const handleCheckboxChange = (item,e) => {
     console.log(e);
@@ -70,6 +74,8 @@ const FetchData = () => {
   const handleFetch = async () => {
     try{
       const response= await axios.get(`http://127.0.0.1:8000/api/AllItems?page=${currentPage}`)
+      console.log("current");
+      console.log(currentPage)
       setData(response.data.data)
       console.log(response.data.data)
       setData(prevData => prevData.map(item => ({
@@ -86,10 +92,18 @@ const FetchData = () => {
           quant: 1
         }))
       })));
-
+    setAll(response.data);
+        console.log(response.data);
+        setisLoaded(true);
+        setLoading(false);
+        setPageCount(response.data.pagination.last_page+1)
+        // setcurrentPage(response.data.pagination.current_page)
+        console.log(response.data.pagination.last_page);
+        console.log(data);
     }
-    catch{
-
+    catch (error) {
+          setError(error);
+          setLoading(false);
     }
 
   }
@@ -177,44 +191,47 @@ if(e.target.checked===true){
    
 
   useEffect(() =>  {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/AllItems`);
-        console.log(response)
-        // const addons = await axios.get('http://127.0.0.1:8000/api/addons');
+    // const fetchData = async () => {
 
-        // setData([...response.data.data,...addons.data.data]);
-        setData(response.data.data)
-        setData(prevData => prevData.map(item => ({
-          ...item,
-          addons: item.addons?.map(addon => ({
-            ...addon,
-            quant: 1
-          }))
-        })));
-        setData(prevData => prevData.map(item => ({
-          ...item,
-          extras: item.extras?.map(extra => ({
-            ...extra,
-            quant: 1
-          }))
-        })));
+    //   try {
+    //     const response = await axios.get(`http://127.0.0.1:8000/api/AllItems`);
+    //     console.log(response)
+    //     // const addons = await axios.get('http://127.0.0.1:8000/api/addons');
 
-        setAll(response.data);
-        console.log(response.data);
-        setisLoaded(true);
-        setLoading(false);
-        setPageCount(response.data.pagination.last_page)
-        console.log(response.data.pagination.last_page);
-        console.log(data);
+    //     // setData([...response.data.data,...addons.data.data]);
+    //     setData(response.data.data)
+    //     setData(prevData => prevData.map(item => ({
+    //       ...item,
+    //       addons: item.addons?.map(addon => ({
+    //         ...addon,
+    //         quant: 1
+    //       }))
+    //     })));
+    //     setData(prevData => prevData.map(item => ({
+    //       ...item,
+    //       extras: item.extras?.map(extra => ({
+    //         ...extra,
+    //         quant: 1
+    //       }))
+    //     })));
 
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
+    //     setAll(response.data);
+    //     console.log(response.data);
+    //     setisLoaded(true);
+    //     setLoading(false);
+    //     setPageCount(response.data.pagination.last_page)
+    //     console.log(response.data.pagination.last_page);
+    //     console.log(data);
 
-    fetchData();
+    //   } catch (error) {
+    //     setError(error);
+    //     setLoading(false);
+    //   }
+    // };
+
+    // fetchData();
+
+    handleFetch()
   }, []);
 
   const handleFilterChange = (newFilter) => {
@@ -229,18 +246,7 @@ if(e.target.checked===true){
     
 
     }
-    // else if(catId==='add-ons'){
-    //   try {
-    //     const addons = await axios.get(`http://127.0.0.1:8000/api/addons`)
-    //     setData(addons.data.data);
-    //     setPageCount(addons.data.pagination.last_page)
-
-    //     setFilter('addons')
-
-    //   } catch (error) {
-        
-    //   }
-    // }
+  
     else{
 
     try {
@@ -259,6 +265,7 @@ if(e.target.checked===true){
   
 
   const handleAddToCart = (pokemon,itemQuant) => {
+    console.log(pokemon)
 if(JSON.stringify(CartFormData.items) === '{}'){
   dispatch(addToCart([pokemon,itemQuant]));
 
@@ -368,7 +375,7 @@ else{
     <div className="pokemon-details">
       <h6>{` ${pokemon.name}`} </h6>
       <p className="text-black-50 para">{pokemon.description}</p>
-      <div className="d-flex justify-content-between align-items-center">
+      <div className="d-flex justify-content-between align-items-center item-card">
         {pokemon.cost?<p className="price"> OMR {pokemon.cost}</p>:
         <p className="price"> OMR {pokemon.meal_size_costs[0].cost}</p>
         }
@@ -394,7 +401,6 @@ else{
           aria-labelledby={`staticBackdropLabel-${pokemon.id}`}
           aria-hidden="true"
         >
-
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
@@ -412,7 +418,7 @@ else{
                   {pokemon.meal_size_costs.map((size)=>(
                     
 
-                  <SizeCard size={size.size} price={size.cost} nop={size.number_of_pieces} changeSize={(e)=>changeSize(size,pokemon,e)}/>
+                  <SizeCard size={size.size} price={size.cost} nop={size.number_of_pieces} changeSize={(e)=>changeSize(size,pokemon,e)} />
                   
                   
                   ))}
@@ -454,6 +460,7 @@ else{
                 </button>
                 <button
                   type="button"
+                  disabled ={((pokemon.table_name==="meals" && !pokemon.size)?true:false)}
                   className="btn btn-primary"
                   onClick={() => handleAddToCart(pokemon,itemQuant)}
                   data-bs-dismiss="modal"
@@ -474,7 +481,7 @@ else{
         <div className='w-50 m-auto'>
 				<ReactPaginate
 					pageCount={pageCount}
-					pageRange={2}
+					pageRange={1}
 					marginPagesDisplayed={2}
 					onPageChange={handlePageChange}
 					containerClassName={'containerr'}
@@ -485,6 +492,7 @@ else{
 					disabledClassNae={'disabledd'}
 					activeClassName={'activee'}
           previousLabel={"<<"}
+          initialPage={0}
   nextLabel={">>"}
 				/>
         </div>

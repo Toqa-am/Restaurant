@@ -100,26 +100,30 @@ export function Login(props){
     };
 
     const resetPassword = async (e) => {
-        console.log(formData.email);
-        if (formData.email === '') {
+        history.push({
+            pathname: '/customer/emailtoresetpassord',
+            state: { data: props.fpEndpoint }
+          });
+        // console.log(formData.email);
+        // if (formData.email === '') {
 
-            setErrors({
-                ...errors,
-                emailError: "please enter your email to reset your password"
-            })
-        }
+        //     setErrors({
+        //         ...errors,
+        //         emailError: "please enter your email to reset your password"
+        //     })
+        // }
 
         e.preventDefault()
-        var email = { "email": formData.email }
-        try {
-            //"http://127.0.0.1:8000/api/admin/employees/forgot-password"
-            const response = await axios.post(props.fpEndpoint, email)
-            setRequestedToReset(true)
+        // var email = { "email": formData.email }
+//         try {
+//             //"http://127.0.0.1:8000/api/admin/employees/forgot-password"
+//             const response = await axios.post(props.fpEndpoint, email)
+//             setRequestedToReset(true)
 
-        }
-        catch {
-
-        }
+//         }
+//         catch(error) {
+// console.error(error)
+//         }
 
     }
     return(<>
@@ -176,7 +180,7 @@ export function Login(props){
 
 <div className="d-flex ">
     <a href="" className="pt-3 pl-1" onClick={resetPassword}><p>Forgot password</p></a>
-    <span className={"text-danger ml-5 " + (requestedToReset ? "visible" : "invisible")}>Check your email</span>
+    {/* <span className={"text-danger ml-5 " + (requestedToReset ? "visible" : "invisible")}>Check your email</span> */}
 </div>
 
 

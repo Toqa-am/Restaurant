@@ -79,16 +79,39 @@
 }
 .inc,.dec{
     border-radius: 30px;
+    padding: 5px;
+ 
 }
-.inc:hover {
-    background-color: rgb(183, 183, 240);
-    color: white;
+
+.bi-plus-circle, .bi-dash-circle{
+    border-radius: 30px;
+    padding: 5px;
+    color: blue;
+ 
+}
+
+.bi-plus-circle:hover, .bi-dash-circle:hover{
+    
+    color: black;
+ 
+}
+.addon{
+    width: 200px;
+    height: 100px;
+}
+.quantity-span{
+
+    translate:-10px
+}
+/* .inc:hover {
+    background-color: rgb(11, 11, 255);
+    color: blue;
     margin: 3px;
 }
 .dec:hover {
     background-color: rgb(183, 183, 240);
     color: white;
-}
+} */
 .cart-details {
     margin-left: 10px;
 }
@@ -105,8 +128,8 @@
     border-radius: 5px;
     /* max-width: 100px;
     height: auto; */
-    width: 100px;
-    height: 150px;
+    max-width: 100px;
+    max-height: 150px;
     float: left;
     padding: 0px;
 }
@@ -212,7 +235,7 @@ th{
     }
 }
 
-@media (max-width: 768px) {
+ @media (max-width: 768px) { 
     .pokemon-card {
         width: calc(100% - 20px);
     }
@@ -227,9 +250,9 @@ th{
     }
 
     .pokemon-details {
-        margin-left: 0;
+        margin-left: 10;
+        /* margin-right: 10px; */
         margin-top: 10px;
-        translate: 10px -10px ;
 
     }
     .pokemon-details .button {
@@ -242,11 +265,13 @@ th{
         margin: 0 auto;
         float: left;
     }
-}
+} 
 
 .containerr{
     display: flex;
     list-style: none;
+    width: min-content;
+    margin: auto;
 }
 
 .pagee{
@@ -283,4 +308,51 @@ th{
     border-radius: 6px;
     margin-right: 10px;
     cursor: pointer;
+}
+.size{
+height: 90px;
+font-size: small;
+}
+.addon{
+height: 100px;
+font-size: small;
+}
+.addon-img{
+height: 100%;
+width: 50px;
+}
+.quantity-span{
+margin: 0px;
+padding: 0px;
+font-size: small;
+
+translate: -13px;
+}
+
+@media (max-width: 576px) {
+    .modal {
+        /* display: block !important; */
+        overflow-y:visible;
+        color: #000000;
+    }
+    .size{
+        height: 90px;
+        font-size: small;
+    }
+    .addon{
+        height: 100px;
+        font-size: small;
+    }
+    .addon-img{
+        height: 100%;
+        width: 50px;
+    }
+    .quantity-span{
+        margin: 0px;
+        padding: 0px;
+        font-size: small;
+
+        translate: -13px;
+    }
+
 }

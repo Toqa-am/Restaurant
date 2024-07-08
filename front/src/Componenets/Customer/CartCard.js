@@ -26,7 +26,7 @@ export function CartCard(props){
         </div>
         </div> */}
 
-<div  className="cart-card d-flex" >
+<div  className="cart-card d-flex " >
 <img
                     key={props.src}
                     src={`http://127.0.0.1:8000/storage/${props.src}`
@@ -41,11 +41,12 @@ export function CartCard(props){
               <p className="price"> OMR {props.price}</p>
               <span>
                     <button className="btn inc" onClick={(props.increase)}>
-                    <i class="fa-solid fa-plus fa-xs"></i>
+                    <i class="bi bi-plus-circle"></i>
+
                     </button>
                     {props.quant}
                     <button className="btn dec" onClick={(props.decrease)}>
-                    <i class="fa-solid fa-minus fa-xs"></i>    
+                    <i class="bi bi-dash-circle"></i>
                     </button>
                 </span>
             </div>

@@ -2,6 +2,8 @@
 import cloneDeep from 'lodash/cloneDeep'
 
 const getCartData = () => {
+    // localStorage.setItem("cartItems", [])
+
     const currentCart = localStorage.getItem("cartItems")
     if (currentCart == []) {
         return [];
@@ -13,6 +15,8 @@ const getCartData = () => {
 }
 
 const getCartTotal = () => {
+    // localStorage.setItem("cartTotal", 0)
+
     const currentTotal = localStorage.getItem("cartTotal")
     if (currentTotal == 0) {
         return 0;
@@ -80,49 +84,9 @@ export default function cartReducer(
             localStorage.setItem("cartItems", JSON.stringify(state.cartItems))
 
 
-            // Default return if no changes were made
             return state;
-            /////////////////////
-            if (action.payload.table_name === "meals") {
-
-                console.log(state.cartTotal)
-                return {
-                    ...state,
-                    cartItems: state.cartItems.map(product =>
-                        product.name === action.payload.name && product.size === action.payload.size
-                            ? { ...product, quant: product.quant + 1, cartTotal: Number(state.cartTotal) + Number(product.cost) }
-                            : product
-                    )
-                }
-
-            }
-            else {
-                console.log(state.cartItems.find((item) => (item.name === action.payload.name)))
-
-
-                console.log(state.cartTotal)
-                return {
-                    ...state,
-                    cartItems: state.cartItems.map(product =>
-                        product.name === action.payload.name
-                            ? { ...product, quant: product.quant + 1, cartTotal: Number(state.cartTotal) + Number(product.cost) }
-                            : product
-                    )
-                }
-
-            }
-
-        // return {
-        //     ...state,
-        //     cartItems: state.cartItems.map(product =>
-        //         product.id === action.payload
-        //             ? { ...product, quant: product.quant + 1 }
-        //             : product
-
-        //     )
-
-
-        // }
+           
+       
         case "INC_ITEM_B_CART":
 
 
@@ -140,8 +104,7 @@ export default function cartReducer(
 
                 if (existingItem.length !== 0) {
                     if (existingItem[0].quant === 1) {
-                        // Remove the item from the cart if quantity is 1
-                        // state.cartItems = 
+                        
                         console.log(state.cartItems)
                         return {
                             ...state,
@@ -191,62 +154,8 @@ export default function cartReducer(
 
             // Default return if no changes were made
             return state;
-        // if(action.payload.table_name==="meals"){
-        //     if (state.cartItems.find((item) => (item.name === action.payload.name && item.size === action.payload.size)).quant === 1) {
-        //         console.log(state.cartItems.find((item) => ( item.name === action.payload.name && item.size === action.payload.size )))
-        //         console.log(state.cartTotal)
-
-
-        //         return {
-        //             ...state,
-
-        //             cartItems: state.cartItems.filter((item) => (item.name !== action.payload.name & item.size !== action.payload.size)),
-        //             cartTotal:state.cartTotal-action.payload.cost
-        //         }
-
-        //     }
-        //     else {
-        //     console.log(state.cartTotal)
-        //         return {
-        //             ...state,
-        //             cartItems: state.cartItems.map(product =>
-        //                 product.name === action.payload.name && product.size === action.payload.size
-        //                     ? { ...product, quant: product.quant - 1,cartTotal: Number(state.cartTotal)-Number(product.cost)}
-        //                     : product
-        //             )
-        //         }
-        //     }
-        // }
-        // else{
-        //     console.log(state.cartItems.find((item) => ( item.name === action.payload.name )))
-
-        //     if (state.cartItems.find((item) => (item.name === action.payload.name)).quant == 1) {
-        //         console.log(state.cartItems.find((item) => ( item.name === action.payload.name )))
-        //         console.log(state.cartTotal)
-
-
-        //         return {
-        //             ...state,
-
-        //             cartItems: state.cartItems.filter((item) => (item.name !== action.payload.name)),
-        //             cartTotal:state.cartTotal-state.cartItems.find((item) => (item.name === action.payload.name)).cost
-        //         }
-
-        //     }
-        //     else {
-        //     console.log(state.cartTotal)
-        //         return {
-        //             ...state,
-        //             cartItems: state.cartItems.map(product =>
-        //                 product.name === action.payload.name
-        //                     ? { ...product, quant: product.quant - 1,cartTotal: Number(state.cartTotal)-Number(product.cost)}
-        //                     : product
-        //             )
-        //         }
-        //     }
-        // }
-
-
+       
+      
 
         case "DEC_ITEM_B_CART":
             if (state.itemQuant > 0) {
@@ -317,27 +226,17 @@ export default function cartReducer(
                 searchStatement: state.searchStatement
 
             }
-        // case "INC":
-        // action.payload.quant++
-        // return {
-        //     ...state,
-        //     searchStatement: state.searchStatement
-
-        // }
-        // case "UPDATE":
-        //     state.cartItems = action.payload[0]
-        //     console.log(action.payload)
-        //     state.cartTotal= action.payload[1]
-
-        //     return {
-
-        //         ...state,
-
-        //         cartItems: state.cartItems,
-        //         cartTotal: state.cartTotal
-
-        //     }
-
+            case "EMP_CART":
+                state.cartItems = []
+                state.cartTotal=0
+                return {
+                    ...state,
+                    cartItems: state.cartItems,
+                    cartTotal: state.cartTotal
+    
+                }
+            
+     
 
         default:
             return state
