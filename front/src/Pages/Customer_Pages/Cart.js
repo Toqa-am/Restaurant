@@ -166,6 +166,10 @@ export default function Cart() {
             }
                 catch(error){
                     console.error(error)
+                    if(error.response.data.message==="Unauthenticated."){
+                        history.push("/customer/login")
+                        console.log("iugf");
+                    }
                 }
             }
             else if(paymentMethod==="cash"){
@@ -251,9 +255,7 @@ export default function Cart() {
                                 className="btn btn-primary rounded-pill col-6"
                                 onClick={(e) => {
                                     checkOut(e);
-                                    if (accessToken) {
-                                        window.alert("Done");
-                                    }
+                                    
                                 }}
                                 disabled={(cartItems.length===0?true:false)}
                             >

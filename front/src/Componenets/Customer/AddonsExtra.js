@@ -19,7 +19,7 @@ export function AddonsExtra(props){
           <strong>{props.price} OMR</strong> 
           <br></br>
           <div className="quantity-span">
-                    <a  className=" inc" onClick={(props.increase)}>
+                    <a  className=" inc"  onClick={(props.increase)}>
                     <i class="bi bi-plus-circle"></i>
                     </a>
                     {props.q}

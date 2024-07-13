@@ -2,7 +2,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 
 const getCartData = () => {
-    // localStorage.setItem("cartItems", [])
 
     const currentCart = localStorage.getItem("cartItems")
     if (currentCart == []) {
@@ -15,7 +14,6 @@ const getCartData = () => {
 }
 
 const getCartTotal = () => {
-    // localStorage.setItem("cartTotal", 0)
 
     const currentTotal = localStorage.getItem("cartTotal")
     if (currentTotal == 0) {
@@ -158,7 +156,7 @@ export default function cartReducer(
       
 
         case "DEC_ITEM_B_CART":
-            if (state.itemQuant > 0) {
+            if (state.itemQuant > 1) {
                 return {
                     ...state,
                     itemQuant: state.itemQuant - 1

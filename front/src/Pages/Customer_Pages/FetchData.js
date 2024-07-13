@@ -20,6 +20,7 @@ const FetchData = () => {
   const [isLoaded, setisLoaded] = useState(false);
   const [cartItemWSize,setCartItemWSize]=useState({})
   const [cartItem,setCartItem]=useState({})
+  const [chosen,setChosen]=useState(false)
 
   const [CartFormData, setCartFormData] = useState({
 
@@ -56,7 +57,8 @@ const FetchData = () => {
   const handleCheckboxChange = (item,e) => {
     console.log(e);
     console.log(item);
-    item.quant=1;
+    setChosen(true)
+    // item.quant=1;
     if(e.target.checked){
     setCartFormData({...CartFormData,addons:[...CartFormData.addons,item]})
 
@@ -108,16 +110,34 @@ const FetchData = () => {
 
   }
   function increaseAddon(item){
-    item.quant++
-    console.log(item)
-    setAddon(!addon)
+    if (typeof item.quant==="undefined"){
+      item.quant=1
+      setAddon(!addon)
+    }
+    else{
+      item.quant++
+      console.log(item)
+      setAddon(!addon)
+    }
+    
  
 }
 
 function decreaseAddon(item){
-  item.quant--
-  console.log(item)
-  setAddon(!addon)
+  if (typeof item.quant==="undefined"){
+    item.quant=1
+    setAddon(!addon)
+  }
+  else{
+    console.log(item.quant)
+    if(item.quant>1){
+      item.quant--
+  
+    }
+    console.log(item)
+    setAddon(!addon)
+  }
+  
 
 }
     function increaseItems(item){
@@ -128,7 +148,11 @@ function decreaseAddon(item){
         
     }
     function decreaseItems(item){
+      
+     
         dispatch(decreaseItemBCart(item.id))
+
+      
 
     } 
 
@@ -191,47 +215,47 @@ if(e.target.checked===true){
    
 
   useEffect(() =>  {
-    // const fetchData = async () => {
+    const fetchData = async () => {
 
-    //   try {
-    //     const response = await axios.get(`http://127.0.0.1:8000/api/AllItems`);
-    //     console.log(response)
-    //     // const addons = await axios.get('http://127.0.0.1:8000/api/addons');
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/api/AllItems`);
+        console.log(response)
+        // const addons = await axios.get('http://127.0.0.1:8000/api/addons');
 
-    //     // setData([...response.data.data,...addons.data.data]);
-    //     setData(response.data.data)
-    //     setData(prevData => prevData.map(item => ({
-    //       ...item,
-    //       addons: item.addons?.map(addon => ({
-    //         ...addon,
-    //         quant: 1
-    //       }))
-    //     })));
-    //     setData(prevData => prevData.map(item => ({
-    //       ...item,
-    //       extras: item.extras?.map(extra => ({
-    //         ...extra,
-    //         quant: 1
-    //       }))
-    //     })));
+        // setData([...response.data.data,...addons.data.data]);
+        setData(response.data.data)
+        setData(prevData => prevData.map(item => ({
+          ...item,
+          addons: item.addons?.map(addon => ({
+            ...addon,
+            quant: 1
+          }))
+        })));
+        setData(prevData => prevData.map(item => ({
+          ...item,
+          extras: item.extras?.map(extra => ({
+            ...extra,
+            quant: 1
+          }))
+        })));
 
-    //     setAll(response.data);
-    //     console.log(response.data);
-    //     setisLoaded(true);
-    //     setLoading(false);
-    //     setPageCount(response.data.pagination.last_page)
-    //     console.log(response.data.pagination.last_page);
-    //     console.log(data);
+        setAll(response.data);
+        console.log(response.data);
+        setisLoaded(true);
+        setLoading(false);
+        setPageCount(response.data.pagination.last_page)
+        console.log(response.data.pagination.last_page);
+        console.log(data);
 
-    //   } catch (error) {
-    //     setError(error);
-    //     setLoading(false);
-    //   }
-    // };
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
 
-    // fetchData();
+    fetchData();
 
-    handleFetch()
+    // handleFetch()
   }, []);
 
   const handleFilterChange = (newFilter) => {
@@ -275,7 +299,6 @@ else{
   dispatch(addToCart([CartFormData.items,itemQuant]));
   console.log(CartFormData.items)
   CartFormData.addons.map((item)=>(
-    // console.log(item)
     dispatch(addToCart([item,item.quant]))
   ))
 }
@@ -433,7 +456,7 @@ else{
                   {pokemon.extras.map((item)=>(
                     
                 
-                  <AddonsExtra name={item.name} inputName="extras" price={item.cost} change={(e)=>handleCheckboxChange(item,e)} increase={()=>increaseAddon(item)}  decrease={()=>decreaseAddon(item)} q={item.quant}/>
+                  <AddonsExtra name={item.name} inputName="extras" price={item.cost} change={(e)=>handleCheckboxChange(item,e)} increase={()=>increaseAddon(item)}  decrease={()=>decreaseAddon(item)} q={item.quant} choose={chosen}/>
                   
                   ))}
                   
