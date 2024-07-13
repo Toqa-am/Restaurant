@@ -20,6 +20,7 @@ const FetchData = () => {
   const [isLoaded, setisLoaded] = useState(false);
   const [cartItemWSize,setCartItemWSize]=useState({})
   const [cartItem,setCartItem]=useState({})
+  const [chosen,setChosen]=useState(false)
 
   const [CartFormData, setCartFormData] = useState({
 
@@ -44,15 +45,20 @@ const FetchData = () => {
   const dispatch = useDispatch();
   const handlePageChange =  (selectedObject) =>  {
 
-		setcurrentPage((selectedObject.selected)+1);
+		setcurrentPage((selectedObject.selected));
     console.log(selectedObject);
     console.log(currentPage)
-		handleFetch();
+    handleFetch();
+
+    
+
+  
 	};
   const handleCheckboxChange = (item,e) => {
     console.log(e);
     console.log(item);
-    item.quant=1;
+    setChosen(true)
+    // item.quant=1;
     if(e.target.checked){
     setCartFormData({...CartFormData,addons:[...CartFormData.addons,item]})
 
@@ -70,6 +76,8 @@ const FetchData = () => {
   const handleFetch = async () => {
     try{
       const response= await axios.get(`http://127.0.0.1:8000/api/AllItems?page=${currentPage}`)
+      console.log("current");
+      console.log(currentPage)
       setData(response.data.data)
       console.log(response.data.data)
       setData(prevData => prevData.map(item => ({
@@ -86,24 +94,50 @@ const FetchData = () => {
           quant: 1
         }))
       })));
-
+    setAll(response.data);
+        console.log(response.data);
+        setisLoaded(true);
+        setLoading(false);
+        setPageCount(response.data.pagination.last_page+1)
+        // setcurrentPage(response.data.pagination.current_page)
+        console.log(response.data.pagination.last_page);
+        console.log(data);
     }
-    catch{
-
+    catch (error) {
+          setError(error);
+          setLoading(false);
     }
 
   }
   function increaseAddon(item){
-    item.quant++
-    console.log(item)
-    setAddon(!addon)
+    if (typeof item.quant==="undefined"){
+      item.quant=1
+      setAddon(!addon)
+    }
+    else{
+      item.quant++
+      console.log(item)
+      setAddon(!addon)
+    }
+    
  
 }
 
 function decreaseAddon(item){
-  item.quant--
-  console.log(item)
-  setAddon(!addon)
+  if (typeof item.quant==="undefined"){
+    item.quant=1
+    setAddon(!addon)
+  }
+  else{
+    console.log(item.quant)
+    if(item.quant>1){
+      item.quant--
+  
+    }
+    console.log(item)
+    setAddon(!addon)
+  }
+  
 
 }
     function increaseItems(item){
@@ -114,7 +148,11 @@ function decreaseAddon(item){
         
     }
     function decreaseItems(item){
+      
+     
         dispatch(decreaseItemBCart(item.id))
+
+      
 
     } 
 
@@ -178,6 +216,7 @@ if(e.target.checked===true){
 
   useEffect(() =>  {
     const fetchData = async () => {
+
       try {
         const response = await axios.get(`http://127.0.0.1:8000/api/AllItems`);
         console.log(response)
@@ -215,6 +254,8 @@ if(e.target.checked===true){
     };
 
     fetchData();
+
+    // handleFetch()
   }, []);
 
   const handleFilterChange = (newFilter) => {
@@ -229,18 +270,7 @@ if(e.target.checked===true){
     
 
     }
-    // else if(catId==='add-ons'){
-    //   try {
-    //     const addons = await axios.get(`http://127.0.0.1:8000/api/addons`)
-    //     setData(addons.data.data);
-    //     setPageCount(addons.data.pagination.last_page)
-
-    //     setFilter('addons')
-
-    //   } catch (error) {
-        
-    //   }
-    // }
+  
     else{
 
     try {
@@ -259,6 +289,7 @@ if(e.target.checked===true){
   
 
   const handleAddToCart = (pokemon,itemQuant) => {
+    console.log(pokemon)
 if(JSON.stringify(CartFormData.items) === '{}'){
   dispatch(addToCart([pokemon,itemQuant]));
 
@@ -268,7 +299,6 @@ else{
   dispatch(addToCart([CartFormData.items,itemQuant]));
   console.log(CartFormData.items)
   CartFormData.addons.map((item)=>(
-    // console.log(item)
     dispatch(addToCart([item,item.quant]))
   ))
 }
@@ -368,7 +398,7 @@ else{
     <div className="pokemon-details">
       <h6>{` ${pokemon.name}`} </h6>
       <p className="text-black-50 para">{pokemon.description}</p>
-      <div className="d-flex justify-content-between align-items-center">
+      <div className="d-flex justify-content-between align-items-center item-card">
         {pokemon.cost?<p className="price"> OMR {pokemon.cost}</p>:
         <p className="price"> OMR {pokemon.meal_size_costs[0].cost}</p>
         }
@@ -394,7 +424,6 @@ else{
           aria-labelledby={`staticBackdropLabel-${pokemon.id}`}
           aria-hidden="true"
         >
-
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
@@ -412,7 +441,7 @@ else{
                   {pokemon.meal_size_costs.map((size)=>(
                     
 
-                  <SizeCard size={size.size} price={size.cost} nop={size.number_of_pieces} changeSize={(e)=>changeSize(size,pokemon,e)}/>
+                  <SizeCard size={size.size} price={size.cost} nop={size.number_of_pieces} changeSize={(e)=>changeSize(size,pokemon,e)} />
                   
                   
                   ))}
@@ -427,7 +456,7 @@ else{
                   {pokemon.extras.map((item)=>(
                     
                 
-                  <AddonsExtra name={item.name} inputName="extras" price={item.cost} change={(e)=>handleCheckboxChange(item,e)} increase={()=>increaseAddon(item)}  decrease={()=>decreaseAddon(item)} q={item.quant}/>
+                  <AddonsExtra name={item.name} inputName="extras" price={item.cost} change={(e)=>handleCheckboxChange(item,e)} increase={()=>increaseAddon(item)}  decrease={()=>decreaseAddon(item)} q={item.quant} choose={chosen}/>
                   
                   ))}
                   
@@ -454,6 +483,7 @@ else{
                 </button>
                 <button
                   type="button"
+                  disabled ={((pokemon.table_name==="meals" && !pokemon.size)?true:false)}
                   className="btn btn-primary"
                   onClick={() => handleAddToCart(pokemon,itemQuant)}
                   data-bs-dismiss="modal"
@@ -474,7 +504,7 @@ else{
         <div className='w-50 m-auto'>
 				<ReactPaginate
 					pageCount={pageCount}
-					pageRange={2}
+					pageRange={1}
 					marginPagesDisplayed={2}
 					onPageChange={handlePageChange}
 					containerClassName={'containerr'}
@@ -485,6 +515,7 @@ else{
 					disabledClassNae={'disabledd'}
 					activeClassName={'activee'}
           previousLabel={"<<"}
+          initialPage={0}
   nextLabel={">>"}
 				/>
         </div>
