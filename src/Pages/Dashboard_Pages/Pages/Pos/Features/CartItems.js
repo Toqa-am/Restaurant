@@ -3,7 +3,7 @@ import { RiAddCircleLine } from "react-icons/ri";
 import { FaTrash, FaXmark } from "react-icons/fa6";
 import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { addData } from "../../../../../axiosConfig/API";
+import { addData, getData } from "../../../../../axiosConfig/API";
 
 export default function CartItems({
   toggleCart,
@@ -16,8 +16,31 @@ export default function CartItems({
   const [discountValue, setDiscountValue] = useState(0);
   const [finalTotal, setFinalTotal] = useState(0);
   const [finalTotalWithDiscount, setFinalTotalWithDiscount] = useState(0);
+  const [customeEmail,setCustomerEmail]=useState([])
+  const [customeEmailSelectName,setCustomerEmailSelectName]=useState({
+    email:""
+  })
+
+
 console.log(items);
 
+
+
+
+  const fetchOffersItems = async()=>{
+    try {
+      const customersData = await getData("admin/customers");
+      console.log(customersData);  
+      setCustomerEmail(customersData)
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  }
+  const dataFromSelection = (e)=>{
+    const data = {...customeEmail}
+    data[e.target.name]=e.target.value
+    setCustomerEmailSelectName(data)
+  }
   const handleApplyDiscount = useCallback(
     (totalCost) => {
       let discountAmount = 0;
@@ -71,12 +94,16 @@ console.log(items);
     [total]
   );
 
+
   useEffect(() => {
     total(finalTotal);
+    fetchOffersItems()
 
     const loadStoreItems = () => {
       const cartItems = JSON.parse(localStorage.getItem("cartItems") || []);
       setItems(cartItems);
+      console.log(cartItems);
+      
       updateFinalTotal(cartItems);
 
       if (cartItems.length < 1) {
@@ -198,11 +225,25 @@ console.log(items);
 
         <form>
           <div className="input-group gap-3 mb-3">
-            <input
+            {/* <input
               type="text"
               className="form-control"
               placeholder="search customers"
-            />
+            /> */}
+                        <select
+                                    id="dataSelect"
+                                    className="form-select"
+                                    name='email'
+                                    onChange={dataFromSelection}
+                                    required
+                                >
+                                    <option value="" disabled selected>choose your email </option>
+                                    {customeEmail.map((item, index) => (
+                                        <option key={index} value={item.id}>
+                                            {item.email}
+                                        </option>
+                                    ))}
+                                </select>
             <button
               type="button"
               className="btn btn-primary"
@@ -268,7 +309,7 @@ console.log(items);
                       <td>
                         <button
                           className="detailsItem"
-                          onClick={() => detailsItemToggle(item)}
+                          // onClick={() => detailsItemToggle(item)}
                         >
                           <i className="fa-regular fa-square-caret-down"></i>
                         </button>
@@ -278,9 +319,9 @@ console.log(items);
                     )}
                  <td>
   $
-  {item.sizes && item.sizes.length > 0
+  {item.sizes[0].cost > 0
     ? (item.sizes[0].cost * item.sizes[0].quantity).toFixed(2)
-    : item.cost.toFixed(2)}
+    : item.costOffers ? item.costOffers : item.addoons.cost ?  item.addoons.cost :"" }
 </td>
                   </tr>
                 ))

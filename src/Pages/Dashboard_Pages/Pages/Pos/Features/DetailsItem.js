@@ -31,7 +31,7 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
     }
   }, [cartItem]);
   
-  const handleSelectItem = (item, type) => {
+  const handleSelectItem = (item, type) => {   
     const elementId = type === "addon" ? `addon_${item.id}` : `extra_${item.id}`;
     console.log("Element ID:", elementId);
     const element = document.getElementById(elementId);
@@ -62,6 +62,7 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
       if (!Array.isArray(prev)) prev = [];
   
       const exists = prev.find((i) => i.id === item.id);
+      
   
       if (exists) {
         if (exists.quantity === 1) {
@@ -86,7 +87,7 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
     let totalCost = 0;
 
     if (selectedSize !== 0 && quantity !== 0) {
-      totalCost +=mealSize && mealSize.length > 0? mealSize.find((size) => size.size === selectedSize)?.cost * quantity :cartItem.cost * quantity ;
+      totalCost +=mealSize && mealSize.length > 0? mealSize.find((size) => size.size === selectedSize)?.cost * quantity : cartItem.cost ? cartItem.cost  * quantity : cartItem.total_price_after_discount * quantity  ;
     }
 
     if (Object(selectedAddons).length > 0) {
@@ -100,6 +101,8 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
         totalCost += extra.cost * extra.quantity;
       });
     }
+   
+
     return totalCost.toFixed(2);
   }, [selectedSize, quantity, selectedAddons, selectedExtras]);
 
@@ -125,13 +128,18 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
   };
 
   const handleAddToCart = () => {
-    const addons = Array.isArray(selectedAddons) ? selectedAddons : [];
+    const addons = Array.isArray(selectedAddons) ? selectedAddons : [];    
     const extras = Array.isArray(selectedExtras) ? selectedExtras : [];
     const storeItems = JSON.parse(localStorage.getItem("cartItems")) || [];
 
     const newItem = {
       id: cartItem.id,
       name: cartItem.name,
+      costOffers:cartItem.total_price_after_discount,
+      addoons:{
+        name:cartItem.name,
+        cost:cartItem.cost,
+      },
       sizes: [
         {
           size: selectedSize,
@@ -220,7 +228,7 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
                   {
   mealSize && mealSize.length > 0
     ? mealSize.find((size) => size.size === selectedSize)?.cost || 0
-    : cartItem.cost
+    : cartItem.cost ? cartItem.cost : cartItem.total_price_after_discount
 }
                 </b>
               </div>

@@ -18,6 +18,8 @@ export default function Pos() {
   const [meals, setMeals] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalPagesOffers, setTotalPagesOffers] = useState(1);
+
   const [categories, setCategories] = useState([]);
   const [inputSearch, setInputSearch] = useState({ filter: "" });
   const [cartItemTotal, setCartItemTotal] = useState(0);
@@ -28,12 +30,29 @@ export default function Pos() {
   const [modalMoreDetailsVisible, setModalMoreDetailsVisible] = useState(false);
   const [filteredData, setFilteredData] = useState();
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [offersItems , setOffersItems ] = useState([])
+  const [showOffers, setShowOffers] = useState(false);  // Add this state
+  const toggleOffers = () => {
+    setShowOffers(!showOffers);  // Toggle between offers and meals
+  };
+
+  const fetchOffersItems = async()=>{
+    try {
+      const offersResult = await getData("offers/items");
+      console.log(offersResult);  
+      setOffersItems(offersResult)
+      setTotalPagesOffers(Math.ceil(offersItems.length / pagination_length))
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  }
+
 
   const fetchMenuItem = useCallback(async () => {
     try {
       const result = await getData("menu");
-      console.log(result);
-      
+      // console.log(result);
+
       const allItems = [...result.addons, ...result.meals, ...result.extras];
 
       sessionStorage.removeItem("origin_data");
@@ -45,7 +64,7 @@ export default function Pos() {
     }
   }, []);
 
-  
+
   const fetchCategories = useCallback(async () => {
     try {
       const result = await getData("categories");
@@ -57,11 +76,12 @@ export default function Pos() {
 
   const indexOfLastItem = currentPage * pagination_length;
   const indexOfFirstItem = indexOfLastItem - pagination_length;
-  const currentItems = meals.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = showOffers ? offersItems: meals.slice(indexOfFirstItem, indexOfLastItem);
 
   useEffect(() => {
     fetchCategories();
     fetchMenuItem();
+    fetchOffersItems()
   }, [fetchCategories, fetchMenuItem]);
 
   const handleChange = (e) => {
@@ -89,14 +109,14 @@ export default function Pos() {
 
   const handleFilter = (newType = filtrationMeal.type, newCategory = selectedCategory) => {
     const originMeals = JSON.parse(sessionStorage.getItem("origin_meals")) || [];
-    
+
     const filteredMeals = originMeals.filter((item) => {
       const matchesCategory = newCategory === null || item.category_id === newCategory;
       const matchesType = newType === "" || item.type === newType;
-      
+
       return matchesCategory && matchesType;
     });
-  
+
     setMeals(filteredMeals);
     setTotalPages(Math.ceil(filteredMeals.length / pagination_length));
     setCurrentPage(1);
@@ -106,20 +126,20 @@ export default function Pos() {
     const currentItem = document.getElementById(`subMenu_${id}`);
     const allItems = document.querySelectorAll(".subMenu .card");
     const originMeals = JSON.parse(sessionStorage.getItem("origin_meals"));
-  
+
     const isActive = currentItem.classList.contains("current");
     allItems.forEach((card) => card.classList.remove("current"));
-  
+
     if (isActive) {
       setSelectedCategory(null);
-      setMeals(originMeals); 
+      setMeals(originMeals);
     } else {
       currentItem.classList.add("current");
       setSelectedCategory(id);
-      handleFilter(filtrationMeal.type, id); 
+      handleFilter(filtrationMeal.type, id);
     }
   };
-  
+
 
   const addToCart = (item) => {
     setCartItem(item);
@@ -184,7 +204,7 @@ export default function Pos() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  
+
   const [filtrationMeal, setfiltrationMeal] = useState({
     name: "",
     cost: "",
@@ -193,20 +213,20 @@ export default function Pos() {
     type: "",
     status: "",
   });
-  
+
   const handleChangeV = (e) => {
     const { id } = e.target;
     const newType = id === "vegetarian" ? "vegetarian" : "non-vegetarian";
-    
+
     setfiltrationMeal((prevData) => ({
       ...prevData,
       type: newType,
     }));
-    
-    handleFilter(newType, selectedCategory); 
+
+    handleFilter(newType, selectedCategory);
   };
-  
-  
+
+
 
   return (
     <div className="Pos">
@@ -262,32 +282,40 @@ export default function Pos() {
                   </div>
                 ))}
               </div>
-      
-              <div className="col col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
-            <label className="mb-2">Type</label>
-            <div className="d-flex gap-2 align-items-center">
-              <input
-                type="radio"
-                name="type"
-                id="vegetarian"
-                checked={filtrationMeal.type === "vegetarian"}
-                onChange={(e) => handleChangeV(e)}
-              />
-              <label htmlFor="vegetarian">Veg</label>
-              <input
-                type="radio"
-                name="type"
-                id="non-vegetarian"
-                checked={filtrationMeal.type === "non-vegetarian"}
-                onChange={(e) => handleChangeV(e)}
-              />
-              <label htmlFor="non-vegetarian">Non Veg</label>
-            </div>
-          </div>
+
+              <div className="d-flex justify-content-between  align-items-center">
+              <div className="col  col-sm-6 col-md-6 col-lg-3 mb-3">
+                <label className="mb-2">Type</label>
+                <div className="d-flex gap-2 align-items-center">
+                  <input
+                    type="radio"
+                    name="type"
+                    id="vegetarian"
+                    checked={filtrationMeal.type === "vegetarian"}
+                    onChange={(e) => handleChangeV(e)}
+                  />
+                  <label htmlFor="vegetarian">Veg</label>
+                  <input
+                    type="radio"
+                    name="type"
+                    id="non-vegetarian"
+                    checked={filtrationMeal.type === "non-vegetarian"}
+                    onChange={(e) => handleChangeV(e)}
+                  />
+                  <label htmlFor="non-vegetarian">Non Veg</label>
+                </div>
+              </div>
+
+              <div>
+              <button className="btn btn-danger" onClick={toggleOffers}>
+      {showOffers ? "Show Meals" : "Show Offers"}
+    </button>
+              </div>
+              </div>
             </div>
           )}
 
-          {Object(meals).length > 0 ? (
+          {Object(currentItems).length > 0 ? (
             <div className="mainMenu">
               <div className="cards">
                 {currentItems.map((item) => (
@@ -305,24 +333,32 @@ export default function Pos() {
                     <div className="card-body p-2">
                       <p className="fw-bold pb-2">{item.name}</p>
                       <div>
-  {item.meal_size_costs && item.meal_size_costs.length > 0 ? (
-    <>
-      <span className="fw-bold itemPrice">${item.meal_size_costs[0].cost}</span>
-      <button className="addCartBtn" onClick={() => addToCart(item)}>
-        <FaShoppingBag /> add
-      </button>
-    </>
-  ) : item.cost ? (
-    <>
-      <span className="fw-bold itemPrice">${item.cost}</span>
-      <button className="addCartBtn" onClick={() => addToCart(item)}>
-        <FaShoppingBag /> add
-      </button>
-    </>
-  ) : (
-    <p className="price_not_available">cost not available</p>
-  )}
-</div>
+                        {item.meal_size_costs && item.meal_size_costs.length > 0 ? (
+                          <>
+                            <span className="fw-bold itemPrice">${item.meal_size_costs[0].cost}</span>
+                            <button className="addCartBtn" onClick={() => addToCart(item)}>
+                              <FaShoppingBag /> add
+                            </button>
+                          </>
+                        ) : item.cost ? (
+                          <>
+                            <span className="fw-bold itemPrice">${item.cost}</span>
+                            <button className="addCartBtn" onClick={() => addToCart(item)}>
+                              <FaShoppingBag /> add
+                            </button>
+                          </>
+                        ) : item.total_price_after_discount ? (
+                          <>
+                            <span className="fw-bold itemPrice">${item.total_price_after_discount}</span>
+                            <button className="addCartBtn" onClick={() => addToCart(item)}>
+                              <FaShoppingBag /> add
+                            </button>
+                          </>
+                        ) 
+                         : (
+                          <p className="price_not_available">cost not available</p>
+                        )}
+                      </div>
 
                     </div>
                   </div>
@@ -343,7 +379,7 @@ export default function Pos() {
           )}
         </div>
 
-       
+
 
         <button
           className="btn btn-primary openPosCartItems"
