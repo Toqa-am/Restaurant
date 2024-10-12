@@ -65,4 +65,11 @@ export const search = (payload) => {
     };
   };
 
+  export const setTable = (payload) => {
+    return {
+      type: 'SET_TABLE',
+      payload: payload
+    };
+  };
+
 

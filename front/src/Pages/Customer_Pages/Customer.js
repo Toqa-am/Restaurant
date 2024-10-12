@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Switch } from "react-router-dom/cjs/react-router-dom.min";
+import { BrowserRouter, Route, Switch,Redirect } from "react-router-dom/cjs/react-router-dom.min";
 import { Navbar } from "../../Componenets/Customer/Navbar";
 import Cart from "./Cart";
 import DiningTables from "../Admin_Pages/DiningTables";
@@ -10,15 +10,18 @@ import { CustomerLogin } from "./CustomerLogin";
 import { Fail } from "./PaymentFailiur";
 import { Success } from "./PaymentSuccess";
 import { Email } from "./Email";
+import { Offers } from "./Offers";
+import NotFound from "./NotFound";
 
 export function Customer(){
     return(
         <>
       <Navbar />
-      <div className='container '>
-        <Switch>
-          <Route exact path="/customer/menu" component={FetchData} />
-          <Route path="/customer/checkout" component={Cart} />
+      <div className='bg-light '>
+        <Switch> 
+        <Route exact path="/customer/menu" component={FetchData} />
+        <Route exact path="/customer/offers" component={Offers} />
+        <Route path="/customer/checkout" component={Cart} />
           <Route path="/customer/register" component={Register} />
           <Route path="/customer/verify" component={Verification} />
           <Route path="/customer/login" component={CustomerLogin} />
@@ -26,6 +29,7 @@ export function Customer(){
           <Route path="/customer/emailtoresetpassord" component={Email}/>
           <Route path="/customer/paymentfailed" component={Fail}/>
           <Route path="/customer/paymentsucceded" component={Success}/>
+          <Route component={NotFound} />
         </Switch>
       </div>
         </>

@@ -6,16 +6,9 @@ import { useHistory } from "react-router-dom";
 
 export function Login(props){
     const [signed, setSigned] = useState(0)
-    // const { setCurrentUser } = useContext(AuthContext);
-    // const { isLoggedIn, login, logout } = useAuth();
-    const [shouldDismissModal, setShouldDismissModal] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [adminToken, setAdminToken] = useState(null)
-    const [requestedToReset, setRequestedToReset] = useState(false)
     let history = useHistory();
-
-    // localStorage.setItem('cartTotal', JSON.stringify(cartTotal));
-    // localStorage.setItem('cartItems', JSON.stringify(cartItems));
 
     const [formData, setFormData] = useState({
 

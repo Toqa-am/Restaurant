@@ -10,104 +10,37 @@ import { emptyCart } from "../../Store/action";
 export default function Cart() {
     const cartTotal = useSelector((state) => state.cartTotal)
     const cartItems = useSelector((state) => state.cartItems)
+    const tableId=useSelector((state)=>state.table_id)
+    const tableNum=useSelector((state)=>state.table_num)
+    const [tableMan, settableMan] = useState()
+    const [error, setError] = useState("")
+
     let history = useHistory();
     const dispatcher=useDispatch()
-    const [signed, setSigned] = useState(0)
-    const modalRef = useRef(null);
-    const [shouldDismissModal, setShouldDismissModal] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [accessToken, setAccessToken] = useState(null)
     const [paymentMethod,setPaymentMethod]=useState("cash")
-    const [requestedToReset, setRequestedToReset] = useState(false);
     let paymentData = {}
 
     localStorage.setItem('cartTotal', JSON.stringify(cartTotal));
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
 
 
-    const [formData, setFormData] = useState({
-
-        email: '',
-        password: ''
-    });
-    const [errors, setErrors] = useState({
-        emailError: "",
-        passError: "",
-        loginError: ""
-    })
-
-
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-
-
-        setSigned(0)
-
-        console.log(accessToken);
-
-        try {
-            const response = await axios.post('http://127.0.0.1:8000/api/auth/login', formData);
-            setIsLoggedIn(true)
-
-            modalRef.current.classList.remove('show');
-            document.body.classList.remove('modal-open');
-            // document.getElementsByClassName('modal-backdrop')[0]?.remove();
-            const modalBackdrop = document.getElementsByClassName('modal-backdrop')[0];
-            if (modalBackdrop) {
-                modalBackdrop.remove();
-            }
-
-            setErrors({
-                ...errors,
-                loginError: ""
-            })
-
-
-            localStorage.setItem('accessToken', JSON.stringify(response.data.access_token));
-            // setAccessToken(JSON.parse(localStorage.getItem('accessToken')));
-
-
-
-            console.log(response.data.customer);
-
-            console.log('Form submitted successfully:', response.data);
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            // setShouldDismissModal(false);
-
-            setErrors({
-                ...errors,
-                loginError: "invalid email or password"
-            })
-        }
-
-        // }
-        // else {
-        //     setSigned(1)
-
-        //     console.log("jkgghdcg"+signed);
-        // }
-        // console.log(response.data.access_token + "//////////////");
-
-    };
-
-    // const [paymentData, setPaymentData] = useState({
-    //     items: cartItems,
-    //     method: ''
-    // });
+    function tableChg(event){
+settableMan(event.target.value)
+    }
     function inputChg(event) {
         setPaymentMethod(event.target.value)
         console.log(cartItems)
 
     }
     const paymentDetails = () => {
-        paymentData.diningtable_id = 1;
+        paymentData.diningtable_id = tableId ||tableMan;
         paymentData.total_cost = cartTotal;
          paymentData.meal_ids=[]
          paymentData.addon_ids=[]
          paymentData.extra_ids=[]
+         paymentData.offer_ids=[]
          
         cartItems.map((item) => {
             if (item.table_name === "meals") {
@@ -118,6 +51,9 @@ export default function Cart() {
             }
             if (item.table_name === "extras") {
                 paymentData.extra_ids.push({ id: item.id, cost: item.cost, quantity: item.quant })
+            }
+            if (item.table_name === "offers") {
+                paymentData.offer_ids.push({ id: item.id, cost: item.total_price_after_discount, quantity: item.quant })
             }
 
         }
@@ -132,6 +68,9 @@ export default function Cart() {
         if(paymentData.extra_ids.length===0){
            delete paymentData.extra_ids
         }
+        if(paymentData.offer_ids.length===0){
+            delete paymentData.offer_ids
+         }
         console.log(paymentData)
 
     }
@@ -141,7 +80,6 @@ export default function Cart() {
 
 
         console.log(paymentData)
-        console.log(JSON.parse(localStorage.getItem('CustomerToken')) + "loooggg/////////");
         if (JSON.parse(localStorage.getItem('CustomerToken'))) {
             
             console.log(accessToken);
@@ -168,7 +106,9 @@ export default function Cart() {
                     console.error(error)
                     if(error.response.data.message==="Unauthenticated."){
                         history.push("/customer/login")
-                        console.log("iugf");
+                    }
+                    else if(error.response.data.message==="DiningTable not found"){
+                        setError("Please enter a valid table id")
                     }
                 }
             }
@@ -189,13 +129,15 @@ export default function Cart() {
                       setIsLoggedIn(true)
     
                 console.log(response.data)
+                setError('')
             }
                 catch(error){
                     console.error(error)
                     console.log(error.response.data.message);
                     if(error.response.data.message==="Unauthenticated."){
                         history.push("/customer/login")
-                        console.log("iugf");
+                    }else if(error.response.data.message==="DiningTable not found"){
+                        setError("Please enter a valid table id")
                     }
                 }
             }
@@ -222,7 +164,17 @@ export default function Cart() {
                     <div className="mb-4">
                         <strong><p>Table</p></strong>
                         <hr />
-                        <p>Inside Table-2</p>
+                        {tableNum ? (
+  <p>Inside Table-{tableNum}</p>
+) : (
+  <div>
+    <label className="p-1">Table id</label>
+    <input className="form-control rounded-pill" type="text" onChange={tableChg}/>
+    <br></br>
+    <span className="text-danger">{error}</span>
+  </div>
+)}
+
                     </div>
                     <div className="">
                         <strong><p>Payment</p></strong>
@@ -242,17 +194,18 @@ export default function Cart() {
                                     Cash
                                 </label>
                             </div>
-                            <div className="form-check pb-3">
+                            {/* <div className="form-check pb-3">
                                 <input className="form-check-input" type="radio" value="dpay" name="payment" id="dpay" onChange={inputChg} 
                                 checked={paymentMethod === 'dpay'}
                                  />
                                 <label className="form-check-label" htmlFor="dpay">
                                     Digital payment
                                 </label>
-                            </div>
+                            </div> */}
                             <button
+                           
                                 type="submit"
-                                className="btn btn-primary rounded-pill col-6"
+                                className="btn primary rounded-pill col-6"
                                 onClick={(e) => {
                                     checkOut(e);
                                     
@@ -275,7 +228,7 @@ export default function Cart() {
                             key={item.name}
                             img={item.image}
                             title={`${typeof item.size === "undefined" ? "" : item.size + "-"} ${item.name}`}
-                            price={item.cost}
+                            price={item.cost || item.total_price_after_discount}
                             quant={item.quant}
                             desc={item.description}
                         />

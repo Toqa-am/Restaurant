@@ -1,11 +1,10 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 
 export function Register() {
     const [registered,setRegistered]=useState(0)
-    const history = useHistory();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -193,7 +192,7 @@ export function Register() {
 
 
 
-                <button className="btn btn-primary my-3 mx-auto" type="button" onClick={(e) => handleSubmit(e)} disabled={errors.emailError || errors.nameError || errors.passError || errors.cpassError
+                <button className="btn primary my-3 mx-auto" type="button" onClick={(e) => handleSubmit(e)} disabled={errors.emailError || errors.nameError || errors.passError || errors.cpassError
                     || formData.name === '' || formData.password_confirmation === '' || formData.password === '' || formData.email === ''}>Submit</button>
 
             </form>

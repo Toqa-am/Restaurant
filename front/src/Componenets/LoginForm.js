@@ -100,7 +100,7 @@ export function LoginForm(props){
     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
     {/* ||  errors.passError */}
     <button
-        className="btn btn-primary"
+        className="btn primary"
 
         onClick={handleSubmit}
         type="button"

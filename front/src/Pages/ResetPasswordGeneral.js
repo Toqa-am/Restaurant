@@ -1,22 +1,17 @@
 import { useState } from 'react'
 import reset from '../Images/reset.png'
-
 import { Link } from 'react-router-dom/cjs/react-router-dom.min'
 import { useLocation } from 'react-router-dom';
 import axios from 'axios'
-import { useDispatch } from 'react-redux';
-import { updateAfterRefresh } from '../Store/action';
 
 
 export function ResetPasswordGeneral(props) {
     const [changed, setChanged] = useState(false)
 
     const location = useLocation();
-    const dispatcher=useDispatch();
     console.log(JSON.parse(localStorage.getItem('cartItems')));
     console.log(JSON.parse(localStorage.getItem('cartTotal')));
     console.log("khgc");
-    // dispatcher(updateAfterRefresh([JSON.parse(localStorage.getItem('cartItems')),JSON.parse(localStorage.getItem('cartTotal'))]))
 
     const searchParams = new URLSearchParams(location.search);
     const allParams = Object.fromEntries(searchParams);
@@ -126,7 +121,7 @@ export function ResetPasswordGeneral(props) {
 
 
 
-                    <button className="btn btn-primary my-3 mx-auto" type="button" onClick={(e) => handleSubmit(e)} disabled={errors.new_passwordError || errors.new_password_confirmationError
+                    <button className="btn primary my-3 mx-auto" type="button" onClick={(e) => handleSubmit(e)} disabled={errors.new_passwordError || errors.new_password_confirmationError
                         || formData.new_password === '' || formData.new_password_confirmation === ''}>Change Password</button>    </form>
                         <div  className={(changed?"visible":"invisible")} >
                         <br>

@@ -1,9 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { CartCard } from "./CartCard";
-import { increaseItemQuant , decreaseItemQuant, changeCartTotal} from "../../Store/action";
-import { useEffect, useState } from "react";
-import Cart from "./Cart";
-
+import { increaseItemQuant , decreaseItemQuant} from "../../Store/action";
 
 export default function FullCart(){
     const cart=useSelector((state)=>state.cartItems)
@@ -30,6 +27,8 @@ export default function FullCart(){
             <CartCard
                 key={index} 
                 src={item.image}
+                // src={`${typeof item.image!=="undefined"?item.image:''}`}
+
                 title={`${typeof item.size!=="undefined"?item.size:""} ${item.name}`}
                 // description={item.description}
                 price={item.cost}

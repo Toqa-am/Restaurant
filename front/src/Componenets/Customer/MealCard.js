@@ -61,7 +61,7 @@ export function MealCard(props){
                 </button>
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn primary"
                   onClick={ props.handleAddToCart}
                   data-bs-dismiss="modal"
                 >

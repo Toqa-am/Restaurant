@@ -1,15 +1,17 @@
 
 import { Link } from 'react-router-dom';
-import logo from '../../Images/logo.png'
+import logo1 from '../../Images/col1.png'
+
 import { useDispatch, useSelector } from "react-redux";
 import { EmptyCart } from './EmptyCart';
 import FullCart from './FullCart';
-import { search, updateAfterRefresh } from '../../Store/action';
+import { search } from '../../Store/action';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export function Navbar() {
     const dispatcher = useDispatch()
+    const [updated,setUpdated]=useState(false)
     const cartTotal = useSelector((state) => state.cartTotal)
     const cartItems = useSelector((state) => state.cartItems)
     console.log(cartItems)
@@ -34,10 +36,12 @@ export function Navbar() {
 
     return (
         <>
-            <nav className="navbar sticky-top navbar-expand-lg navbar-light bg-light d-flex justify-content-between">
+            <nav className="navbar sticky-top navbar-expand-lg navbar-light  d-flex justify-content-between py-0"
+            style={{backgroundColor:'white'}}
+            >
                 <Link to='/customer/menu'>
                     <a className="navbar-brand" href="/">
-                        <img src={logo} height={20}></img>
+                        <img src={logo1} height={45}></img>
                     </a>
 
                 </Link>
@@ -45,8 +49,13 @@ export function Navbar() {
 
                 <div className='d-flex justify-content-around'>
 
+                <Link to='/customer/offers'>
+                    <a className="navbar-brand" href="/">
+                    Offers
+                    </a>
 
-                    <input className="form-control me-2 col-8 rounded-pill" type="search" placeholder="Search" onChange={handelSearch} />
+                </Link>
+                    <input className="form-control me-2 col-6 rounded-pill" type="search" placeholder="Search" onChange={handelSearch} />
 
                     <button className="btn btn-dark rounded-pill" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i className="fa-solid fa-bag-shopping pr-1"></i> <strong>{cartTotal} OMR</strong></button>
                 </div>
@@ -72,7 +81,7 @@ export function Navbar() {
                     <h6 className="capitalize text-sm font-medium ">Subtotal</h6>
                     <h6 className='text-success'><strong>{cartTotal} OMR</strong></h6>
                 </div>'
-                <button className='btn btn-primary rounded-pill col-12 m-2 p-3' onClick={handleNavigation} data-bs-dismiss="offcanvas"> 
+                <button className='btn primary rounded-pill col-12 m-2 p-3' onClick={handleNavigation} data-bs-dismiss="offcanvas"> 
                    Proceed to CheckOut
                    
                 </button>

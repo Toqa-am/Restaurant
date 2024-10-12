@@ -4,11 +4,17 @@ import cloneDeep from 'lodash/cloneDeep'
 const getCartData = () => {
 
     const currentCart = localStorage.getItem("cartItems")
-    if (currentCart == []) {
+    if (currentCart && currentCart == []) {
         return [];
     }
-    else {
+    else if(!currentCart) {
+        currentCart=[]
+        localStorage.setItem("cartItems", JSON.stringify(currentCart))
         return JSON.parse(currentCart);
+    }
+    else{
+        return JSON.parse(currentCart);
+
     }
 
 }
@@ -19,7 +25,12 @@ const getCartTotal = () => {
     if (currentTotal == 0) {
         return 0;
     }
-    else {
+    else if(!currentTotal){
+        currentTotal=0
+        localStorage.setItem("cartTotal", JSON.stringify(currentTotal))
+        return JSON.parse(currentTotal);
+    }
+    else{
         return JSON.parse(currentTotal);
     }
 
@@ -30,9 +41,9 @@ const VALUE = {
     cartTotal: getCartTotal(),
     cartItems: getCartData(),
     searchStatement: "",
-    itemQuant: 1
-
-
+    itemQuant: 1,
+    table_num:null,
+    table_id:null
 }
 export default function cartReducer(
     state = VALUE, action) {
@@ -57,16 +68,16 @@ export default function cartReducer(
                                     ? { ...item, quant: item.quant + 1 }
                                     : item
                             ),
-                            cartTotal: state.cartTotal + existingItem[0].cost,
+                            cartTotal: Number(Number(state.cartTotal + existingItem[0].cost).toFixed(2)),
                         };
                     }
                 
-            } else {
+            }
+            else if (action.payload.table_name === "offers"){
                 const existingItem = state.cartItems.find(item => item.name === action.payload.name);
                 console.log(existingItem)
                 if (existingItem.length !== 0) {
                     
-                        // Decrease the item quantity by 1
                         return {
                             ...state,
                             cartItems: state.cartItems.map(item =>
@@ -74,7 +85,24 @@ export default function cartReducer(
                                     ? { ...item, quant: item.quant + 1 }
                                     : item
                             ),
-                            cartTotal: state.cartTotal + existingItem.cost,
+                            cartTotal: Number(Number(state.cartTotal + existingItem.total_price_after_discount).toFixed(2)),
+                        };
+                    
+                }
+            }
+            else {
+                const existingItem = state.cartItems.find(item => item.name === action.payload.name);
+                console.log(existingItem)
+                if (existingItem.length !== 0) {
+                    
+                        return {
+                            ...state,
+                            cartItems: state.cartItems.map(item =>
+                                item.name === action.payload.name
+                                    ? { ...item, quant: item.quant + 1 }
+                                    : item
+                            ),
+                            cartTotal: Number(Number(state.cartTotal + existingItem.cost).toFixed(2)),
                         };
                     
                 }
@@ -107,7 +135,7 @@ export default function cartReducer(
                         return {
                             ...state,
                             cartItems: state.cartItems.filter((item) => (item !== existingItem[0])),
-                            cartTotal: state.cartTotal - existingItem[0].cost,
+                            cartTotal: Number((state.cartTotal - existingItem[0].cost).toFixed(2)),
                         };
                     } else {
                         // Decrease the item quantity by 1
@@ -118,11 +146,12 @@ export default function cartReducer(
                                     ? { ...item, quant: item.quant - 1 }
                                     : item
                             ),
-                            cartTotal: state.cartTotal - existingItem[0].cost,
+                            cartTotal: Number((state.cartTotal - existingItem[0].cost).toFixed(2)),
                         };
                     }
                 }
-            } else {
+            } 
+            else if (action.payload.table_name === "offers"){
                 const existingItem = state.cartItems.find(item => item.name === action.payload.name);
                 console.log(existingItem)
                 if (existingItem.length !== 0) {
@@ -131,7 +160,7 @@ export default function cartReducer(
                         return {
                             ...state,
                             cartItems: state.cartItems.filter(item => item.name !== action.payload.name),
-                            cartTotal: state.cartTotal - existingItem.cost,
+                            cartTotal: Number((state.cartTotal - existingItem.total_price_after_discount).toFixed(2)),
                         };
                     } else {
                         // Decrease the item quantity by 1
@@ -142,7 +171,32 @@ export default function cartReducer(
                                     ? { ...item, quant: item.quant - 1 }
                                     : item
                             ),
-                            cartTotal: state.cartTotal - existingItem.cost,
+                            cartTotal: Number((state.cartTotal - existingItem.total_price_after_discount).toFixed(2)),
+                        };
+                    }
+                }
+            }
+            else {
+                const existingItem = state.cartItems.find(item => item.name === action.payload.name);
+                console.log(existingItem)
+                if (existingItem.length !== 0) {
+                    if (existingItem.quant === 1) {
+                        // Remove the item from the cart if quantity is 1
+                        return {
+                            ...state,
+                            cartItems: state.cartItems.filter(item => item.name !== action.payload.name),
+                            cartTotal: Number((state.cartTotal - existingItem.cost).toFixed(2)),
+                        };
+                    } else {
+                        // Decrease the item quantity by 1
+                        return {
+                            ...state,
+                            cartItems: state.cartItems.map(item =>
+                                item.name === action.payload.name
+                                    ? { ...item, quant: item.quant - 1 }
+                                    : item
+                            ),
+                            cartTotal: Number((state.cartTotal - existingItem.cost).toFixed(2)),
                         };
                     }
                 }
@@ -181,31 +235,43 @@ export default function cartReducer(
                     if (nameEx.length !== 0) {
 
                         state.cartItems.find((item) => (item === nameEx[0])).quant += payload[1]
-                        state.cartTotal = state.cartTotal + nameEx[0].cost * payload[1]
+                        state.cartTotal = Number(Number(state.cartTotal + (nameEx[0].cost * payload[1])).toFixed(2))
                     }
                     else {
                         payload[0].quant = payload[1]
                         state.cartItems.push(payload[0])
-                        state.cartTotal = state.cartTotal + payload[0].cost * payload[1]
+                        state.cartTotal = Number(Number(state.cartTotal + payload[0].cost * payload[1]).toFixed(2))
 
                     }
                 }
                 else {
                     payload[0].quant = payload[1]
                     state.cartItems.push(payload[0])
-                    state.cartTotal = state.cartTotal + payload[0].cost * payload[1]
+                    state.cartTotal = Number(Number(state.cartTotal + payload[0].cost * payload[1]).toFixed(2))
+                }
+            }
+            else if (payload[0].table_name === "offers"){
+                let nameEx = state.cartItems.filter((item) => (item.name === payload[0].name))
+                if (nameEx.length !== 0) {
+                    state.cartItems.find(item => (item.name === payload[0].name)).quant += payload[1]
+                    state.cartTotal = Number(Number(state.cartTotal + payload[0].total_price_after_discount * payload[1]).toFixed(2))
+                }
+                else {
+                    payload[0].quant = payload[1]
+                    state.cartItems.push(payload[0])
+                    state.cartTotal = Number(Number(state.cartTotal + payload[0].total_price_after_discount * payload[1]).toFixed(2))
                 }
             }
             else {
                 let nameEx = state.cartItems.filter((item) => (item.name === payload[0].name))
                 if (nameEx.length !== 0) {
-                    state.cartItems.find(item => (item.name === payload[0].name)).quant += payload[0].quant
-                    state.cartTotal = state.cartTotal + payload[0].cost * payload[1]
+                    state.cartItems.find(item => (item.name === payload[0].name)).quant += payload[1]
+                    state.cartTotal = Number(Number(state.cartTotal + payload[0].cost * payload[1]).toFixed(2))
                 }
                 else {
                     payload[0].quant = payload[1]
                     state.cartItems.push(payload[0])
-                    state.cartTotal = state.cartTotal + payload[0].cost * payload[1]
+                    state.cartTotal = Number(Number(state.cartTotal + payload[0].cost * payload[1]).toFixed(2))
                 }
 
             }
@@ -233,12 +299,24 @@ export default function cartReducer(
                     cartTotal: state.cartTotal
     
                 }
+                case "SET_TABLE":
+                    state.table_id=action.payload[0]
+                    state.table_num=action.payload[1]
+                    return {
+                        ...state,
+                        table_id: state.table_id,
+                        table_num: state.table_num
+                    }
+
+                
             
      
 
         default:
             return state
     }
+
+    
 
 }
 
