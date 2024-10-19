@@ -130,29 +130,34 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
   const handleAddToCart = () => {
     const addons = Array.isArray(selectedAddons) ? selectedAddons : [];    
     const extras = Array.isArray(selectedExtras) ? selectedExtras : [];
-    const storeItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    let storeItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    console.log(storeItems);
+    
 
-    const newItem = {
+    let newItem = {
       id: cartItem.id,
       name: cartItem.name,
       costOffers:cartItem.total_price_after_discount,
       addoons:{
         name:cartItem.name,
         cost:cartItem.cost,
+        
       },
       sizes: [
         {
           size: selectedSize,
           cost: mealSize.find((size) => size.size === selectedSize)?.cost || 0,
-          quantity,
+          quantity
         },
       ],
       addons: addons.map(({ id, name, cost, image, quantity }) => ({
-        id,
+        id ,
         name,
         cost,
         image,
         quantity,
+        UniqueId : `${Date.now()}-${Math.random()}`
+
       })),
 
       extras: extras.map(({ id, name, cost, image, quantity }) => ({
@@ -161,8 +166,19 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
         cost,
         image,
         quantity,
+        UniqueId : `${Date.now()}-${Math.random()}`
+
       })),
     };
+
+    // filtering if same meal add not add it unless he choose other size 
+
+    // storeItems = storeItems.filter(item => {
+    //   const sameName = item.name === newItem.name;
+    //   const sameSize = item.sizes.some(size => size.size === newItem.sizes[0].size);
+    //   return !(sameName && sameSize);
+    // });
+
 
     const finalizeCartUpdate = () => {
       storeItems.push(newItem);
@@ -223,6 +239,7 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
               <div className="item-text">
                 <b>{cartItem.name}</b>
                 <p>{cartItem.description}</p>
+               { cartItem.items?  <details >{cartItem.items}</details> :""}
                 <b>
                   $
                   {

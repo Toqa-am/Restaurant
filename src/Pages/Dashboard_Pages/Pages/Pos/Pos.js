@@ -39,7 +39,7 @@ export default function Pos() {
   const fetchOffersItems = async()=>{
     try {
       const offersResult = await getData("offers/items");
-      console.log(offersResult);  
+      // console.log(offersResult);  
       setOffersItems(offersResult)
       setTotalPagesOffers(Math.ceil(offersItems.length / pagination_length))
     } catch (error) {
@@ -307,8 +307,9 @@ export default function Pos() {
               </div>
 
               <div>
-              <button className="btn btn-danger" onClick={toggleOffers}>
-      {showOffers ? "Show Meals" : "Show Offers"}
+       <button    className={showOffers ? "btn btn-danger" : "btn btn-success"} 
+            onClick={toggleOffers}>
+              {showOffers ? "Show Meals" : "Show Offers"}
     </button>
               </div>
               </div>
@@ -349,7 +350,9 @@ export default function Pos() {
                           </>
                         ) : item.total_price_after_discount ? (
                           <>
+                            <span className="fw-bold itemPrice strikethrough">${item.total_price_before_discount}</span>
                             <span className="fw-bold itemPrice">${item.total_price_after_discount}</span>
+
                             <button className="addCartBtn" onClick={() => addToCart(item)}>
                               <FaShoppingBag /> add
                             </button>

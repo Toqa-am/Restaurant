@@ -450,3 +450,8 @@
     opacity: 0.5;
     pointer-events: none;
 }
+.strikethrough{
+    text-decoration: line-through; 
+    color: tomato;
+
+}

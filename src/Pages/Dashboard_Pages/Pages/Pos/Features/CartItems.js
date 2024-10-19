@@ -16,29 +16,29 @@ export default function CartItems({
   const [discountValue, setDiscountValue] = useState(0);
   const [finalTotal, setFinalTotal] = useState(0);
   const [finalTotalWithDiscount, setFinalTotalWithDiscount] = useState(0);
-  const [customeEmail,setCustomerEmail]=useState([])
-  const [customeEmailSelectName,setCustomerEmailSelectName]=useState({
-    email:""
+  const [customeEmail, setCustomerEmail] = useState([])
+  const [customeEmailSelectName, setCustomerEmailSelectName] = useState({
+    email: ""
   })
 
 
-console.log(items);
+  // console.log(items);
 
 
 
 
-  const fetchOffersItems = async()=>{
+  const fetchOffersItems = async () => {
     try {
       const customersData = await getData("admin/customers");
-      console.log(customersData);  
+      // console.log(customersData);
       setCustomerEmail(customersData)
     } catch (error) {
       console.error(error.response?.data?.message);
     }
   }
-  const dataFromSelection = (e)=>{
-    const data = {...customeEmail}
-    data[e.target.name]=e.target.value
+  const dataFromSelection = (e) => {
+    const data = { ...customeEmail }
+    data[e.target.name] = e.target.value
     setCustomerEmailSelectName(data)
   }
   const handleApplyDiscount = useCallback(
@@ -65,7 +65,9 @@ console.log(items);
 
       if (Object(items).length > 0) {
         items.forEach((item) => {
-          if (item.sizes) {
+          if (item.sizes ) {
+            console.log( item.sizes.size);
+            
             item.sizes.forEach((size) => {
               totalCost += size.cost * size.quantity;
             });
@@ -80,6 +82,16 @@ console.log(items);
               totalCost += extra.cost * extra.quantity;
             });
           }
+
+          if (item.addoons) {
+            if(item.addoons.cost){
+
+              totalCost+= item.addoons.cost * item.sizes[0].quantity
+            }
+            
+           
+          }
+
         });
 
         setFinalTotal(totalCost);
@@ -103,7 +115,7 @@ console.log(items);
       const cartItems = JSON.parse(localStorage.getItem("cartItems") || []);
       setItems(cartItems);
       console.log(cartItems);
-      
+
       updateFinalTotal(cartItems);
 
       if (cartItems.length < 1) {
@@ -122,37 +134,155 @@ console.log(items);
       window.removeEventListener("storageUpdated", loadStoreItems);
     };
   }, [finalTotal, total, updateFinalTotal]);
-
-  const updateQuantity = (id, operation) => {
-    const updatedItems = items.map((item) =>
-      item.id === id
-        ? {
-            ...item,
-            sizes: item.sizes.map((size) =>
-              size.size === item.sizes[0].size
-                ? {
+  const updateQuantity = (idndexToIncrease, operation, typeOfDataToIncrease) => {
+    const updatedItems =
+      typeOfDataToIncrease === "meal"
+        ? items.map((item, index) =>
+          idndexToIncrease === index && typeOfDataToIncrease === "meal"
+            ? {
+              ...item,
+              sizes: item.sizes.map((size) => {
+                return true
+                  ? {
                     ...size,
                     quantity:
                       operation === "increase"
                         ? ++size.quantity
                         : Math.max(size.quantity - 1, 1),
                   }
-                : size
-            ),
-          }
-        : item
-    );
+                  : size;
+              }),
+            }
+            : item
+        )
+        : typeOfDataToIncrease === "addon"
+          ? items.map((item, index) => {
+            return {
+              ...item,
+              addons: item.addons.map((addon) =>
+                idndexToIncrease === addon.UniqueId
+                  ? {
+                    ...addon,
+                    quantity:
+                      operation === "increase"
+                        ? ++addon.quantity
+                        : Math.max(addon.quantity - 1, 1),
+                  }
+                  : addon
+              ),
+            };
+          })
+          : typeOfDataToIncrease === "extra"
+            ? items.map((item, index) => {
+              return {
+                ...item,
+                extras: item.extras.map((extra) =>
+                  idndexToIncrease === extra.UniqueId
+                    ? {
+                      ...extra,
+                      quantity:
+                        operation === "increase"
+                          ? ++extra.quantity
+                          : Math.max(extra.quantity - 1, 1),
+                    }
+                    : extra
+                ),
+              };
+            })
+            : items;
 
     localStorage.setItem("cartItems", JSON.stringify(updatedItems));
     setItems(updatedItems);
     updateFinalTotal(updatedItems);
   };
 
-  const handleMultiFunction = (type, label, id = null) => {
+
+  const handleMultiFunction = (type, label, name = null, indexToRemove, typeOfData) => {
     const removeOneItemFromCart = () => {
-      const updatedItems = items.filter((item) => item.id !== id);
+
+      let findItem
+      if (typeOfData === "meal") {
+
+        findItem = items.find((item, index) => indexToRemove == index)
+        console.log(findItem);
+     
+      let { sizes, name, addoons, id, ...rest } = findItem
+
+
+      const updatedItems = items.filter((item, index) => index !== indexToRemove);
+      // إذا كانت addons غير فارغة، قم بإضافة rest إلى المصفوفة
+      if (rest.addons.length !== 0 || rest.addons.length !== 0) {
+        updatedItems.push(rest);
+      }
       localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+      console.log(updatedItems);
       updateFinalTotal(updatedItems);
+    }else if(typeOfData === "addon"){
+
+      
+      
+      // const updatedItems = items.addons.filter((item, index) => item.UniqueId !== indexToRemove);
+      // const updatedItems = items.map((item, index) => item.addons.filter((addon)=> addon.UniqueId !== indexToRemove ));
+
+      const updatedItems = items.map((item, index) => {
+        // تحقق من أن addons موجودة وتقوم بتصفية العناصر بناءً على UniqueId
+        return {
+          ...item, 
+          addons: item.addons.filter(addon => addon.UniqueId !== indexToRemove) // تصفية الـ addons
+        };
+      });
+      console.log(updatedItems);
+      
+
+      const isAllEmpty = updatedItems.every(item => item.addons.length === 0 && item.extras.length === 0 && item.name === "");
+
+
+      // إذا كانت كل من addons و extras فارغة، قم بتعيين localStorage إلى مصفوفة فارغة
+      if (isAllEmpty) {
+        localStorage.setItem("cartItems", JSON.stringify([]));
+      } else {
+        localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+      }
+      console.log(updatedItems);
+      updateFinalTotal(updatedItems);
+
+
+
+    }else if (typeOfData === "extra"){
+      
+      
+      // const updatedItems = items.addons.filter((item, index) => item.UniqueId !== indexToRemove);
+      // const updatedItems = items.map((item, index) => item.addons.filter((addon)=> addon.UniqueId !== indexToRemove ));
+
+      const updatedItems = items.map((item, index) => {
+        // تحقق من أن addons موجودة وتقوم بتصفية العناصر بناءً على UniqueId
+        return {
+          ...item, 
+          extras: item.extras.filter(extra => extra.UniqueId !== indexToRemove) // تصفية الـ addons
+        };
+      });
+
+      const isAllEmpty = updatedItems.every(item => item.addons.length === 0 && item.extras.length === 0 && item.name === "");
+
+      // إذا كانت كل من addons و extras فارغة، قم بتعيين localStorage إلى مصفوفة فارغة
+      if (isAllEmpty) {
+        localStorage.setItem("cartItems", JSON.stringify([]));
+      } else {
+        localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+      }
+      console.log(updatedItems);
+      updateFinalTotal(updatedItems);
+
+
+    }
+
+
+
+
+
+
+
+
 
       const event = new Event("storageUpdated");
       window.dispatchEvent(event);
@@ -215,7 +345,7 @@ console.log(items);
     });
   };
 
-  
+
   return (
     <div className="posCartItems" id="posCartItems">
       <div className="CartItems">
@@ -230,20 +360,20 @@ console.log(items);
               className="form-control"
               placeholder="search customers"
             /> */}
-                        <select
-                                    id="dataSelect"
-                                    className="form-select"
-                                    name='email'
-                                    onChange={dataFromSelection}
-                                    required
-                                >
-                                    <option value="" disabled selected>choose your email </option>
-                                    {customeEmail.map((item, index) => (
-                                        <option key={index} value={item.id}>
-                                            {item.email}
-                                        </option>
-                                    ))}
-                                </select>
+            <select
+              id="dataSelect"
+              className="form-select"
+              name='email'
+              onChange={dataFromSelection}
+              required
+            >
+              <option value="" disabled selected>choose your email </option>
+              {customeEmail.map((item, index) => (
+                <option key={index} value={item.id}>
+                  {item.email}
+                </option>
+              ))}
+            </select>
             <button
               type="button"
               className="btn btn-primary"
@@ -272,66 +402,193 @@ console.log(items);
             <tbody className="bodyCartItems">
               {Object(items).length > 0 ? (
                 items.map((item, index) => (
-                  <tr key={index} id={item.id}>
-                    <td>
-                      <FaTrash
-                        className="text-danger"
-                        onClick={() =>
-                          handleMultiFunction(
-                            "deleteItem",
-                            "Delete Item",
-                            item.id
+                  <>
+                    {
+                      (item.name && item.addoons.name && item.sizes.length > 0) ?
+
+
+
+                        <tr key={index} id={item.id}>
+                          <td>
+                            <FaTrash
+                              className="text-danger"
+                              onClick={() =>
+                                handleMultiFunction(
+                                  "deleteItem",
+                                  "Delete Item",
+                                  item.id,
+                                  index,
+                                  "meal"
+                                )
+                              }
+                            />
+                          </td>
+                          <td>{item.name}</td>
+                          <td>
+                            <div className="quantityActions">
+                              <AiOutlinePlusCircle
+                                onClick={() => updateQuantity(index, "increase", "meal")}
+                              />
+                              <input
+                                type="number"
+                                name="quantity"
+                                value={item.sizes[0].quantity}
+                                readOnly
+                              />
+                              <AiOutlineMinusCircle
+                                onClick={() => updateQuantity(index, "decrease", "meal")}
+                                className={
+                                  item.sizes[0].quantity === 1 ? "disabled-icon" : ""
+                                }
+                              />
+                            </div>
+                          </td>
+                          {item.addons.length > 0 || item.extras.length > 0 ? (
+                            <td>
+                              <button
+                                className="detailsItem"
+                              // onClick={() => detailsItemToggle(item)}
+                              >
+                                <i className="fa-regular fa-square-caret-down"></i>
+                              </button>
+                            </td>
+                          ) : (
+                            "--"
+                          )}
+                          <td>
+                            $
+                            {item.sizes[0].cost > 0
+                              ? (item.sizes[0].cost * item.sizes[0].quantity).toFixed(2)
+                              : item.costOffers ? (item.costOffers * item.sizes[0].quantity).toFixed(2) : item.addoons.cost ? (item.addoons.cost * item.sizes[0].quantity).toFixed(2) : ""}
+                          </td>
+                        </tr>
+                        : ""}
+
+
+                    {/* ------------------------------------------------------------------------------ */}
+                    {/* add addons from meals extract */}
+                    {(item.addons?.length > 0 || item.extras?.length > 0) &&
+                      (
+                        item.addons.length > 0 ? item.addons.map((addon, AddonIndex) => {
+                          return (
+                            <tr key={addon.UniqueId} id={AddonIndex}>
+                              <td>
+                                <FaTrash
+                                  className="text-danger"
+                                  onClick={() =>
+                                    handleMultiFunction(
+                                      "deleteItem",
+                                      "Delete Item",
+                                      addon.UniqueId,
+                                      addon.UniqueId,
+                                      "addon"
+                                    )
+                                  }
+                                />
+                              </td>
+                              <td>{addon.name}</td>
+                              <td>
+                                <div className="quantityActions">
+                                  <AiOutlinePlusCircle
+                                    onClick={() => updateQuantity(addon.UniqueId, "increase", "addon")}
+                                  />
+                                  <input
+                                    type="number"
+                                    name="quantity"
+                                    value={addon.quantity}
+                                    readOnly
+                                  />
+                                  <AiOutlineMinusCircle
+                                    onClick={() => updateQuantity(addon.UniqueId, "decrease", "addon")}
+                                    className={
+                                      addon.quantity === 1 ? "disabled-icon" : ""
+                                    }
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                {"__"
+                                }                    </td>
+
+
+                              <td>
+                                $
+                                {(addon.cost * addon.quantity).toFixed(2)
+                                }
+                              </td>
+                            </tr>
                           )
-                        }
-                      />
-                    </td>
-                    <td>{item.name}</td>
-                    <td>
-                      <div className="quantityActions">
-                        <AiOutlinePlusCircle
-                          onClick={() => updateQuantity(item.id, "increase")}
-                        />
-                        <input
-                          type="number"
-                          name="quantity"
-                          value={item.sizes[0].quantity}
-                          readOnly
-                        />
-                        <AiOutlineMinusCircle
-                          onClick={() => updateQuantity(item.id, "decrease")}
-                          className={
-                            item.sizes[0].quantity === 1 ? "disabled-icon" : ""
-                          }
-                        />
-                      </div>
-                    </td>
-                    {item.addons.length > 0 || item.extras.length > 0 ? (
-                      <td>
-                        <button
-                          className="detailsItem"
-                          // onClick={() => detailsItemToggle(item)}
-                        >
-                          <i className="fa-regular fa-square-caret-down"></i>
-                        </button>
-                      </td>
-                    ) : (
-                      "--"
-                    )}
-                 <td>
-  $
-  {item.sizes[0].cost > 0
-    ? (item.sizes[0].cost * item.sizes[0].quantity).toFixed(2)
-    : item.costOffers ? item.costOffers : item.addoons.cost ?  item.addoons.cost :"" }
-</td>
-                  </tr>
+                        }) : "")}
+
+
+                    {(item.addons?.length > 0 || item.extras?.length > 0) &&
+                      (
+                        item.extras.length > 0 ? item.extras.map((extra, extraIndex) => {
+                          return (
+                            <tr key={extra.UniqueId} id={item.id}>
+                              <td>
+                                <FaTrash
+                                  className="text-danger"
+                                  onClick={() =>
+                                    handleMultiFunction(
+                                      "deleteItem",
+                                      "Delete Item",
+                                      extra.UniqueId,
+                                      extra.UniqueId,
+                                      "extra"
+                                    )
+                                  }
+                                />
+                              </td>
+                              <td>{extra.name}</td>
+                              <td>
+                                <div className="quantityActions">
+                                  <AiOutlinePlusCircle
+                                    onClick={() => updateQuantity(extra.UniqueId, "increase", "extra")}
+                                  />
+                                  <input
+                                    type="number"
+                                    name="quantity"
+                                    value={extra.quantity}
+                                    readOnly
+                                  />
+                                  <AiOutlineMinusCircle
+                                    onClick={() => updateQuantity(extra.UniqueId, "decrease", "extra")}
+                                    className={
+                                      extra.quantity === 1 ? "disabled-icon" : ""
+                                    }
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                {"__"
+                                }                    </td>
+
+
+                              <td>
+                                $
+                                {extra.cost
+                                }
+                              </td>
+                            </tr>
+                          )
+                        }) : "")}
+
+
+
+                  </>
                 ))
-              ) : (
-                <tr>
-                  <td className="text-center text-danger" colSpan={5}>
-                    no items
-                  </td>
-                </tr>
-              )}
+              )
+                :
+                (
+                  <tr>
+                    <td className="text-center text-danger" colSpan={5}>
+                      no items
+                    </td>
+                  </tr>
+
+                )}
+
             </tbody>
           </table>
         </div>
@@ -396,5 +653,6 @@ console.log(items);
         )}
       </div>
     </div>
+
   );
 }
