@@ -51,7 +51,7 @@ export default function Pos() {
   const fetchMenuItem = useCallback(async () => {
     try {
       const result = await getData("menu");
-      // console.log(result);
+      console.log(result);
 
       const allItems = [...result.addons, ...result.meals, ...result.extras];
 

@@ -9,6 +9,8 @@ export default function Invoice({ visible, modalClose }) {
   useEffect(() => {
     const storeCartItem = JSON.parse(localStorage.getItem("cartItems") || []);
     setInvoiceItem(storeCartItem);
+    console.log(storeCartItem);
+    
 
     let totalCost = 0;
 
@@ -95,7 +97,7 @@ export default function Invoice({ visible, modalClose }) {
                   <>
                     <tbody className="item" key={index}>
                       <tr>
-                        <td>x {item.sizes[0].quantity}</td>
+                        <td>x {item.sizes[0].quantity} </td>
                         <td>
                           <span>{item.name}</span>
                           <span>size: {convert(item.sizes[0].size)}</span>

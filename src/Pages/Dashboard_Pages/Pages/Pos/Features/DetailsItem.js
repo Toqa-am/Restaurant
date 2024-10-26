@@ -21,6 +21,9 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
   //   }
   // }, [cartItem]);
 
+  console.log(cartItem);
+  
+
   useEffect(() => {
     if (cartItem && cartItem.meal_size_costs && cartItem.meal_size_costs.length > 0) {
       setMealSize(cartItem.meal_size_costs);
@@ -138,11 +141,7 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
       id: cartItem.id,
       name: cartItem.name,
       costOffers:cartItem.total_price_after_discount,
-      addoons:{
-        name:cartItem.name,
-        cost:cartItem.cost,
-        
-      },
+    
       sizes: [
         {
           size: selectedSize,
@@ -170,6 +169,26 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
 
       })),
     };
+
+    let addoons ={
+      name:cartItem.name,
+      cost:cartItem.cost,
+      id:cartItem.id,
+
+    }
+
+    let offers ={
+      name:cartItem.name,
+      cost:cartItem.costOffers,
+      id:cartItem.id,
+    }
+    if(cartItem.table_name === "addons"){
+    newItem.addoons = addoons;
+    }
+
+    if(cartItem.table_name === "offers"){
+      newItem.offers = offers;
+      }
 
     // filtering if same meal add not add it unless he choose other size 
 
