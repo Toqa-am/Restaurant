@@ -233,7 +233,7 @@ export default function Pos() {
       <div className="posMenuItem">
         <div className="posSearch">
           <div className="input-group mb-3">
-            <input
+            {/* <input
               type="filter"
               name="filter"
               id="filter"
@@ -249,7 +249,7 @@ export default function Pos() {
               onClick={() => handleInputSearch()}
             >
               <IoIosSearch />
-            </button>
+            </button> */}
             {inputSearch.filter !== "" && (
               <button
                 className="btn btn-danger iconReset"
@@ -336,22 +336,22 @@ export default function Pos() {
                       <div>
                         {item.meal_size_costs && item.meal_size_costs.length > 0 ? (
                           <>
-                            <span className="fw-bold itemPrice">${item.meal_size_costs[0].cost}</span>
+                            <span className="fw-bold itemPrice">{item.meal_size_costs[0].cost} OMR</span>
                             <button className="addCartBtn" onClick={() => addToCart(item)}>
                               <FaShoppingBag /> add
                             </button>
                           </>
                         ) : item.cost ? (
                           <>
-                            <span className="fw-bold itemPrice">${item.cost}</span>
+                            <span className="fw-bold itemPrice">{item.cost} OMR</span>
                             <button className="addCartBtn" onClick={() => addToCart(item)}>
                               <FaShoppingBag /> add
                             </button>
                           </>
                         ) : item.total_price_after_discount ? (
                           <>
-                            <span className="fw-bold itemPrice strikethrough">${item.total_price_before_discount}</span>
-                            <span className="fw-bold itemPrice">${item.total_price_after_discount}</span>
+                            <span className="fw-bold itemPrice strikethrough">{item.total_price_before_discount} ORM</span>
+                            <span className="fw-bold itemPrice">{item.total_price_after_discount} ORM</span>
 
                             <button className="addCartBtn" onClick={() => addToCart(item)}>
                               <FaShoppingBag /> add
@@ -390,7 +390,7 @@ export default function Pos() {
         >
           <AiFillShopping />
           <span className="fs-6 fw-bold">Total Cost - </span>
-          <span className="fs-6 fw-bold">${cartItemTotal.toFixed(2)}</span>
+          <span className="fs-6 fw-bold">{cartItemTotal.toFixed(2)} ORM</span>
         </button>
       </div>
 

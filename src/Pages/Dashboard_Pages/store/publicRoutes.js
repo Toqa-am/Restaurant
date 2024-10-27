@@ -97,7 +97,7 @@ const routes = [
       {
         id: 8,
         path: "/admin/dashboard/delivery-orders",
-        name: "Delivery Orders",
+        name: " Pos Menu Order",
         icon: TbTruckDelivery,
         component: DeliveryOrders,
         role: ["admin", "chef", "casher"],

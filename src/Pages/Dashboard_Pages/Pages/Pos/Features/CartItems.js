@@ -18,14 +18,17 @@ export default function CartItems({
   const [finalTotalWithDiscount, setFinalTotalWithDiscount] = useState(0);
   const [customeEmail, setCustomerEmail] = useState([])
   const [floorsPlace, setFloorsPlace] = useState([])
-  const [customeEmailSelectName, setCustomerEmailSelectName] = useState({
+  const initialCustomerState = {
     customer_id: "",
     floorOrDielivery: "",
-    delivery_fee:"",
-    phone:null,
-    address:'',
-    DiningTable_id:null,
-  })
+    delivery_fee: "",
+    phone: null,
+    address: "",
+    DiningTable_id: null,
+    note:""
+  };
+  const [customeEmailSelectName, setCustomerEmailSelectName] = useState(initialCustomerState)
+  // let [filterMealInvoice,setFilterMealInvoice] = useState([])
 
   const fetchOffersItems = async () => {
     try {
@@ -36,6 +39,7 @@ export default function CartItems({
       console.error(error.response?.data?.message);
     }
   }
+
 
   // fetsh floors name and ids 
 
@@ -106,8 +110,13 @@ export default function CartItems({
 
               totalCost += item.addoons.cost * item.sizes[0].quantity
             }
+          }
 
+          if (item.offers) {
+            if (item.costOffers) {
 
+              totalCost += item.costOffers * item.sizes[0].quantity
+            }
           }
 
         });
@@ -215,7 +224,7 @@ export default function CartItems({
   };
 
 
-  const handleMultiFunction = (type, label, name = null, indexToRemove, typeOfData,e) => {
+  const handleMultiFunction = (type, label, name = null, indexToRemove, typeOfData, e) => {
     const removeOneItemFromCart = () => {
 
       let findItem
@@ -295,7 +304,7 @@ export default function CartItems({
       window.dispatchEvent(event);
     };
 
-  
+
     const resetItemsCart = () => {
       localStorage.setItem("cartItems", JSON.stringify([]));
       setItems([]);
@@ -315,20 +324,21 @@ export default function CartItems({
       confirmButtonText: `Yes, ${label}`,
       cancelButtonText: "No, cancel",
     }).then(async (result) => {
-      let customer_id=10;
-      let total_cost=122;
+      let customer_id = 10;
+      let total_cost = 122;
       let tax = 39;
-      let meal_ids=[
-        {meal_id :4,
-          quantity:1,
-          total_cost:10
+      let meal_ids = [
+        {
+          meal_id: 4,
+          quantity: 1,
+          total_cost: 10
         }
       ]
-      let objCustum ={}
-      objCustum.customer_id=customer_id
-      objCustum.total_cost=total_cost
-      objCustum.tax=tax
-      objCustum.meal_ids=meal_ids
+      let objCustum = {}
+      objCustum.customer_id = customer_id
+      objCustum.total_cost = total_cost
+      objCustum.tax = tax
+      objCustum.meal_ids = meal_ids
       if (result.isConfirmed) {
         if (type === "makeOrder") {
           try {
@@ -369,73 +379,127 @@ export default function CartItems({
 
 
   const cartItems = JSON.parse(localStorage.getItem("cartItems") || []);
-  console.log(cartItems);
-
-  let addonArrayFinalResult = cartItems.reduce((acc,item)=>{
-    if(item.addons.length>0){
-     item.addons.forEach((addon)=>{
-      acc.push({
-        id:addon.id,
-        quantity:addon.quantity,
-        cost:addon.cost
-      })
-     })
-    }
-    if(item.addoons){
-      if(item.addoons.name){
+  let addonArrayFinalResult = cartItems.reduce((acc, item) => {
+    if (item.addons.length > 0) {
+      item.addons.forEach((addon) => {
         acc.push({
-          id:item.addoons.id,
-          cost:item.addoons.cost,
-          quantity:item.sizes[0].quantity
+          id: addon.id,
+          quantity: addon.quantity,
+          cost: addon.cost
+        })
+      })
+    }
+    if (item.addoons) {
+      if (item.addoons.name) {
+        acc.push({
+          id: item.addoons.id,
+          cost: item.addoons.cost,
+          quantity: item.sizes[0].quantity
         })
       }
     }
     return acc;
-  },[])
-  let extraArrayFinalResult = cartItems.reduce((acc,item)=>{
-    if(item.extras.length>0){
-     item.extras.forEach((extras)=>{
-      acc.push({
-        id:extras.id,
-        quantity:extras.quantity,
-        cost:extras.cost
+  }, [])
+  let extraArrayFinalResult = cartItems.reduce((acc, item) => {
+    if (item.extras.length > 0) {
+      item.extras.forEach((extras) => {
+        acc.push({
+          id: extras.id,
+          quantity: extras.quantity,
+          cost: extras.cost
+        })
       })
-     })
     }
 
     return acc;
-  },[])
+  }, [])
 
-  let offerArrayFinalResult = cartItems.reduce((acc,item)=>{
-    if(item.offers){
-      if(item.offers.name){
+  let offerArrayFinalResult = cartItems.reduce((acc, item) => {
+    if (item.offers) {
+      if (item.offers.name) {
         acc.push({
-          id:item.offers.id,
-          cost:item.costOffers,
-          quantity:item.sizes[0].quantity
+          id: item.offers.id,
+          cost: item.costOffers,
+          quantity: item.sizes[0].quantity
         })
       }
     }
     return acc;
-  },[])
-  let mealArrayFinalResult = cartItems.reduce((acc,item)=>{
-    if(!item.offers && !item.addoons){    
-        acc.push({
-          id:item.id,
-          cost:item.sizes[0].cost,
-          quantity:item.sizes[0].quantity,
-          size:item.sizes[0].size
-        })
-    
+  }, [])
+  let mealArrayFinalResult = cartItems.reduce((acc, item) => {
+    if (!item.offers && !item.addoons) {
+      acc.push({
+        id: item.id,
+        cost: item.sizes[0].cost,
+        quantity: item.sizes[0].quantity,
+        size: item.sizes[0].size
+      })
+
     }
     return acc;
-  },[])
-// console.log(mealArrayFinalResult);  
-  const handleSubmit =  async(e)=>{
+  }, [])
+  const getRandomNumber = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+  let filterMealInvoice = [];
+  let filterAddonInvoice = [];
+  let filterExtraInvoice = [];
+  let filterOfferInvoice = [];
+  if (mealArrayFinalResult.length > 0) {
+    filterMealInvoice = mealArrayFinalResult.reduce((acc, item) => {
+      let existItem = acc.find((obj) => obj.id === item.id && obj.size == item.size)
+      if (existItem) {
+        existItem.quantity += 1
+      } else {
+        acc.push({ ...item })
+      }
+      return acc;
+
+    }, [])
+  }
+  if (addonArrayFinalResult.length > 0) {
+    filterAddonInvoice = addonArrayFinalResult.reduce((acc, item) => {
+      let existItem = acc.find((obj) => obj.id === item.id)
+      if (existItem) {
+        existItem.quantity += 1
+      } else {
+        acc.push({ ...item })
+      }
+      return acc;
+
+    }, [])
+  }
+  if (extraArrayFinalResult.length > 0) {
+    filterExtraInvoice = extraArrayFinalResult.reduce((acc, item) => {
+      let existItem = acc.find((obj) => obj.id === item.id)
+      if (existItem) {
+        existItem.quantity += 1
+      } else {
+        acc.push({ ...item })
+      }
+      return acc;
+
+    }, [])
+  }
+  if (offerArrayFinalResult.length > 0) {
+    filterOfferInvoice = offerArrayFinalResult.reduce((acc, item) => {
+      let existItem = acc.find((obj) => obj.id === item.id)
+      if (existItem) {
+        existItem.quantity += 1
+      } else {
+        acc.push({ ...item })
+      }
+      return acc;
+
+    }, [])
+  }
+  // console.log(mealArrayFinalResult);  
+  const handleSubmit = async (e) => {
     e.preventDefault();
     Swal.fire({
       title: "",
-      text: `Are you sure you want to ?`,
+      text: `Are you sure you want to make order ?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#28a745",
@@ -444,69 +508,65 @@ export default function CartItems({
       cancelButtonText: "No, cancel",
     }).then(async (result) => {
       // inside i will make all operation to send object of data 
-      let customer_id=customeEmailSelectName.customer_id;
-      let total_cost=122;
-      let tax = 39;
-      //  14 % from  total cost i will send 
+      let customer_id = customeEmailSelectName.customer_id;
 
-      let meal_ids=[
-        { 
-          "id" :6,
-          "quantity":1,
-          "size":1,
-          "cost":2.4,
-        }
-      ]
-     let extra_ids=[
-        {
-            "id": 1,
-            "cost": 1,
-            "quantity": 10
-        }
-    ]  
-    
-    let objCustum ={}
-      objCustum.customer_id=customer_id
-      objCustum.total_cost=finalTotalWithDiscount.toFixed(2)
-      objCustum.tax= Math.ceil(finalTotalWithDiscount.toFixed(2) * 1.14)
-      console.log( objCustum.tax);
-      
-      if(mealArrayFinalResult.length >0){
-        objCustum.meal_ids= mealArrayFinalResult
+      let objCustum = {}
+      objCustum.customer_id = customer_id
+      objCustum.total_cost = (finalTotalWithDiscount * 1.14).toFixed(2)
+      console.log(objCustum.total_cost);
+
+
+      objCustum.tax = ((14 / 100) * finalTotalWithDiscount).toFixed(2);
+      console.log(objCustum.tax);
+      if(customeEmailSelectName.note !== ""){
+        objCustum.notes = customeEmailSelectName.note 
       }
-      if(extraArrayFinalResult.length>0){
-        objCustum.extra_ids=extraArrayFinalResult
+      if (customeEmailSelectName.DiningTable_id !== "" || customeEmailSelectName.DiningTable_id !== null) {
+        objCustum.diningtable_id = customeEmailSelectName.DiningTable_id
       }
-      if(addonArrayFinalResult.length>0){
-        objCustum.addon_ids=addonArrayFinalResult
+      if (customeEmailSelectName.address !== "" && customeEmailSelectName.phone !== "" && customeEmailSelectName.delivery_fee !== "") {
+        objCustum.address = customeEmailSelectName.address
+        objCustum.phone = customeEmailSelectName.phone
+        objCustum.delivery_fee = customeEmailSelectName.delivery_fee
       }
-      if(offerArrayFinalResult.length>0){
-        objCustum.offer_ids=offerArrayFinalResult
+
+      if (filterMealInvoice.length > 0) {
+        objCustum.meal_ids = filterMealInvoice
+      }
+      if (filterExtraInvoice.length > 0) {
+        objCustum.extra_ids = filterExtraInvoice
+      }
+      if (filterAddonInvoice.length > 0) {
+        objCustum.addon_ids = filterAddonInvoice
+      }
+      if (filterOfferInvoice.length > 0) {
+        objCustum.offer_ids = filterOfferInvoice
       }
       console.log(objCustum)
-          try {
-            const response = await addData("admin/orders/by-admin", objCustum);
-            console.log("response", response);
-            if (response.status === "success") {
-              // localStorage.setItem("cartItems", JSON.stringify([]));
-              // setItems([]);
-              // updateFinalTotal(localStorage.setItem("cartItems", JSON.stringify([])));
-        
-              // const event = new Event("storageUpdated");
-              // window.dispatchEvent(event);
-
-              setTimeout(() => {
-                Swal.fire("Saved!", response.message, "success");
-              }, 250);
-            }
-          } catch (error) {
-            // Swal.fire("Error!", error.response?.data?.message, "error");
-            Swal.fire("Error!", error);
-
-
+      if (result.isConfirmed) {
+        try {
+          const response = await addData("admin/orders/by-admin", objCustum);
+          console.log("response", response);
+          if (response.status === "success") {
+            localStorage.setItem("cartItems", JSON.stringify([]));
+            console.log(response.data.order_id);
+            
+            updateFinalTotal(localStorage.setItem("cartItems", JSON.stringify([])));
+            const randomNumber = getRandomNumber(1, 100);
+            localStorage.setItem("invoiceId", response.data.order_id);
+            setCustomerEmailSelectName(initialCustomerState)
+            const event = new Event("storageUpdated");
+            window.dispatchEvent(event);
+            setTimeout(() => {
+              Swal.fire("Saved!", response.message, "success");
+            }, 250);
           }
-        } 
-  
+        } catch (error) {
+          Swal.fire("Error!", error.response?.data?.message, "error");
+        }
+      }
+    }
+
     );
   }
 
@@ -525,7 +585,7 @@ export default function CartItems({
               className="form-select"
               name='customer_id'
               onChange={dataFromSelection}
-              requiredparseInt
+              required
               value={customeEmailSelectName.customer_id}
             >
               <option value="" disabled selected>choose your email </option>
@@ -559,10 +619,13 @@ export default function CartItems({
             value={customeEmailSelectName.floorOrDielivery}
           >
             <option value="" disabled >choose floor or delivery </option>
-            <option key={1} value={"floor"}>     floor  </option>
+            <option key={1} value={"floor"}>     restaurant  </option>
             <option key={2} value={"dilevery"}>     dilevery  </option>
           </select>
           <div>
+          <div class="form-group mt-2">
+                      <textarea type="text" required name="note" onChange={dataFromSelection} value={customeEmailSelectName.note} class="form-control" id="exampleInputPassword1" placeholder="Enter Note IF You Need" ></textarea>
+                    </div>
             {/* condition to see if dilivery or floor and base on cond we  */}
             {
               customeEmailSelectName.floorOrDielivery === "floor" ?
@@ -586,14 +649,14 @@ export default function CartItems({
                 : customeEmailSelectName.floorOrDielivery === "dilevery" ?
                   <div className="mt-3">
                     <div class="form-group">
-                      <textarea type="address"required name="address" onChange={dataFromSelection} value={customeEmailSelectName.address} class="form-control" id="exampleInputPassword1" placeholder="address" ></textarea>
+                      <textarea type="text" required name="address" onChange={dataFromSelection} value={customeEmailSelectName.address} class="form-control" id="exampleInputPassword1" placeholder="address" ></textarea>
                     </div>
                     <div class="form-group">
-                      <input type="phone" required name="phone" onChange={dataFromSelection} value={customeEmailSelectName.phone} class="form-control" id="exampleInputPassword1" placeholder="Enter Phone Number" />
+                      <input type="number" required name="phone" onChange={dataFromSelection} value={customeEmailSelectName.phone} class="form-control" id="exampleInputPassword1" placeholder="Enter Phone Number" />
                     </div>
 
                     <div class="form-group">
-                      <input type="delivery_fee" required name="delivery_fee" onChange={dataFromSelection} value={customeEmailSelectName.delivery_fee} class="form-control" id="exampleInputPassword1" placeholder="Enter Delivery Fee" />
+                      <input type="number" required name="delivery_fee" onChange={dataFromSelection} value={customeEmailSelectName.delivery_fee} class="form-control" id="exampleInputPassword1" placeholder="Enter Delivery Fee" />
                     </div>
                   </div>
                   : ''
@@ -618,7 +681,7 @@ export default function CartItems({
                   items.map((item, index) => (
                     <>
                       {
-                        (item.name &&  item.sizes.length > 0) ?
+                        (item.name && item.sizes.length > 0) ?
                           <tr key={index} id={item.id}>
                             <td>
                               <FaTrash
@@ -657,20 +720,21 @@ export default function CartItems({
                             {item.addons.length > 0 || item.extras.length > 0 ? (
                               <td>
                                 <button
-                                  className="detailsItem"
+                                // className="detailsItem"
                                 // onClick={() => detailsItemToggle(item)}
                                 >
-                                  <i className="fa-regular fa-square-caret-down"></i>
+                                  {/* <i className="fa-regular fa-square-caret-down"></i> */}
+                                  --
                                 </button>
                               </td>
                             ) : (
                               "--"
                             )}
                             <td>
-                              $
+                              
                               {item.sizes[0].cost > 0
                                 ? (item.sizes[0].cost * item.sizes[0].quantity).toFixed(2)
-                                : item.costOffers ? (item.costOffers * item.sizes[0].quantity).toFixed(2) : item.addoons.cost ? (item.addoons.cost * item.sizes[0].quantity).toFixed(2) : ""}
+                                : item.costOffers ? (item.costOffers * item.sizes[0].quantity).toFixed(2) : item.addoons.cost ? (item.addoons.cost * item.sizes[0].quantity).toFixed(2) : ""} OMR
                             </td>
                           </tr>
                           : ""}
@@ -723,9 +787,9 @@ export default function CartItems({
 
 
                                 <td>
-                                  $
+                                  
                                   {(addon.cost * addon.quantity).toFixed(2)
-                                  }
+                                  } OMR
                                 </td>
                               </tr>
                             )
@@ -777,9 +841,9 @@ export default function CartItems({
 
 
                                 <td>
-                                  $
+                                  
                                   {(extra.cost * extra.quantity).toFixed(2)
-                                  }
+                                  } OMR
                                 </td>
                               </tr>
                             )
@@ -826,16 +890,18 @@ export default function CartItems({
           <ul className="payment-details">
             <li className="d-flex justify-content-between mb-2">
               <span className="fw-semibold">sub total</span>
-              <span className="fw-semibold">${finalTotal.toFixed(2)}</span>
+              <span className="fw-semibold">{finalTotal.toFixed(2)} OMR</span>
             </li>
             <li className="d-flex justify-content-between mb-2">
-              <span>discount</span>
-              <span>${discountValue === "" ? 0 : discountValue}</span>
+              {/* <span>discount</span>
+              <span>${discountValue === "" ? 0 : discountValue}</span> */}
+              <span>Tax</span>
+              <span>14%</span>
             </li>
             <li className="d-flex justify-content-between">
               <span className="fw-bold">total</span>
               <span className="fw-bold">
-                ${finalTotalWithDiscount.toFixed(2)}
+                {((finalTotalWithDiscount * 1.14).toFixed(2))} OMR
               </span>
             </li>
           </ul>
@@ -856,7 +922,7 @@ export default function CartItems({
             </button>
           </div>
 
-          {items.length > 0 ? (
+          {true? (
             <div className="invoice" onClick={modalClose}>
               invoice
             </div>

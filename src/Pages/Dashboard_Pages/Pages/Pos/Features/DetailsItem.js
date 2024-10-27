@@ -260,12 +260,12 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
                 <p>{cartItem.description}</p>
                { cartItem.items?  <details >{cartItem.items}</details> :""}
                 <b>
-                  $
+                
                   {
   mealSize && mealSize.length > 0
     ? mealSize.find((size) => size.size === selectedSize)?.cost || 0
     : cartItem.cost ? cartItem.cost : cartItem.total_price_after_discount
-}
+} OMR
                 </b>
               </div>
             </div>
@@ -327,7 +327,7 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
                               src={`http://localhost:8000/storage/${addon.image}`}
                               alt={addon.name}
                             />
-                            <p className="cost">${addon.cost}</p>
+                            <p className="cost">{addon.cost} OMR</p>
                             {qtyAddonsOrExtra(selectedAddons, addon.id) !==
                             0 ? (
                               <p className="count">
@@ -368,7 +368,7 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
                               src={`http://localhost:8000/storage/${extra.image}`}
                               alt={extra.name}
                             />
-                            <p className="cost">${extra.cost}</p>
+                            <p className="cost">{extra.cost} OMR</p>
                             {qtyAddonsOrExtra(selectedExtras, extra.id) !==
                             0 ? (
                               <p className="count">
