@@ -118,7 +118,9 @@ export default function CartItems({
               totalCost += item.costOffers * item.sizes[0].quantity
             }
           }
-
+          if(customeEmailSelectName.delivery_fee !== ""){
+            totalCost +=customeEmailSelectName.delivery_fee
+          }
         });
 
         setFinalTotal(totalCost);
@@ -512,7 +514,9 @@ export default function CartItems({
 
       let objCustum = {}
       objCustum.customer_id = customer_id
-      objCustum.total_cost = (finalTotalWithDiscount * 1.14).toFixed(2)
+      objCustum.total_cost = customeEmailSelectName.delivery_fee !== ""
+      ? (parseInt(customeEmailSelectName.delivery_fee) + (finalTotalWithDiscount * 1.14)).toFixed(2)
+      : (finalTotalWithDiscount * 1.14).toFixed(2);
       console.log(objCustum.total_cost);
 
 
@@ -624,7 +628,7 @@ export default function CartItems({
           </select>
           <div>
           <div class="form-group mt-2">
-                      <textarea type="text" required name="note" onChange={dataFromSelection} value={customeEmailSelectName.note} class="form-control" id="exampleInputPassword1" placeholder="Enter Note IF You Need" ></textarea>
+                      <textarea type="text" name="note" onChange={dataFromSelection} value={customeEmailSelectName.note} class="form-control" id="exampleInputPassword1" placeholder="Enter Note IF You Need" ></textarea>
                     </div>
             {/* condition to see if dilivery or floor and base on cond we  */}
             {
@@ -641,7 +645,7 @@ export default function CartItems({
                     <option value="" disabled selected>choose your Dining Table </option>
                     {floorsPlace.map((item, index) => (
                       <option key={index} value={item.id}>
-                        {item.pleace}
+                        {item.place}
                       </option>
                     ))}
                   </select>
@@ -901,7 +905,11 @@ export default function CartItems({
             <li className="d-flex justify-content-between">
               <span className="fw-bold">total</span>
               <span className="fw-bold">
-                {((finalTotalWithDiscount * 1.14).toFixed(2))} OMR
+              {
+                customeEmailSelectName.delivery_fee !== ""
+                  ? `${(parseInt(customeEmailSelectName.delivery_fee) + (finalTotalWithDiscount * 1.14)).toFixed(2)} OMR`
+                  : `${(finalTotalWithDiscount * 1.14).toFixed(2)} OMR`
+              }
               </span>
             </li>
           </ul>

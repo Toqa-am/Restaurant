@@ -1,5 +1,5 @@
 import "./Dashboard.css";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import DatePicker from "react-datepicker";
 import { Link } from "react-router-dom";
 import { BsFront } from "react-icons/bs";
@@ -9,9 +9,15 @@ import { RiMoneyDollarCircleFill, RiAlignItemLeftFill } from "react-icons/ri";
 import LineChartComponent from "./Charts/LineChartComponent";
 import AreaChartComponent from "./Charts/AreaChartComponent";
 import ImageTest from "../../../assets/global/profile.png";
+import { getData , imageStorageURL} from "../../../axiosConfig/API";
 
 export default function Dashboard() {
   const [startDate, setStartDate] = useState(new Date());
+  const [Items, setItems] = useState([]);
+  const [employee, setEmployee] = useState([]);
+  const [greeting, setGreeting] = useState("");
+  const [sales, setSales] = useState("");
+
 
   const data = [
     { date: "2024-07-01", sales: 4.5 },
@@ -20,69 +26,62 @@ export default function Dashboard() {
     { date: "2024-07-04", sales: 0.0 },
   ];
 
-  const cards = [
-    {
-      id: 1,
-      image: ImageTest,
-      title: "title 1",
-      price: "$452",
-    },
-    {
-      id: 2,
-      image: ImageTest,
-      title: "title 2",
-      price: "$452",
-    },
-    {
-      id: 3,
-      image: ImageTest,
-      title: "title 3",
-      price: "$452",
-    },
-    {
-      id: 4,
-      image: ImageTest,
-      title: "title 4",
-      price: "$452",
-    },
-    {
-      id: 5,
-      image: ImageTest,
-      title: "title 5",
-      price: "$452",
-    },
-    {
-      id: 6,
-      image: ImageTest,
-      title: "title 6",
-      price: "$452",
-    },
-    {
-      id: 7,
-      image: ImageTest,
-      title: "title 7",
-      price: "$452",
-    },
-    {
-      id: 8,
-      image: ImageTest,
-      title: "title 8",
-      price: "$452",
-    },
-  ];
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) setGreeting("Good morning!");
+    else if (hour < 18) setGreeting("Good afternoon!");
+    else setGreeting("Good evening!");
+  }, []);
+
+
+  const fetchDataSales = useCallback(async () => {
+    try {
+      const result = await getData("admin/sales");
+      sessionStorage.removeItem("origin_data");
+      setSales(result);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  }, []);
+
+  const fetchDataEmployee = useCallback(async () => {
+    try {
+      const result = await getData("admin/refresh");
+      sessionStorage.removeItem("origin_data");
+      setEmployee(result);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  }, []);
+
+  const fetchMostPopularItems = useCallback(async () => {
+    try {
+      const result = await getData("admin/MostPopularItems");
+      sessionStorage.removeItem("origin_data");
+      setItems(result);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchMostPopularItems();
+    fetchDataEmployee();
+    fetchDataSales();
+  }, [fetchMostPopularItems,fetchDataEmployee,fetchDataSales]);
 
   return (
     <div className="Dashboard">
       <div className="reminder alert-danger p-3 rounded-2 mb-3">
         <p>reminder!</p>
         <p className="text-secondary">
-          dummy data will be reset in every <b>30</b> minutes.
+          Data will be reset at the beginning of each month.
         </p>
       </div>
 
       <div className="welcome-user pl-2 pr-2 mb-5">
-        <h3>good morning!</h3>
-        <h4>john doe</h4>
+        <h3>{greeting}</h3>
+        <h4>{employee.name}</h4>
       </div>
 
       <div className="datePicker mb-3 pl-2 pr-2">
@@ -190,16 +189,16 @@ export default function Dashboard() {
             </div>
             <div className="section-body">
               <div className="cards">
-                {cards.map((card, index) => (
+                {Items.map((item, index) => (
                   <Link
-                    to={`/admin/dashboard/meals/show/${card.id}`}
+                    to={`/admin/dashboard/meals/show/${item.id}`}
                     className="card"
                     key={index}
                   >
                     <div className="card-img">
-                      <img loading="lazy" src={card.image} alt={card.title} />
+                      <img loading="lazy" src={`${imageStorageURL}/${item.image}`} alt={item.name} />
                     </div>
-                    <div className="card-title">{card.title}</div>
+                    <div className="card-title">{item.name}</div>
                   </Link>
                 ))}
               </div>
@@ -214,19 +213,18 @@ export default function Dashboard() {
             </div>
             <div className="section-body">
               <div className="cards popular">
-                {cards.map((card, index) => (
+                {Items.map((item, index) => (
                   <Link
-                    to={`/admin/dashboard/meals/show/${card.id}`}
+                    to={`/admin/dashboard/meals/show/${item.id}`}
                     className="card"
                     key={index}
                   >
                     <div className="card-img">
-                      <img loading="lazy" src={card.image} alt={card.title} />
+                      <img loading="lazy" src={`${imageStorageURL}/${item.image}`} alt={item.name} />
                     </div>
                     <div className="card-text">
-                      <p>{card.title}</p>
-                      <p>lorem lorem</p>
-                      <p>{card.price}</p>
+                      <p>{item.name}</p>
+                      <p>{item.cost}</p>
                     </div>
                   </Link>
                 ))}

@@ -16,8 +16,9 @@ export default function TableOrders() {
   const fetchTableOrders = useCallback(async () => {
     try {
       const result = await getData("admin/orders");
+      const filteredOrders = result.filter(table => table.created_by !== 1);
       sessionStorage.removeItem("origin_data");
-      setTableOrders(result);
+      setTableOrders(filteredOrders);
     } catch (error) {
       console.error(error.response?.data?.message);
     }

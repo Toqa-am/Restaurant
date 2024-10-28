@@ -41,6 +41,7 @@ export default function Pos() {
       const offersResult = await getData("offers/items");
       // console.log(offersResult);  
       setOffersItems(offersResult)
+      sessionStorage.removeItem("origin_data");
       setTotalPagesOffers(Math.ceil(offersItems.length / pagination_length))
     } catch (error) {
       console.error(error.response?.data?.message);

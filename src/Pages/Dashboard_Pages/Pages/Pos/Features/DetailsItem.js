@@ -388,7 +388,7 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
               </div>
             )}
 
-            <div className="notes">
+            {/* <div className="notes">
               <label>Notes</label>
               <textarea
                 rows="3"
@@ -396,7 +396,7 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
                 className="form-control"
                 onChange={(e) => setNotes(e.target.value)}
               ></textarea>
-            </div>
+            </div> */}
 
             <button
               type="button"

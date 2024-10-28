@@ -61,6 +61,7 @@ export default function Meals({ visible, visibleToggle, updated }) {
     formData.append("description", meal.description);
     formData.append("size", meal.size);
     formData.append("cost", meal.cost);
+    if (meal.number_of_pieces)
     formData.append("number_of_pieces", meal.number_of_pieces);
 
     try {

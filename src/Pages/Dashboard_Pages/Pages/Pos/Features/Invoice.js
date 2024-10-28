@@ -35,7 +35,9 @@ export default function Invoice({ visible, modalClose }) {
 
     
   useEffect(() => {
-    const storedId = JSON.parse(localStorage.getItem("invoiceId") || "");
+    // localStorage.setItem("invoiceId",  JSON.stringify(""));
+
+    const storedId = JSON.parse(localStorage.getItem("invoiceId") ||  localStorage.setItem("invoiceId",  JSON.stringify("")));
     setinvoiceid(storedId)
     fetchOrderToInvoice()
     // const storeCartItem = JSON.parse(localStorage.getItem("cartItems") || []);
@@ -100,7 +102,7 @@ export default function Invoice({ visible, modalClose }) {
   
         <div className="id_date">
           <p>
-            <span>order id</span>
+            <span>order id : </span>
             <span>{invoiceItem?.order?.id}</span>
           </p>
           <p>
@@ -133,9 +135,7 @@ export default function Invoice({ visible, modalClose }) {
                   </tr>
                 ))
               ) : (
-                <tr>
-                  <td colSpan="3">--</td>
-                </tr>
+                ""
               )}
             </tbody>
   
@@ -146,7 +146,7 @@ export default function Invoice({ visible, modalClose }) {
                 {invoiceItem.addons.map((addon, index) => (
                   <tr className="addons" key={`${index}`}>
                     <td>x {addon.quantity}</td>
-                    <td>{index < 1 ? `addon: ${addon.name}` : `~~~~ : ${addon.name}`}</td>
+                    <td>{addon.name}</td>
                     <td>{addon.cost} OMR</td>
                   </tr>
                 ))}
@@ -160,7 +160,7 @@ export default function Invoice({ visible, modalClose }) {
                 {invoiceItem.extras.map((extra, index) => (
                   <tr className="extras" key={`${index}`}>
                     <td>x {extra.quantity}</td>
-                    <td>{index < 1 ? `extra: ${extra.name}` : `~~~ : ${extra.name}`}</td>
+                    <td>{extra.name}</td>
                     <td>{extra.cost} OMR</td>
                   </tr>
                 ))}
@@ -169,13 +169,13 @@ export default function Invoice({ visible, modalClose }) {
               </tbody>
             )}
 
-{invoiceItem?.offers &&
-invoiceItem.offers?.length > 0 && (
+          {invoiceItem?.offers &&
+          invoiceItem.offers?.length > 0 && (
               <tbody>
                 {invoiceItem.offers.map((offer, index) => (
                   <tr className="extras" key={`${index}`}>
                     <td>x {offer.quantity}</td>
-                    <td>{index < 1 ? `extra: ${offer.name}` : `~~~ : ${offer.name}`}</td>
+                    <td>{offer.name}</td>
                     <td>{offer.cost} OMR</td>
                   </tr>
                 ))}
@@ -187,19 +187,26 @@ invoiceItem.offers?.length > 0 && (
         <div className="total">
           <div className="row">
             <div className="col">SUBTOTAL</div>
-            <div className="col">{invoiceItem?.order?.sub_total} OMR </div>
+            <div className="col">
+              {invoiceItem?.order?.sub_total ? invoiceItem.order.sub_total.toFixed(2) : "0.00"} OMR
+            </div>
           </div>
   
           <div className="row">
             <div className="col">TOTAL TAX</div>
-            <div className="col"> <strong>{invoiceItem?.order?.tax}</strong> </div>
+            <div className="col"> {invoiceItem?.order?.tax} OMR </div>
             
           </div>
   
-          <div className="row">
-            <div className="col">DISCOUNT</div>
-            <div className="col">{"0"}</div>
-          </div>
+          {
+            invoiceItem?.order?.delivery_fee ?
+          
+            <div className="row">
+            <div className="col">Delivery Fee</div>
+            <div className="col">{invoiceItem?.order?.delivery_fee ? invoiceItem.order.delivery_fee.toFixed(2) : "0.00"} OMR</div>
+            </div>
+            :"" 
+          }
   
           <div className="row fw-bold">
             <div className="col">TOTAL</div>

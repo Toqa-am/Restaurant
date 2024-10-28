@@ -20,9 +20,7 @@ export default function Meals() {
 
   const fetchMeals = useCallback(async () => {
     try {
-      const result = await getData("admin/meals");
-      console.log(result);
-      
+      const result = await getData("admin/meals");      
       sessionStorage.removeItem("origin_data");
       setMeals(result);
     } catch (error) {
