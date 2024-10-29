@@ -17,6 +17,9 @@ export default function Dashboard() {
   const [employee, setEmployee] = useState([]);
   const [greeting, setGreeting] = useState("");
   const [sales, setSales] = useState("");
+  const [currentMonthSalesSummary, setCurrentMonthSalesSummary] = useState("");
+  const [countActiveCustomers, setCountActiveCustomers] = useState("");
+  const [countTotalItems, setCountTotalItems] = useState("");
 
 
   const data = [
@@ -64,11 +67,48 @@ export default function Dashboard() {
     }
   }, []);
 
+  const fetchCountActiveCustomers = useCallback(async () => {
+    try {
+      const result = await getData("admin/countActiveCustomers");
+      sessionStorage.removeItem("origin_data");
+      setCountActiveCustomers(result);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  }, []);
+
+  const fetchCurrentMonthSalesSummary = useCallback(async () => {
+    try {
+      const result = await getData("admin/orders/currentMonthSalesSummary");
+      console.log(result);
+      
+      sessionStorage.removeItem("origin_data");
+      setCurrentMonthSalesSummary(result);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  }, []);
+  
+  const fetchCountTotalItems = useCallback(async () => {
+    try {
+      const result = await getData("admin/count-total-items");
+      sessionStorage.removeItem("origin_data");
+      setCountTotalItems(result);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  }, []);
+  
+
   useEffect(() => {
+    fetchCountActiveCustomers();
+    fetchCurrentMonthSalesSummary();
     fetchMostPopularItems();
     fetchDataEmployee();
     fetchDataSales();
-  }, [fetchMostPopularItems,fetchDataEmployee,fetchDataSales]);
+    fetchCountTotalItems();
+  }, [fetchMostPopularItems,fetchDataEmployee,fetchDataSales,fetchCountTotalItems,
+      fetchCurrentMonthSalesSummary,fetchCountActiveCustomers]);
 
   return (
     <div className="Dashboard">
@@ -99,7 +139,11 @@ export default function Dashboard() {
             <div className="icon">
               <RiMoneyDollarCircleFill />
             </div>
-            <h6 className="text-white">Total Sales</h6>
+            <div style={{display:"flex",flexDirection:"column"}}>
+            <h6 className="text-white " >Total Sales</h6>
+
+            <h6 className="text-white mt-2">{currentMonthSalesSummary.total_sales_amount} OMR</h6>
+            </div>
           </div>
         </div>
         <div className="col col-12 col-sm-6 col-xl-3 p-2">
@@ -107,7 +151,11 @@ export default function Dashboard() {
             <div className="icon">
               <BsFront />
             </div>
+            <div style={{display:"flex",flexDirection:"column"}}>
             <h6 className="text-white">Total Orders</h6>
+            <h6 className="text-white mt-2">{currentMonthSalesSummary.total_orders} Order</h6>
+            </div>
+
           </div>
         </div>
         <div className="col col-12 col-sm-6 col-xl-3 p-2">
@@ -115,16 +163,25 @@ export default function Dashboard() {
             <div className="icon">
               <FaUserGroup />
             </div>
+            <div style={{display:"flex",flexDirection:"column"}}>
+
             <h6 className="text-white">Total Customers</h6>
+            <h6 className="text-white mt-2">{countActiveCustomers.total_count} Customer</h6>
           </div>
+          </div>
+
         </div>
         <div className="col col-12 col-sm-6 col-xl-3 p-2">
           <div className="d-flex align-items-center gap-2 p-3 rounded-2">
             <div className="icon">
               <RiAlignItemLeftFill />
             </div>
+            <div style={{display:"flex",flexDirection:"column"}}>
             <h6 className="text-white">Total Menu Items</h6>
+            <h6 className="text-white mt-2">{countTotalItems.total_count} Item</h6>
           </div>
+          </div>
+
         </div>
       </div>
 
@@ -191,12 +248,12 @@ export default function Dashboard() {
               <div className="cards">
                 {Items.map((item, index) => (
                   <Link
-                    to={`/admin/dashboard/meals/show/${item.id}`}
+                    to={`/admin/dashboard/${item.table_name}/show/${item.id}`}
                     className="card"
                     key={index}
                   >
                     <div className="card-img">
-                      <img loading="lazy" src={`${imageStorageURL}/${item.image}`} alt={item.name} />
+                      <img loading="lazy" src={`${imageStorageURL}/${item.image}`} alt={item.name}  style={{width:"80px",height:"80px"}}/>
                     </div>
                     <div className="card-title">{item.name}</div>
                   </Link>
@@ -215,12 +272,12 @@ export default function Dashboard() {
               <div className="cards popular">
                 {Items.map((item, index) => (
                   <Link
-                    to={`/admin/dashboard/meals/show/${item.id}`}
+                    to={`/admin/dashboard/${item.table_name}/show/${item.id}`}
                     className="card"
                     key={index}
                   >
                     <div className="card-img">
-                      <img loading="lazy" src={`${imageStorageURL}/${item.image}`} alt={item.name} />
+                      <img loading="lazy" src={`${imageStorageURL}/${item.image}`} alt={item.name} style={{width:"80px",height:"80px"}}/>
                     </div>
                     <div className="card-text">
                       <p>{item.name}</p>

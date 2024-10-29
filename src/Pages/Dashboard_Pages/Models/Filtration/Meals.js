@@ -37,7 +37,6 @@ export default function Meals({ handleModalToggle, data, headers, filtrated }) {
     setFilteredData(JSON.parse(sessionStorage.getItem("origin_data")));
 
     const { name, value, id } = e.target;
-
     if (name === "status") {
       setMeals((prevData) => ({
         ...prevData,
@@ -54,22 +53,41 @@ export default function Meals({ handleModalToggle, data, headers, filtrated }) {
   };
 
   // mostafa edit to filter 
+  // const handleSearch = () => {
+  //   const { name,  cost ,category_id, size, type, status ,all_costs    } = meals;
+  //   const filtered = filteredData.filter((item) => {
+  //     const allCostsMatches = cost && item.all_costs.some(c => c === parseFloat(cost));
+  //     return (
+  //       allCostsMatches && 
+  //       (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
+  //       (!category_id  || item.category_id === parseInt(category_id)) &&
+  //       (!size || item.size === parseFloat(size)) &&
+  //       (!type || item.type.toLowerCase() === type.toLowerCase()) && 
+  //       (status === "" || item.status === parseInt(status))
+  //     );
+  //   });  
+  //   setFilteredData(filtered);
+  //   filtrated(filtered);
+  // };
+
   const handleSearch = () => {
-    const { name,  cost ,category_id, size, type, status ,all_costs    } = meals;
+    const { name, cost, category_id, size, type, status } = meals;
+  
+    // Use filter to apply each filter condition independently
     const filtered = filteredData.filter((item) => {
-      const allCostsMatches = cost && item.all_costs.some(c => c === parseFloat(cost));
-      return (
-        allCostsMatches && 
-        (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
-        (category_id === "" || item.category_id === parseInt(category_id)) &&
-        (!size || item.size === parseFloat(size)) &&
-        (!type || item.type.toLowerCase() === type.toLowerCase()) && 
-        (status === "" || item.status === parseInt(status))
-      );
-    });  
+      const costMatch = !cost || item.all_costs.some((c) => c === parseFloat(cost));
+      const nameMatch = !name || item.name.toLowerCase().includes(name.toLowerCase());
+      const categoryMatch = !category_id || item.category_id === parseInt(category_id);
+      const sizeMatch = !size || item.size === parseFloat(size);
+      const typeMatch = !type || item.type.toLowerCase() === type.toLowerCase();
+      const statusMatch = status === "" || item.status === parseInt(status);
+  
+      return costMatch && nameMatch && categoryMatch && sizeMatch && typeMatch && statusMatch;
+    });
     setFilteredData(filtered);
     filtrated(filtered);
   };
+  
   
   const handleClear = () => {
     setMeals({
@@ -145,7 +163,7 @@ export default function Meals({ handleModalToggle, data, headers, filtrated }) {
             </select>
           </div>
 
-          <div className="col col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
+          {/* <div className="col col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
             <label htmlFor="size" className="mb-2">
               size
             </label>
@@ -165,7 +183,7 @@ export default function Meals({ handleModalToggle, data, headers, filtrated }) {
               <option value="3">large</option>
               <option value="4">family</option>
             </select>
-          </div>
+          </div> */}
 
           <div className="col col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
             <label className="mb-2">Type</label>

@@ -2,7 +2,7 @@ import "./DataTable.css";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Table } from "antd";
 import Breadcrumb from "../../../Components/Dashboard/Features/Breadcrumb";
-import Filtration from "../Models/Filtration/SalesReports";
+import Filtration from "../Models/Filtration/ItemsReports";
 import { getData } from "../../../axiosConfig/API";
 
 export default function SalesReports() {
@@ -11,7 +11,9 @@ export default function SalesReports() {
 
   const fetchSalesReports = useCallback(async () => {
     try {
-      const result = await getData("admin/transactions");
+      const result = await getData("admin/sales-reports");
+      console.log(result);
+      
       sessionStorage.removeItem("origin_data");
       setSalesReports(result);
     } catch (error) {
@@ -36,28 +38,28 @@ export default function SalesReports() {
     },
     {
       title: "PAYMENT METHOD",
-      dataIndex: "payment_method",
-      key: "payment_method",
+      dataIndex: "PaymentType",
+      key: "PaymentType",
     },
     {
-      title: "ORDER ID",
-      dataIndex: "order_id",
-      key: "order_id",
+      title: "Total Cost",
+      dataIndex: "total_cost",
+      key: "total_cost",
     },
     {
-      title: "AMOUNT",
-      key: "amount",
+      title: "Pay",
+      key: "pay",
       render: (item) => (
         <span
           className={
-            parseFloat(item.amount) === 0
+            parseFloat(item.pay) === 0
               ? "not_value"
-              : parseFloat(item.amount) > 0
+              : parseFloat(item.pay) > 0
               ? "active"
               : "inactive"
           }
         >
-          {item.amount}
+          {item.pay === 0 ? "unpaid" : "paid"}
         </span>
       ),
     },
@@ -73,16 +75,16 @@ export default function SalesReports() {
       key: "created_at",
     },
     {
-      label: "Payment Method",
-      key: "payment_method",
+      label: "PaymentType",
+      key: "PaymentType",
     },
     {
       label: "Order Id",
       key: "order_id",
     },
     {
-      label: "Amount",
-      key: "amount",
+      label: "total_cost",
+      key: "total_cost",
     },
     {
       label: "Status",

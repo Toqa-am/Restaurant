@@ -4,6 +4,8 @@ import { Table } from "antd";
 import Breadcrumb from "../../../Components/Dashboard/Features/Breadcrumb";
 import Filtration from "../Models/Filtration/SalesReports";
 import { getData } from "../../../axiosConfig/API";
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import { BsEye } from "react-icons/bs";
 
 export default function SalesReports() {
   const componentRef = useRef();
@@ -11,7 +13,7 @@ export default function SalesReports() {
 
   const fetchSalesReports = useCallback(async () => {
     try {
-      const result = await getData("admin/transactions");
+      const result = await getData("admin/items-reports");      
       sessionStorage.removeItem("origin_data");
       setSalesReports(result);
     } catch (error) {
@@ -30,35 +32,59 @@ export default function SalesReports() {
       key: "id",
     },
     {
-      title: "DATE",
-      dataIndex: "created_at",
-      key: "created_at",
+      title: "name",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: "PAYMENT METHOD",
-      dataIndex: "payment_method",
-      key: "payment_method",
+      title: "count",
+      dataIndex: "count",
+      key: "count",
     },
     {
-      title: "ORDER ID",
-      dataIndex: "order_id",
-      key: "order_id",
+      title: "image",
+      dataIndex: "image",
+      key: "image",
+      render: (image) => (
+        <img 
+          src={`http://127.0.0.1:8000/storage/${image}`} 
+          alt="Product" 
+          style={{ width: 50, height: 50 }} 
+        />
+      ),
     },
     {
-      title: "AMOUNT",
-      key: "amount",
+      title: "status",
+      key: "status",
       render: (item) => (
         <span
           className={
-            parseFloat(item.amount) === 0
+            parseFloat(item.status) === 0
               ? "not_value"
-              : parseFloat(item.amount) > 0
+              : parseFloat(item.status) > 0
               ? "active"
               : "inactive"
           }
         >
-          {item.amount}
+          {item.status === 1 ? "active" : "inactive" }
         </span>
+      ),
+    },
+
+    {
+      title: "ACTION",
+      key: "table_name",
+      render: (item) => (
+        <>
+          <Link
+            to={`/admin/dashboard/${item.table_name}/show/${item.id}`}
+            className="eyeIcon"
+            data-tooltip="view"
+            style={{ "--c": "#1772FF", "--bg": "#E2EDFB" }}
+          >
+            <BsEye />
+          </Link>
+        </>
       ),
     },
   ];
@@ -69,24 +95,24 @@ export default function SalesReports() {
       key: "id",
     },
     {
-      label: "Date",
-      key: "created_at",
+      label: "name",
+      key: "name",
     },
     {
-      label: "Payment Method",
-      key: "payment_method",
+      label: "count",
+      key: "count",
     },
     {
-      label: "Order Id",
-      key: "order_id",
-    },
-    {
-      label: "Amount",
-      key: "amount",
+      label: "image",
+      key: "image",
     },
     {
       label: "Status",
       key: "status",
+    },
+    {
+      label: "Amount",
+      key: "amount",
     },
   ];
 

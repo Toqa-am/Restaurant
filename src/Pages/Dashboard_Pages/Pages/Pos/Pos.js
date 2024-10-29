@@ -49,6 +49,18 @@ export default function Pos() {
   }
 
 
+  const f = async()=>{
+    try {
+      const offersResult = await getData("admin/items-reports");
+      console.log(offersResult);  
+      sessionStorage.removeItem("origin_data");
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  }
+
+
+
   const fetchMenuItem = useCallback(async () => {
     try {
       const result = await getData("menu");
@@ -80,6 +92,7 @@ export default function Pos() {
   const currentItems = showOffers ? offersItems: meals.slice(indexOfFirstItem, indexOfLastItem);
 
   useEffect(() => {
+    f()
     fetchCategories();
     fetchMenuItem();
     fetchOffersItems()

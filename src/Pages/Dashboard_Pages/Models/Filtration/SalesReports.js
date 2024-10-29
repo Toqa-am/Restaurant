@@ -11,9 +11,9 @@ export default function SalesReports({
 }) {
   const [salesReports, setSalesReports] = useState({
     created_at: "",
-    payment_method: "",
-    order_id: "",
-    amount: "",
+    name: "",
+    id: "",
+    count: "",
   });
   const [filteredData, setFilteredData] = useState();
 
@@ -40,34 +40,51 @@ export default function SalesReports({
       .replace("T", " ");
   }
 
+  // const handleSearch = () => {
+  //   const { created_at, name, id, count } = salesReports;
+  //   const filtered = filteredData.filter((item) => {
+  //     return (
+  //       (!created_at || item.created_at <= created_at) &&
+  //       (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
+  //       (id === "" || item.id === parseInt(id)) &&
+  //       (count === "" || item.count === parseInt(count))
+  //     );
+  //   });
+
+  //   setFilteredData(filtered);
+  //   filtrated(filtered);
+  // };
+
+
+
   const handleSearch = () => {
-    const { created_at, payment_method, order_id, amount } = salesReports;
-    const filtered = filteredData.filter((item) => {
+    const { created_at, name, id, count } = salesReports;
+
+    const originalData = JSON.parse(sessionStorage.getItem("origin_data"));
+    const filtered = originalData.filter((item) => {
       return (
         (!created_at || item.created_at <= created_at) &&
-        (!payment_method ||
-          item.payment_method
-            .toLowerCase()
-            .includes(payment_method.toLowerCase())) &&
-        (order_id === "" || item.order_id === parseInt(order_id)) &&
-        (amount === "" || item.amount === parseInt(amount))
+        (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
+        (!id || item.id === parseInt(id)) &&
+        (!count || item.count === parseInt(count))
       );
     });
 
     setFilteredData(filtered);
     filtrated(filtered);
   };
-
   const handleClear = () => {
     setSalesReports({
       created_at: "",
-      payment_method: "",
-      order_id: "",
-      amount: "",
+      name: "",
+      id: "",
+      count: "",
     });
     setFilteredData(JSON.parse(sessionStorage.getItem("origin_data")));
     filtrated(JSON.parse(sessionStorage.getItem("origin_data")));
   };
+
+
 
   return (
     <div className="headerTable">
@@ -83,7 +100,7 @@ export default function SalesReports({
       >
         <div className="row pb-4">
           <div className="row mt-3">
-            <div className="col col-12 col-md-6 col-lg-3 mb-3">
+            {/* <div className="col col-12 col-md-6 col-lg-3 mb-3">
               <label htmlFor="created_at" className="mb-2">
                 date
               </label>
@@ -95,52 +112,52 @@ export default function SalesReports({
                 value={salesReports.created_at}
                 onChange={(e) => handleChange(e)}
               />
-            </div>
+            </div> */}
 
             <div className="col col-12 col-md-6 col-lg-3 mb-3">
               <label htmlFor="payment_method" className="mb-2">
-                payment method
+                name of Meal
               </label>
-              <select
+              <input
                 className="form-control"
-                name="payment_method"
-                id="payment_method"
-                value={salesReports.payment_method}
+                name="name"
+                id="name"
+                value={salesReports.name}
                 onChange={(e) => handleChange(e)}
-              >
-                <option value="" selected disabled>
+              />
+                {/* <option value="" selected disabled>
                   --
                 </option>
                 <option value="cashed">cashed</option>
                 <option value="VisaMasterCard">VisaMasterCard</option>
                 <option value="Unpaid">Unpaid</option>
-              </select>
+              </select> */}
             </div>
 
             <div className="col col-12 col-md-6 col-lg-3 mb-3">
               <label htmlFor="order_id" className="mb-2">
-                order id
+                Item id
               </label>
               <input
                 type="number"
                 className="form-control"
-                name="order_id"
-                id="order_id"
-                value={salesReports.order_id}
+                name="id"
+                id="id"
+                value={salesReports.id}
                 onChange={(e) => handleChange(e)}
               />
             </div>
 
             <div className="col col-12 col-md-6 col-lg-3 mb-3">
               <label htmlFor="amount" className="mb-2">
-                amount
+                Count
               </label>
               <input
                 type="number"
                 className="form-control"
-                name="amount"
-                id="amount"
-                value={salesReports.amount}
+                name="count"
+                id="count"
+                value={salesReports.count}
                 onChange={(e) => handleChange(e)}
               />
             </div>
