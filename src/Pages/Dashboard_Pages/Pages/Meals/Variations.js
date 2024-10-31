@@ -33,12 +33,13 @@ export default function Variations() {
     const { name, value } = e.target;
     if (name === "size") {
       setNewSize({ [name]: parseInt(value) });
-      
+      setMeal({ ...meal, [name]: parseInt(value) });
     } else {
       setMeal({ ...meal, [name]: parseInt(value) });
     }
   };
 
+ console.log(newSize);
  
   
 
@@ -69,7 +70,11 @@ export default function Variations() {
 
     const formData = new FormData();
     // formData.append("size", parseInt(sizeList[0].value)); 
-    formData.append("size", newSize.value);
+    if(newSize.size){
+      formData.append("size", newSize.size);
+    }else{
+      formData.append("size", meal.size);
+    }
 
     // if (meal.number_of_pieces !== null && Number.isInteger(meal.number_of_pieces)) {
     //   formData.append("number_of_pieces", meal.number_of_pieces);
@@ -212,6 +217,8 @@ export default function Variations() {
       ),
     },
   ];
+  console.log(meal);
+  
 
   return (
     <div className="SubModel">

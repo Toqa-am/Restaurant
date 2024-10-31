@@ -34,8 +34,8 @@ export default function ShowItem() {
   if (loading) return;
 
   return (
-    <div className="Show">
-      <div className="tabs">
+    <div className="Show" style={{backgroundColor:"white",boxSizing:"border-box",paddingLeft:"10px"}}>
+      <div className="tabs ">
         <Tabs defaultActiveKey="1">
           <TabPane
             className="TabPane"

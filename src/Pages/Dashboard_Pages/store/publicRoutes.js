@@ -196,14 +196,14 @@ const routes = [
         component: ItemsReports,
         role: ["admin"],
       },
-      {
-        id: 17,
-        path: "/admin/dashboard/credit-balance-report",
-        name: "Credit Balance Report",
-        icon: MdCreditScore,
-        component: CreditBalanceReport,
-        role: ["admin"],
-      },
+      // {
+      //   id: 17,
+      //   path: "/admin/dashboard/credit-balance-report",
+      //   name: "Credit Balance Report",
+      //   icon: MdCreditScore,
+      //   component: CreditBalanceReport,
+      //   role: ["admin"],
+      // },
     ],
   },
 ];

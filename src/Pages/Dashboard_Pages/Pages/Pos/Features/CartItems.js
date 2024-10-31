@@ -413,6 +413,17 @@ export default function CartItems({
       })
     }
 
+    if (item.extrass) {
+      if (item.extrass.name) {
+        acc.push({
+          id: item.extrass.id,
+          cost: item.extrass.cost,
+          quantity: item.sizes[0].quantity
+        })
+      }
+    }
+    return acc;
+
     return acc;
   }, [])
 
@@ -736,9 +747,16 @@ export default function CartItems({
                             )}
                             <td>
                               
-                              {item.sizes[0].cost > 0
-                                ? (item.sizes[0].cost * item.sizes[0].quantity).toFixed(2)
-                                : item.costOffers ? (item.costOffers * item.sizes[0].quantity).toFixed(2) : item.addoons.cost ? (item.addoons.cost * item.sizes[0].quantity).toFixed(2) : ""} OMR
+                            { item?.sizes?.[0]?.cost > 0
+  ? (item.sizes[0].cost * item.sizes[0].quantity).toFixed(2)
+  : item.costOffers 
+    ? (item.costOffers * (item.sizes?.[0]?.quantity || 0)).toFixed(2)
+    : item.addoons?.cost 
+      ? (item.addoons.cost * (item.sizes?.[0]?.quantity || 0)).toFixed(2) 
+      : item.extraas?.cost 
+        ? (item.extraas.cost * (item.sizes?.[0]?.quantity || 0)).toFixed(2)
+        : ""
+} OMR
                             </td>
                           </tr>
                           : ""}

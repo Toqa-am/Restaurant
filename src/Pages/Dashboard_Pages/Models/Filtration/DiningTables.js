@@ -10,7 +10,7 @@ export default function DiningTables({
   filtrated,
 }) {
   const [diningTables, setDiningTables] = useState({
-    number: "",
+    num: "",
     size: "",
     floor: "",
     status: "",
@@ -36,10 +36,10 @@ export default function DiningTables({
   };
 
   const handleSearch = () => {
-    const { number, size, floor, status } = diningTables;
+    const { num, size, floor, status } = diningTables;
     const filtered = filteredData.filter((item) => {
       return (
-        (number === "" || item.number === parseInt(number)) &&
+        (num === "" || item.num === parseInt(num)) &&
         (size === "" || item.size === parseInt(size)) &&
         (floor === "" || item.floor === parseInt(floor)) &&
         (status === "" || item.status === parseInt(status))
@@ -52,7 +52,7 @@ export default function DiningTables({
 
   const handleClear = () => {
     setDiningTables({
-      number: "",
+      num: "",
       size: "",
       floor: "",
       status: "",
@@ -80,7 +80,7 @@ export default function DiningTables({
                 number
               </label>
               <input
-                type="text"
+                type="number"
                 className="form-control"
                 name="num"
                 id="num"

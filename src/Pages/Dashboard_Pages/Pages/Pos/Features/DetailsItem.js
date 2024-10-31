@@ -177,6 +177,13 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
 
     }
 
+    let extraas ={
+      name:cartItem.name,
+      cost:cartItem.cost,
+      id:cartItem.id,
+
+    }
+
     let offers ={
       name:cartItem.name,
       cost:cartItem.costOffers,
@@ -185,6 +192,9 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
     if(cartItem.table_name === "addons"){
     newItem.addoons = addoons;
     }
+    if(cartItem.table_name === "extras"){
+      newItem.extraas = extraas;
+      }
 
     if(cartItem.table_name === "offers"){
       newItem.offers = offers;
