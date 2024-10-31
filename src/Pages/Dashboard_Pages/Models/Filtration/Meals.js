@@ -184,7 +184,7 @@ export default function Meals({ handleModalToggle, data, headers, filtrated }) {
               <option value="4">family</option>
             </select>
           </div> */}
-
+          
           <div className="col col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
             <label className="mb-2">Type</label>
             <div className="d-flex gap-2 align-items-center">

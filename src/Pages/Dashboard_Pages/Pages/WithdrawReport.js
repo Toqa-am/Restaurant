@@ -2,18 +2,19 @@ import "./DataTable.css";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Table } from "antd";
 import Breadcrumb from "../../../Components/Dashboard/Features/Breadcrumb";
-import Filtration from "../Models/Filtration/SalesReports";
+import Filtration from "../Models/Filtration/Withdraw";
 import { getData } from "../../../axiosConfig/API";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { BsEye } from "react-icons/bs";
 
-export default function SalesReports() {
+export default function WithDrowReport() {
   const componentRef = useRef();
   const [salesReports, setSalesReports] = useState([]);
 
   const fetchSalesReports = useCallback(async () => {
     try {
-      const result = await getData("admin/items-reports");      
+      const result = await getData("admin/withdrawals");   
+      console.log(result);
       sessionStorage.removeItem("origin_data");
       setSalesReports(result);
     } catch (error) {
@@ -36,56 +37,20 @@ export default function SalesReports() {
       key: "name",
     },
     {
-      title: "count",
-      dataIndex: "count",
-      key: "count",
+      title: "employee id",
+      dataIndex: "employee_id",
+      key: "employee_id",
     },
     {
-      title: "image",
-      dataIndex: "image",
-      key: "image",
-      render: (image) => (
-        <img 
-          src={`http://127.0.0.1:8000/storage/${image}`} 
-          alt="Product" 
-          style={{ width: 50, height: 50 }} 
-        />
-      ),
+        title: "amount",
+        dataIndex: "amount",
+        key: "amount",
     },
     {
-      title: "status",
-      key: "status",
-      render: (item) => (
-        <span
-          className={
-            parseFloat(item.status) === 0
-              ? "not_value"
-              : parseFloat(item.status) > 0
-              ? "active"
-              : "inactive"
-          }
-        >
-          {item.status === 1 ? "active" : "inactive" }
-        </span>
-      ),
-    },
-
-    {
-      title: "ACTION",
-      key: "table_name",
-      render: (item) => (
-        <>
-          <Link
-            to={`/admin/dashboard/${item.table_name}/show/${item.id}`}
-            className="eyeIcon"
-            data-tooltip="view"
-            style={{ "--c": "#1772FF", "--bg": "#E2EDFB" }}
-          >
-            <BsEye />
-          </Link>
-        </>
-      ),
-    },
+        title: "created_at",
+        dataIndex: "created_at",
+        key: "created_at",
+    } 
   ];
 
   const headers = [
@@ -98,21 +63,17 @@ export default function SalesReports() {
       key: "name",
     },
     {
-      label: "count",
-      key: "count",
+      label: "employee_id",
+      key: "employee_id",
     },
     {
-      label: "image",
-      key: "image",
-    },
-    {
-      label: "Status",
-      key: "status",
-    },
-    {
-      label: "Amount",
+      label: "amount",
       key: "amount",
     },
+    {
+      label: "created_at",
+      key: "created_at",
+    } 
   ];
 
   return (

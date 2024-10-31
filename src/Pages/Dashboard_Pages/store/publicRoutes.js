@@ -29,6 +29,7 @@ import Transactions from "../Pages/Transactions";
 import SalesReports from "../Pages/SalesReports";
 import ItemsReports from "../Pages/ItemsReports";
 import CreditBalanceReport from "../Pages/CreditBalanceReport";
+import WithDrowReport from "../Pages/WithdrawReport";
 
 const routes = [
   {
@@ -165,6 +166,15 @@ const routes = [
         component: Transactions,
         role: ["admin"],
       },
+      {
+        id: 18,
+        path: "/admin/dashboard/withdraw",
+        name: "WithDrawals",
+        icon: GrTransaction,
+        component: WithDrowReport,
+        role: ["admin"],
+      }
+
     ],
   },
   {
