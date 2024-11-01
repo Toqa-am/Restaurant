@@ -7,12 +7,12 @@ const getCartData = () => {
     if (currentCart && currentCart == []) {
         return [];
     }
-    else if(!currentCart) {
-        currentCart=[]
+    else if (!currentCart) {
+        currentCart = []
         localStorage.setItem("cartItems", JSON.stringify(currentCart))
         return JSON.parse(currentCart);
     }
-    else{
+    else {
         return JSON.parse(currentCart);
 
     }
@@ -25,12 +25,12 @@ const getCartTotal = () => {
     if (currentTotal == 0) {
         return 0;
     }
-    else if(!currentTotal){
-        currentTotal=0
+    else if (!currentTotal) {
+        currentTotal = 0
         localStorage.setItem("cartTotal", JSON.stringify(currentTotal))
         return JSON.parse(currentTotal);
     }
-    else{
+    else {
         return JSON.parse(currentTotal);
     }
 
@@ -42,8 +42,8 @@ const VALUE = {
     cartItems: getCartData(),
     searchStatement: "",
     itemQuant: 1,
-    table_num:null,
-    table_id:null
+    table_num: null,
+    table_id: null
 }
 export default function cartReducer(
     state = VALUE, action) {
@@ -60,59 +60,59 @@ export default function cartReducer(
                 const existingItem = state.cartItems.filter(item => item.name === action.payload.name && item.size === action.payload.size);
 
                 if (existingItem.length !== 0) {
-                    
-                        return {
-                            ...state,
-                            cartItems: state.cartItems.map(item =>
-                                item.name === action.payload.name && item.size === action.payload.size
-                                    ? { ...item, quant: item.quant + 1 }
-                                    : item
-                            ),
-                            cartTotal: Number(Number(state.cartTotal + existingItem[0].cost).toFixed(2)),
-                        };
-                    }
-                
+
+                    return {
+                        ...state,
+                        cartItems: state.cartItems.map(item =>
+                            item.name === action.payload.name && item.size === action.payload.size
+                                ? { ...item, quant: item.quant + 1 }
+                                : item
+                        ),
+                        cartTotal: Number(Number(state.cartTotal + existingItem[0].cost).toFixed(2)),
+                    };
+                }
+
             }
-            else if (action.payload.table_name === "offers"){
+            else if (action.payload.table_name === "offers") {
                 const existingItem = state.cartItems.find(item => item.name === action.payload.name);
                 console.log(existingItem)
                 if (existingItem.length !== 0) {
-                    
-                        return {
-                            ...state,
-                            cartItems: state.cartItems.map(item =>
-                                item.name === action.payload.name
-                                    ? { ...item, quant: item.quant + 1 }
-                                    : item
-                            ),
-                            cartTotal: Number(Number(state.cartTotal + existingItem.total_price_after_discount).toFixed(2)),
-                        };
-                    
+
+                    return {
+                        ...state,
+                        cartItems: state.cartItems.map(item =>
+                            item.name === action.payload.name
+                                ? { ...item, quant: item.quant + 1 }
+                                : item
+                        ),
+                        cartTotal: Number(Number(state.cartTotal + existingItem.total_price_after_discount).toFixed(2)),
+                    };
+
                 }
             }
             else {
                 const existingItem = state.cartItems.find(item => item.name === action.payload.name);
                 console.log(existingItem)
                 if (existingItem.length !== 0) {
-                    
-                        return {
-                            ...state,
-                            cartItems: state.cartItems.map(item =>
-                                item.name === action.payload.name
-                                    ? { ...item, quant: item.quant + 1 }
-                                    : item
-                            ),
-                            cartTotal: Number(Number(state.cartTotal + existingItem.cost).toFixed(2)),
-                        };
-                    
+
+                    return {
+                        ...state,
+                        cartItems: state.cartItems.map(item =>
+                            item.name === action.payload.name
+                                ? { ...item, quant: item.quant + 1 }
+                                : item
+                        ),
+                        cartTotal: Number(Number(state.cartTotal + existingItem.cost).toFixed(2)),
+                    };
+
                 }
             }
             localStorage.setItem("cartItems", JSON.stringify(state.cartItems))
 
 
             return state;
-           
-       
+
+
         case "INC_ITEM_B_CART":
 
 
@@ -130,7 +130,7 @@ export default function cartReducer(
 
                 if (existingItem.length !== 0) {
                     if (existingItem[0].quant === 1) {
-                        
+
                         console.log(state.cartItems)
                         return {
                             ...state,
@@ -150,8 +150,8 @@ export default function cartReducer(
                         };
                     }
                 }
-            } 
-            else if (action.payload.table_name === "offers"){
+            }
+            else if (action.payload.table_name === "offers") {
                 const existingItem = state.cartItems.find(item => item.name === action.payload.name);
                 console.log(existingItem)
                 if (existingItem.length !== 0) {
@@ -206,8 +206,8 @@ export default function cartReducer(
 
             // Default return if no changes were made
             return state;
-       
-      
+
+
 
         case "DEC_ITEM_B_CART":
             if (state.itemQuant > 1) {
@@ -250,7 +250,7 @@ export default function cartReducer(
                     state.cartTotal = Number(Number(state.cartTotal + payload[0].cost * payload[1]).toFixed(2))
                 }
             }
-            else if (payload[0].table_name === "offers"){
+            else if (payload[0].table_name === "offers") {
                 let nameEx = state.cartItems.filter((item) => (item.name === payload[0].name))
                 if (nameEx.length !== 0) {
                     state.cartItems.find(item => (item.name === payload[0].name)).quant += payload[1]
@@ -290,33 +290,39 @@ export default function cartReducer(
                 searchStatement: state.searchStatement
 
             }
-            case "EMP_CART":
-                state.cartItems = []
-                state.cartTotal=0
-                return {
-                    ...state,
-                    cartItems: state.cartItems,
-                    cartTotal: state.cartTotal
-    
-                }
-                case "SET_TABLE":
-                    state.table_id=action.payload[0]
-                    state.table_num=action.payload[1]
-                    return {
-                        ...state,
-                        table_id: state.table_id,
-                        table_num: state.table_num
-                    }
+        case "EMP_CART":
+            state.cartItems = []
+            state.cartTotal = 0
+            return {
+                ...state,
+                cartItems: state.cartItems,
+                cartTotal: state.cartTotal
 
-                
-            
-     
+            }
+        case "SET_TABLE":
+            state.table_id = action.payload[0]
+            state.table_num = action.payload[1]
+            return {
+                ...state,
+                table_id: state.table_id,
+                table_num: state.table_num
+            }
+        case "UPDATE":
+            state.updated = action.payload;
+            return {
+                ...state,
+                updated: state.updated,
+            };
+
+
+
+
 
         default:
             return state
     }
 
-    
+
 
 }
 
