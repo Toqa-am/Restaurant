@@ -4,7 +4,7 @@ import { GiTemporaryShield, GiStorkDelivery } from "react-icons/gi";
 import { LiaTableSolid } from "react-icons/lia";
 import { SiNextra } from "react-icons/si";
 import { TbDeviceIpadDollar, TbTruckDelivery } from "react-icons/tb";
-import { FaSignsPost, FaUserGroup } from "react-icons/fa6";
+import { FaSignsPost, FaUserGroup ,FaMoneyCheck} from "react-icons/fa6";
 import { BiCategory, BiSolidOffer } from "react-icons/bi";
 import { FaUser, FaUsers } from "react-icons/fa";
 import { GrTransaction } from "react-icons/gr";
@@ -170,7 +170,7 @@ const routes = [
         id: 18,
         path: "/admin/dashboard/withdraw",
         name: "WithDrawals",
-        icon: GrTransaction,
+        icon: FaMoneyCheck ,
         component: WithDrowReport,
         role: ["admin"],
       }

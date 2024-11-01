@@ -51,7 +51,6 @@ export default function Show() {
       const result = await getData(`admin/orders/${id}`);
       setDeliveryOrder(result);
       setUserMeals(result.order_meals);
-      console.log(result)
       setUserAddons(result.order_addons);
       setUserExtras(result.order_extras);
       setOffers(result.order_offers);
@@ -289,8 +288,8 @@ export default function Show() {
 
             <div className="section">
               <div className="cards">
-               {/* Meals */}
-               {userMeals && userMeals.length > 0 && (
+              {/* meals */}
+              {userMeals && userMeals.length > 0 && (
                   <>
                     <h3>The meals</h3>
                     {userMeals.map((meal, index) => (

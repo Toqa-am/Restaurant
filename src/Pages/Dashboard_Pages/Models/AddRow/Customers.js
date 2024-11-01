@@ -14,7 +14,6 @@ export default function Customers({ visible, visibleToggle, updated }) {
     password: "",
     password_confirmation: "",
     status: 1,
-    role: "",
   });
 
   const handleChange = (e) => {
@@ -38,7 +37,6 @@ export default function Customers({ visible, visibleToggle, updated }) {
     formData.append("phone", customer.phone);
     formData.append("password", customer.password);
     formData.append("password_confirmation", customer.password_confirmation);
-    formData.append("Role", customer.role);
     formData.append("status", customer.status);
 
     try {
@@ -160,27 +158,6 @@ export default function Customers({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
-                </div>
-              </div>
-
-              <div className="col-6">
-                <div className="mb-3">
-                  <label htmlFor="role">Role</label>
-                  <select
-                    className="form-control"
-                    name="role"
-                    id="role"
-                    value={customer.role}
-                    onChange={(e) => handleChange(e)}
-                    required
-                  >
-                    <option value="" selected disabled>
-                      --
-                    </option>
-                    <option value="admin">admin</option>
-                    <option value="casher">casher</option>
-                    <option value="chef">chef</option>
-                  </select>
                 </div>
               </div>
 

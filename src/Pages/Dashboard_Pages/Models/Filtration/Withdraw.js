@@ -167,7 +167,7 @@ export default function WithDrawals({
                         <form onSubmit={handleSubmit}>
                             <div class="form-group">
                                 <label for="exampleInputPassword1" >enter amount of withdrawals</label>
-                                <input type="number" value={AmountwithDraw.amount} required min={0} onChange={handleOnChange} name="amount" class="form-control" id="exampleInputPassword1" placeholder="Enter your amount withdrawals will sent" />
+                                <input type="text" value={AmountwithDraw.amount} required min={0} onChange={handleOnChange} name="amount" class="form-control" id="exampleInputPassword1" placeholder="Enter your amount withdrawals will sent" />
                                 <div style={{ direction: "rtl" }} className="mt-2">
                                     <button className="btn btn-info" type="submit" >send</button>
                                 </div>

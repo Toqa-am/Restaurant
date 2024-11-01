@@ -112,6 +112,14 @@ export default function CartItems({
             }
           }
 
+          if (item.extraas) {
+            if (item.extraas.cost) {
+
+              totalCost += item.extraas.cost * item.sizes[0].quantity
+            }
+          }
+
+
           if (item.offers) {
             if (item.costOffers) {
 
@@ -143,7 +151,7 @@ export default function CartItems({
     const loadStoreItems = () => {
       const cartItems = JSON.parse(localStorage.getItem("cartItems") || []);
       setItems(cartItems);
-      console.log(cartItems);
+      // console.log(cartItems);
 
       updateFinalTotal(cartItems);
 
@@ -413,18 +421,17 @@ export default function CartItems({
       })
     }
 
-    if (item.extrass) {
-      if (item.extrass.name) {
+    if (item.extraas) {
+      if (item.extraas.name) {
         acc.push({
-          id: item.extrass.id,
-          cost: item.extrass.cost,
+          id: item.extraas.id,
+          cost: item.extraas.cost,
           quantity: item.sizes[0].quantity
         })
       }
     }
     return acc;
 
-    return acc;
   }, [])
 
   let offerArrayFinalResult = cartItems.reduce((acc, item) => {
@@ -440,7 +447,7 @@ export default function CartItems({
     return acc;
   }, [])
   let mealArrayFinalResult = cartItems.reduce((acc, item) => {
-    if (!item.offers && !item.addoons) {
+    if (!item.offers && !item.addoons && !item.extraas) {
       acc.push({
         id: item.id,
         cost: item.sizes[0].cost,
@@ -471,6 +478,7 @@ export default function CartItems({
 
     }, [])
   }
+
   if (addonArrayFinalResult.length > 0) {
     filterAddonInvoice = addonArrayFinalResult.reduce((acc, item) => {
       let existItem = acc.find((obj) => obj.id === item.id)
@@ -483,6 +491,7 @@ export default function CartItems({
 
     }, [])
   }
+
   if (extraArrayFinalResult.length > 0) {
     filterExtraInvoice = extraArrayFinalResult.reduce((acc, item) => {
       let existItem = acc.find((obj) => obj.id === item.id)
@@ -495,6 +504,8 @@ export default function CartItems({
 
     }, [])
   }
+
+
   if (offerArrayFinalResult.length > 0) {
     filterOfferInvoice = offerArrayFinalResult.reduce((acc, item) => {
       let existItem = acc.find((obj) => obj.id === item.id)

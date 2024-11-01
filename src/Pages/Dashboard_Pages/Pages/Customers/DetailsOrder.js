@@ -7,32 +7,54 @@ import ProgressOrder from "./ProgressOrder";
 import { getData, imageStorageURL } from "../../../../axiosConfig/API";
 
 export default function DetailsOrder() {
-  const currentStep = 4;
+  // const currentStep = 0;
   const { id } = useParams();
-  const [userOrder, setUserOrder] = useState(null);
+  const [deliveryOrder, setDeliveryOrder] = useState(null);
+  const [userMeals, setUserMeals] = useState(null);
   const [userAddons, setUserAddons] = useState(null);
   const [userExtras, setUserExtras] = useState(null);
+  const [offers, setOffers] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [pay, setPay] = useState(null);
+  const [status, setStatus] = useState(null);
+
+  const sizeMap = {
+    1: "Small",
+    2: "Medium",
+    3: "Big",
+    4: "Family"
+};
+const statusMap = {
+  "Not Started": 1,
+  "In Progressing": 2,
+  "Cancelled": 3,
+  "Accepted": 4
+};
 
   const fetchOrder = useCallback(async (id) => {
     if (!id) return;
     try {
       const result = await getData(`admin/orders/${id}`);
-      setUserOrder(result.order_meals[0]);
+      setDeliveryOrder(result);
+      setUserMeals(result.order_meals);
       setUserAddons(result.order_addons);
       setUserExtras(result.order_extras);
+      setOffers(result.order_offers);
+      setPay(result.pay === 1 ? "Paid" : "Not Paid");
+      setStatus(result.status);
       setLoading(false);
     } catch (error) {
       setLoading(false);
       console.error(error.response?.data?.message);
     }
   }, []);
+  const currentStep = statusMap[status] || 0;
 
   useEffect(() => {
     fetchOrder(id);
   }, [id, fetchOrder]);
 
-  if (loading || !userOrder) return;
+  if (loading || !userMeals) return;
 
   return (
     <div className="DataTable DetailsOrder">
@@ -61,15 +83,17 @@ export default function DetailsOrder() {
           <div className="timeLine-details">
             <p>
               <label>order id:</label>
-              <b>#{userOrder.id}</b>
+              <b>#{deliveryOrder.id}</b>
+              
             </p>
-            <p>{userOrder.created_at}</p>
-            <p>
+            <p>{deliveryOrder.created_at}</p>
+            <p>Status :{deliveryOrder.status}</p>
+            {/* <p>
               <b>order type: </b>
               <span style={{ "--c": "#1772FF", "--bg": "#E8F2FF" }}>
                 {"delivery"}
               </span>
-            </p>
+            </p> */}
           </div>
           <div className="timeLine-points">
             <div className="points">
@@ -82,94 +106,157 @@ export default function DetailsOrder() {
           <div className="order-details">
             <b>order details</b>
             <div className="cards">
-              {/* Order */}
-              {userOrder && (
-                <div className="card" data-id={userOrder.meal_id}>
-                  <div className="card-img">
-                    <img
-                      loading="lazy"
-                      src={`${imageStorageURL}/${userOrder.meal.image}`}
-                      alt={userOrder.meal.name}
-                    />
-                  </div>
-                  <div className="card-text">
-                    <p className="name fw-bold">{userOrder.meal.name}</p>
-                    <p className="quantity">
-                      quantity choice:
-                      <span className="fw-bold">{userOrder.quantity} pcs</span>
-                    </p>
-                    <b className="total">${userOrder.total_cost}</b>
-                  </div>
-                </div>
-              )}
-
-              {/* Addons */}
-              {Object(userAddons).length > 0 &&
-                userAddons.map((addon, index) => (
+              {/* meals */}
+              {userMeals && userMeals.length > 0 && (
                   <>
-                    {index < 1 ? <h5 className="mt-2">the addons</h5> : false}
-                    <div className="card" data-id={addon.addon_id}>
-                      <div className="card-img">
-                        <img
-                          loading="lazy"
-                          src={`${imageStorageURL}/${addon.addon.image}`}
-                          alt={addon.addon.name}
-                        />
+                    <h3>The meals</h3>
+                    {userMeals.map((meal, index) => (
+                      <div className="card" data-id={meal.quantity} key={meal.id || index}>
+                        <div className="card-img">
+                          <img
+                            loading="lazy"
+                            src={`${imageStorageURL}/${meal.meal.image}`}
+                            alt={meal.meal.name}
+                          />
+                        </div>
+                        <div className="card-text">
+                          <p className="name">{meal.meal.name}</p>
+                          <p className="name">Size: {sizeMap[meal.size]}</p>
+                          <p className="quantity">
+                            Quantity choice: <span className="fw-bold">{meal.quantity} pcs</span>
+                          </p>
+                          <b className="total">{meal.total_cost} OMR</b>
+                        </div>
                       </div>
-                      <div className="card-text">
-                        <p className="name fw-bold">{addon.addon.name}</p>
-                        <p className="quantity">
-                          quantity choice:
-                          <span className="fw-bold">{addon.quantity} pcs</span>
-                        </p>
-                        <b className="total">${addon.total_cost}</b>
-                      </div>
-                    </div>
+                    ))}
                   </>
-                ))}
+                )}
 
-              {/* Extras */}
-              {Object(userExtras).length > 0 &&
-                userExtras.map((extra, index) => (
+                {/* Addons */}
+                {userAddons && userAddons.length > 0 && (
                   <>
-                    {index < 1 ? <h5 className="mt-2">the extras</h5> : false}
-                    <div className="card" data-id={extra.extra_id}>
-                      <div className="card-img">
-                        <img
-                          loading="lazy"
-                          src={`${imageStorageURL}/${extra.extra.image}`}
-                          alt={extra.extra.name}
-                        />
+                    <h3>The Addons</h3>
+                    {userAddons.map((addon, index) => (
+                      <div className="card" data-id={addon.quantity} key={addon.id || index}>
+                        <div className="card-img">
+                          <img
+                            loading="lazy"
+                            src={`${imageStorageURL}/${addon.addon.image}`}
+                            alt={addon.addon.name}
+                          />
+                        </div>
+                        <div className="card-text">
+                          <p className="name fw-bold">{addon.addon.name}</p>
+                          <p className="quantity">
+                            Quantity choice: <span className="fw-bold">{addon.quantity} pcs</span>
+                          </p>
+                          <b className="total">{addon.total_cost} OMR</b>
+                        </div>
                       </div>
-                      <div className="card-text">
-                        <p className="name fw-bold">{extra.extra.name}</p>
-                        <p className="quantity">
-                          quantity choice:
-                          <span className="fw-bold">{extra.quantity} pcs</span>
-                        </p>
-                        <b className="total">${extra.total_cost}</b>
-                      </div>
-                    </div>
+                    ))}
                   </>
-                ))}
+                )}
+
+
+                {/* Extras */}
+                {Object(userExtras).length > 0 &&
+                  userExtras.map((extra, index) => (
+                    <>
+                      {index < 1 ? <h3>the extras</h3> : false}
+                      <div
+                        className="card"
+                        data-id={extra.quantity}
+                        key={extra.id}
+                      >
+                        <div className="card-img">
+                          <img
+                            loading="lazy"
+                            src={`${imageStorageURL}/${extra.extra_image}`}
+                            alt={extra.extra.name}
+                          />
+                        </div>
+                        <div className="card-text">
+                          <p className="name fw-bold">{extra.extra.name}</p>
+                          <p className="quantity">
+                            quantity choice:
+                            <span className="fw-bold">
+                              {extra.quantity} pcs
+                            </span>
+                          </p>
+                          <b className="total">Price: {extra.total_cost} OMR</b>
+                        </div>
+                      </div>
+                    </>
+                  ))}
+
+                    {/* offers */}
+                {Object(offers).length > 0 &&
+                  offers.map((offer, index) => (
+                    <>
+                      {index < 1 ? <h3>the offers</h3> : false}
+                      <div
+                        className="card"
+                        data-id={offer.quantity}
+                        key={offer.id}
+                      >
+                        <div className="card-img">
+                          <img
+                            loading="lazy"
+                            src={`${imageStorageURL}/${offer.offer_image}`}
+                            alt={offer.offer.name}
+                          />
+                        </div>
+                        <div className="card-text">
+                          <p className="name fw-bold">{offer.offer.name}</p>
+                          <p className="quantity">
+                            quantity choice:
+                            <span className="fw-bold">
+                              {offer.quantity} pcs
+                            </span>
+                          </p>
+                          <b className="total">price: {offer.total_cost} OMR</b>
+                        </div>
+                      </div>
+                    </>
+                  ))}
             </div>
           </div>
         </div>
 
-        <div className="section">
-          <div className="delivery-address">
-            <b>delivery address</b>
-            <p>lorem lorem lorem lorem lorem</p>
+        {deliveryOrder.address && (
+          <div className="section">
+            <div className="delivery-address">
+              <label>Address: </label>
+              <b>{deliveryOrder.address}</b>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* {deliveryOrder.DiningTable_id && (
+          <div className="section">
+            <div className="delivery-address">
+              <label>Dining Table id: </label>
+              <b>{deliveryOrder.DiningTable_id}</b>
+            </div>
+          </div>
+        )} */}
 
         <div className="section">
           <div className="payment-info">
             <p>
-              <b>method:</b> {"paypal (4864464354)"}
+              <label>payment type:</label>
+              <b>{deliveryOrder.PaymentType}</b>
             </p>
             <p>
-              <b>status:</b> <span>{"paid"}</span>
+              <b>Status:</b>{" "}
+              <span
+                style={{
+                  color: pay === "Paid" ? "green" : "red",
+                  fontWeight: "bold",
+                }}
+              >
+                {pay === "Paid" ? "Paid" : "Not Paid"}
+              </span>           
             </p>
           </div>
         </div>

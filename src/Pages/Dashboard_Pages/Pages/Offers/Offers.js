@@ -9,7 +9,7 @@ import Filtration from "../../Models/Filtration/Offers";
 import AddRow from "../../Models/AddRow/Offers";
 import EditOffer from "../../Models/Edit/EditOffer";
 import UpdateMultiStatus from "../Actions/UpdateMultiStatus";
-import { getData } from "../../../../axiosConfig/API";
+import { getData,imageStorageURL } from "../../../../axiosConfig/API";
 
 export default function Offers() {
   const componentRef = useRef();
@@ -71,14 +71,27 @@ export default function Offers() {
     },
     {
       title: "START DATE",
-      dataIndex: "start_date",
-      key: "start_date",
+      dataIndex: "startDate",
+      key: "startDate",
     },
     {
       title: "END DATE",
-      dataIndex: "end_date",
-      key: "end_date",
+      dataIndex: "endDate",
+      key: "endDate",
     },
+    {
+      title: "Image",
+      dataIndex: "image",
+      key: "image",
+      render: (record) => (
+        <img
+          loading="lazy"
+          src={`${imageStorageURL}/${record}`}
+          alt={record?.name || "No name"}
+        />
+      ),
+    },
+    
     {
       title: "STATUS",
       key: "status",
@@ -136,11 +149,11 @@ export default function Offers() {
     },
     {
       label: "Start Date",
-      key: "start_date",
+      key: "startDate",
     },
     {
       label: "End Date",
-      key: "end_date",
+      key: "endDate",
     },
     {
       label: "Status",

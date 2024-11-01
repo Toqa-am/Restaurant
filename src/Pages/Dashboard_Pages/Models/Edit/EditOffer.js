@@ -136,7 +136,7 @@ export default function EditOffer({ visible, visibleToggle, item, updated }) {
                     end date
                   </label>
                   <input
-                    type="datetime-local"
+                    type="date"
                     className="form-control"
                     name="endDate"
                     id="endDate"

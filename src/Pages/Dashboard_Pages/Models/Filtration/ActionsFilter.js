@@ -4,7 +4,7 @@ import { Button, Space } from "antd";
 import { CSVLink } from "react-csv";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { LuPrinter } from "react-icons/lu";
-import { FaFileExcel, FaFileExport, FaFilter, FaPlus } from "react-icons/fa";
+import { FaFileExcel, FaFileExport, FaFilter, FaPlus ,FaBalanceScale } from "react-icons/fa";
 import { getData } from "../../../../axiosConfig/API";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import axios from "axios";
@@ -110,7 +110,7 @@ export default function ActionsFilter({ handleModalToggle, data, headers ,balanc
           // icon={<FaFilter />}
           // onClick={() => setToggleFilter(!toggleFilter)}
         >
-          current Balance {balance?.balance ? balance?.balance  : 0} ORM
+          {FaBalanceScale} current Balance {balance?.balance ? balance?.balance  : 0} ORM
           {/* <IoMdArrowDropdown /> */}
         </Button>:""}
         

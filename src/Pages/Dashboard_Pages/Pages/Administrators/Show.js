@@ -20,7 +20,7 @@ export default function Show() {
   const fetchAdministrator = useCallback(async (id) => {
     if (!id) return;
     try {
-      const result = await getData(`admin/administrators/${id}`);
+      const result = await getData(`admin/employees/${id}`);
       setAdministrator(result);
       setLoading(false);
     } catch (error) {

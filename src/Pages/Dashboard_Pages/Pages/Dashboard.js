@@ -10,6 +10,8 @@ import LineChartComponent from "./Charts/LineChartComponent";
 import AreaChartComponent from "./Charts/AreaChartComponent";
 import ImageTest from "../../../assets/global/profile.png";
 import { getData , imageStorageURL} from "../../../axiosConfig/API";
+import { getUser, isAuth } from "../../../axiosConfig/Auth";
+
 
 export default function Dashboard() {
   const [startDate, setStartDate] = useState(new Date());
@@ -20,6 +22,8 @@ export default function Dashboard() {
   const [currentMonthSalesSummary, setCurrentMonthSalesSummary] = useState("");
   const [countActiveCustomers, setCountActiveCustomers] = useState("");
   const [countTotalItems, setCountTotalItems] = useState("");
+  const [userRole, setUserRole] = useState(null);
+
 
 
   const data = [
@@ -34,6 +38,13 @@ export default function Dashboard() {
     if (hour < 12) setGreeting("Good morning!");
     else if (hour < 18) setGreeting("Good afternoon!");
     else setGreeting("Good evening!");
+  }, []);
+
+  useEffect(() => {
+      if (isAuth()) {
+        const user = getUser();
+        setUserRole(user.Role);
+      }
   }, []);
 
 
@@ -101,12 +112,14 @@ export default function Dashboard() {
   
 
   useEffect(() => {
-    fetchCountActiveCustomers();
-    fetchCurrentMonthSalesSummary();
+    if (userRole && userRole === "admin") {
+      fetchCountActiveCustomers();
+      fetchCurrentMonthSalesSummary();
+      fetchDataSales();
+      fetchCountTotalItems();
+    }
     fetchMostPopularItems();
     fetchDataEmployee();
-    fetchDataSales();
-    fetchCountTotalItems();
   }, [fetchMostPopularItems,fetchDataEmployee,fetchDataSales,fetchCountTotalItems,
       fetchCurrentMonthSalesSummary,fetchCountActiveCustomers]);
 
@@ -253,7 +266,7 @@ export default function Dashboard() {
                     key={index}
                   >
                     <div className="card-img">
-                      <img loading="lazy" src={`${imageStorageURL}/${item.image}`} alt={item.name}  style={{width:"80px",height:"80px"}}/>
+                      <img loading="lazy" src={`${imageStorageURL}/${item.image}`} alt={item.name}  style={{width:"100%",height:"80px"}}/>
                     </div>
                     <div className="card-title">{item.name}</div>
                   </Link>
@@ -277,7 +290,7 @@ export default function Dashboard() {
                     key={index}
                   >
                     <div className="card-img">
-                      <img loading="lazy" src={`${imageStorageURL}/${item.image}`} alt={item.name} style={{width:"80px",height:"80px"}}/>
+                      <img loading="lazy" src={`${imageStorageURL}/${item.image}`} alt={item.name} style={{width:"80px",height:"100px"}}/>
                     </div>
                     <div className="card-text">
                       <p>{item.name}</p>

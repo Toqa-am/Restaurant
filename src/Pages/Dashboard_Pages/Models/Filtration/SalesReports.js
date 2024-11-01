@@ -14,6 +14,7 @@ export default function SalesReports({
     name: "",
     id: "",
     count: "",
+    status:""
   });
   const [filteredData, setFilteredData] = useState();
 
@@ -58,13 +59,14 @@ export default function SalesReports({
 
 
   const handleSearch = () => {
-    const { created_at, name, id, count } = salesReports;
+    const { created_at, name, id, count , status } = salesReports;
 
     const originalData = JSON.parse(sessionStorage.getItem("origin_data"));
     const filtered = originalData.filter((item) => {
       return (
         (!created_at || item.created_at <= created_at) &&
         (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
+       ( !status || item.status === parseInt(status))&&
         (!id || item.id === parseInt(id)) &&
         (!count || item.count === parseInt(count))
       );
@@ -79,6 +81,7 @@ export default function SalesReports({
       name: "",
       id: "",
       count: "",
+      status:""
     });
     setFilteredData(JSON.parse(sessionStorage.getItem("origin_data")));
     filtrated(JSON.parse(sessionStorage.getItem("origin_data")));
@@ -125,13 +128,25 @@ export default function SalesReports({
                 value={salesReports.name}
                 onChange={(e) => handleChange(e)}
               />
-                {/* <option value="" selected disabled>
+            
+            </div>
+            <div className="col col-12 col-md-6 col-lg-3 mb-3">
+              <label htmlFor="itemsReports" className="mb-2">
+                Status
+              </label>
+              <select
+                className="form-control"
+                name="status"
+                id="status"
+                value={salesReports.status}
+                onChange={(e) => handleChange(e)}
+              >
+                <option value="" selected disabled>
                   --
                 </option>
-                <option value="cashed">cashed</option>
-                <option value="VisaMasterCard">VisaMasterCard</option>
-                <option value="Unpaid">Unpaid</option>
-              </select> */}
+                <option value="1">active</option>
+                <option value="0">inactive</option>
+              </select>
             </div>
 
             <div className="col col-12 col-md-6 col-lg-3 mb-3">

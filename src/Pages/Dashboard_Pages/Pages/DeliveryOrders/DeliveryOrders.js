@@ -16,8 +16,8 @@ export default function DeliveryOrders() {
   const fetchDeliveryOrders = useCallback(async () => {
     try {
       const result = await getData("admin/orders");
-      const filteredOrders = result.filter(table => table.created_by === 1);
       sessionStorage.removeItem("origin_data");
+      const filteredOrders = result.filter(table => table.created_by === 1);
       setDeliveryOrders(filteredOrders);
     } catch (error) {
       console.error(error.response?.data?.message);

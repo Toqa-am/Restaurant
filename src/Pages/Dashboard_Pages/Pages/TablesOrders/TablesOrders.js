@@ -4,29 +4,29 @@ import { Link } from "react-router-dom";
 import { Table } from "antd";
 import { BsEye } from "react-icons/bs";
 import Breadcrumb from "../../../../Components/Dashboard/Features/Breadcrumb";
-import Filtration from "../../Models/Filtration/TablesOrders";
+import Filtration from "../../Models/Filtration/DeliveryOrders";
 import UpdateMultiStatus from "../Actions/UpdateMultiStatus";
 import { getData } from "../../../../axiosConfig/API";
 
-export default function TableOrders() {
+export default function TablesOrders() {
   const componentRef = useRef();
-  const [tableOrders, setTableOrders] = useState([]);
+  const [deliveryOrders, setDeliveryOrders] = useState([]);
   const [modalVisibleToggle, setModalVisibleToggle] = useState(false);
 
-  const fetchTableOrders = useCallback(async () => {
+  const fetchDeliveryOrders = useCallback(async () => {
     try {
       const result = await getData("admin/orders");
-      const filteredOrders = result.filter(table => table.created_by !== 1);
       sessionStorage.removeItem("origin_data");
-      setTableOrders(filteredOrders);
+      const filteredOrders = result.filter(table => table.created_by === 0);
+      setDeliveryOrders(filteredOrders);
     } catch (error) {
       console.error(error.response?.data?.message);
     }
   }, []);
 
   useEffect(() => {
-    fetchTableOrders();
-  }, [fetchTableOrders]);
+    fetchDeliveryOrders();
+  }, [fetchDeliveryOrders]);
 
   const handleModalToggle = () => {
     setModalVisibleToggle(!modalVisibleToggle);
@@ -61,7 +61,7 @@ export default function TableOrders() {
         <UpdateMultiStatus
           url={`admin/orders/${item.id}`}
           item={item}
-          updated={fetchTableOrders}
+          updated={fetchDeliveryOrders}
           list={[
             { value: "Not Started", label: "Not Started" },
             { value: "In Progress", label: "In Progress" },
@@ -75,16 +75,14 @@ export default function TableOrders() {
       title: "ACTION",
       key: "action",
       render: (item) => (
-        <>
-          <Link
-            to={`/admin/dashboard/delivery-orders/show/${item.id}`}
-            className="eyeIcon"
-            data-tooltip="view"
-            style={{ "--c": "#1772FF", "--bg": "#E2EDFB" }}
-          >
-            <BsEye />
-          </Link>
-        </>
+        <Link
+          to={`/admin/dashboard/table-orders/show/${item.id}`}
+          className="eyeIcon"
+          data-tooltip="view"
+          style={{ "--c": "#1772FF", "--bg": "#E2EDFB" }}
+        >
+          <BsEye />
+        </Link>
       ),
     },
   ];
@@ -120,16 +118,16 @@ export default function TableOrders() {
       {/* Filtration */}
       <Filtration
         handleModalToggle={handleModalToggle}
-        data={tableOrders}
+        data={deliveryOrders}
         headers={headers}
-        filtrated={setTableOrders}
+        filtrated={setDeliveryOrders}
       />
 
       <div className="tableItems" ref={componentRef}>
         <Table
           columns={columns}
-          dataSource={tableOrders}
-          pagination={Object(tableOrders).length > 10}
+          dataSource={deliveryOrders}
+          pagination={Object(deliveryOrders).length > 10}
         />
       </div>
     </div>

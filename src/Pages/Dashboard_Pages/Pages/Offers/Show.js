@@ -4,10 +4,17 @@ import { useParams } from "react-router-dom";
 import { Tabs } from "antd";
 import { TabPane } from "react-bootstrap";
 import { FaImage } from "react-icons/fa6";
-import { FaInfoCircle, FaShoppingBag } from "react-icons/fa";
+import {
+  FaPlus,
+  FaPuzzlePiece,
+  FaInfoCircle,
+  FaShoppingBag,
+} from "react-icons/fa";
 import Information from "./Information";
 import UploadImage from "../Actions/UploadImage";
 import Items from "./Items";
+import SubExtra from "./SubExtras";
+import SubAddon from "./SubAddons";
 import { getData } from "../../../../axiosConfig/API";
 
 export default function ShowItem() {
@@ -21,21 +28,24 @@ export default function ShowItem() {
       const result = await getData(`admin/offers/${id}`);
       setOffer(result);
       setLoading(false);
+      console.log(result)
     } catch (error) {
       setLoading(false);
       console.error(error.response?.data?.message);
     }
   }, []);
 
+
+
   useEffect(() => {
     fetchOffer(id);
   }, [id, fetchOffer]);
 
-  if (loading) return;
+  if (loading) return <p>loading...</p>;
 
   return (
-    <div className="Show" style={{backgroundColor:"white",boxSizing:"border-box",paddingLeft:"10px"}}>
-      <div className="tabs ">
+    <div className="Show" style={{backgroundColor:"white",boxSizing:"border-box",paddingLeft:"10px"}}>      
+      <div className="tabs">
         <Tabs defaultActiveKey="1">
           <TabPane
             className="TabPane"
@@ -49,7 +59,9 @@ export default function ShowItem() {
           >
             {offer && <Information data={offer} />}
           </TabPane>
+
           <TabPane
+            className="TabPane"
             tab={
               <span>
                 <FaImage />
@@ -60,16 +72,44 @@ export default function ShowItem() {
           >
             <UploadImage url={`admin/offers/${id}`} data={offer} />
           </TabPane>
+
           <TabPane
+            className="TabPane"
             tab={
               <span>
                 <FaShoppingBag />
-                Items
+                meals
               </span>
             }
             key="3"
           >
-            <Items />
+            <Items id={id} />
+          </TabPane>
+
+          <TabPane
+            className="TabPane"
+            tab={
+              <span>
+                <FaPlus />
+                Extra
+              </span>
+            }
+            key="4"
+          >
+            <SubExtra order_id={id} />
+          </TabPane>
+
+          <TabPane
+            className="TabPane"
+            tab={
+              <span>
+                <FaPuzzlePiece />
+                Addon
+              </span>
+            }
+            key="5"
+          >
+            <SubAddon order_id={id} />
           </TabPane>
         </Tabs>
       </div>
