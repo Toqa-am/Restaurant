@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 
 
-export function ListCard(pokemon) {
+export function OfferListCard(pokemon) {
     const dispatch = useDispatch();
     const itemQuant = useSelector(state => state.itemQuant);
     const [CartFormData, setCartFormData] = useState({
@@ -22,31 +22,15 @@ export function ListCard(pokemon) {
 
 
 
-    const handleCancel = (item) => {
-        delete item.size;
-
+    const handleCancel = () => {
         dispatch(zeroQuant())
-        let inputs=document.getElementsByTagName('input');
-        let checkboxes=[];
-        for (let i = 0; i < inputs.length; i++) {
-            if(inputs[i].getAttribute('type')=='checkbox' ||  inputs[i].getAttribute('type')=='radio'){
-                checkboxes.push(inputs[i])
-            }
-        }
-        for (let i = 0; i < checkboxes.length; i++) {
-            checkboxes[i].checked=false;
-        }
-        setCartFormData({
-            items: {},
-            addons: []
-        })
+
     }
 
     function increaseItems(item) {
 
         dispatch(increaseItemBCart(item))
         console.log(item);
-        
 
 
     }
@@ -142,7 +126,7 @@ export function ListCard(pokemon) {
             setCartFormData({ ...CartFormData, addons: [...CartFormData.addons, item] })
 
         }
-        else  {
+        else {
             setCartFormData({
                 ...CartFormData, addons: [...CartFormData.addons.filter(function (addon) {
                     return addon.name !== item.name
@@ -156,19 +140,11 @@ export function ListCard(pokemon) {
     };
 
     const handleAddToCart = (pokemon, itemQuant) => {
-        let inputs=document.getElementsByTagName('input');
-        let checkboxes=[];
-        for (let i = 0; i < inputs.length; i++) {
-            if(inputs[i].getAttribute('type')=='checkbox' ||  inputs[i].getAttribute('type')=='radio'){
-                checkboxes.push(inputs[i])
-            }
-        }
-        for (let i = 0; i < checkboxes.length; i++) {
-            checkboxes[i].checked=false;
-        }
-       
+        console.log(pokemon)
         if (JSON.stringify(CartFormData.items) === '{}') {
             dispatch(addToCart([pokemon, itemQuant]));
+
+
         }
         else {
             dispatch(addToCart([CartFormData.items, itemQuant]));
@@ -177,7 +153,7 @@ export function ListCard(pokemon) {
                 dispatch(addToCart([item, item.quant]))
             ))
         }
-       delete pokemon.size;
+
         setCartFormData({
             items: {},
             addons: []
@@ -191,108 +167,76 @@ export function ListCard(pokemon) {
 
     return (
         <>
-            <div key={pokemon.id} className="pokemon-card">
+            <div key={pokemon.id} className="pokemon-card card">
                 <img
-                className="pokemon-card-img"
                     key={pokemon.image}
-                    src={`http://127.0.0.1:8000/storage/${pokemon.image}`}
+                    src={`http://127.0.0.1:8000/storage/${pokemon.pokemon.image}`}
+                    className='pokemon-card-img'
                 />
 
                 {/* <img src={pokemon.image_url} alt={pokemon.pokemon} /> */}
-                <div className="pokemon-details">
-                    <h6>{` ${pokemon.name}`} </h6>
-                    <p className="text-black-50 para">{pokemon.description.substring(0,70)}...</p>
-                    <div className="d-flex justify-content-between align-items-center item-card">
-                        {pokemon.cost ? <p className="price"> OMR {pokemon.cost}</p> :
-                            <p className="price "> OMR {pokemon.meal_size_costs[0].cost}</p>
-                        }
+                <div className="pokemon-details text-black-50 para d-grid h-100">
+                    <div className='d-flex justify-content-between'>
+                    <h6>{` ${pokemon.pokemon.name}`} </h6>
+                    <span class="badge bg-danger p-1 my-auto">{pokemon.pokemon.discount} %</span>
+                    </div>
+                   
 
-                        <button
+                    {pokemon.pokemon.items ? 
+                     <span class="truncate text-muted text-black-50 para">
+                            {pokemon.pokemon.items.substring(0,50)}..
+</span>
+                        :
+                            ''
+                        }
+                    <div className="d-flex justify-content-between align-items-center item-card">
+                            <p className="price text-muted text-decoration-line-through"> OMR {pokemon.pokemon.total_price_before_discount}</p>
+
+                            <p className="price "> OMR {pokemon.pokemon.total_price_after_discount}</p>
+                        
+
+                        
+
+                            <button
                             className="button rounded-pill"
                             data-bs-toggle="modal"
-                            data-bs-target={`#staticBackdrop-${pokemon.id}`}
+                            data-bs-target={`#staticBackdrop-${pokemon.pokemon.id}`}
                             onClick={() => {
-                                console.log(pokemon.item);
-                                console.log(pokemon);
+                                console.log(pokemon.pokemon.item);
                             }}
-                        >
-                            <i class="bi bi-handbag-fill"></i>
+                        >   <i class="bi bi-handbag-fill"></i>
                             <span >Add</span>
                         </button>
+
                         {/* <!-- Modal --> */}
                         <div
                             className="modal fade"
-                            id={`staticBackdrop-${pokemon.id}`}
+                            id={`staticBackdrop-${pokemon.pokemon.id}`}
                             data-bs-backdrop="static"
                             data-bs-keyboard="false"
                             tabIndex="-1"
-                            aria-labelledby={`staticBackdropLabel-${pokemon.id}`}
+                            aria-labelledby={`staticBackdropLabel-${pokemon.pokemon.id}`}
                             aria-hidden="true"
                         >
                             <div className="modal-dialog">
                                 <div className="modal-content">
                                     <div className="modal-header">
-                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => handleCancel(pokemon.item)}></button>
+                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => handleCancel()}></button>
                                     </div>
                                     <div className="modal-body">
-                                        <CartCard src={pokemon.image} title={`${typeof pokemon.item.size === "undefined" ? "" : pokemon.item.size} ${pokemon.name} `} price={pokemon.item.cost} description={pokemon.item.description} quant={itemQuant} increase={() => increaseItems(pokemon.item)} decrease={() => decreaseItems(pokemon.item)} />
-                                        {/* <h1>{pokemon.image} jkhu</h1> */}
-                                        {pokemon.meal_size_costs && (
-                                            <>
-
-
-                                                <div className='d-flex justify-content-around scrollmenu ' >
-
-                                                    {pokemon.meal_size_costs.map((size) => (
-
-
-                                                        <SizeCard size={size.size} price={size.cost} nop={size.number_of_pieces} changeSize={(e) => changeSize(size, pokemon.item, e)} />
-
-
-                                                    ))}
-
-
-                                                </div>
-                                            </>)}
-
-                                        {pokemon.extras && (
-                                            <>
-                                                <div className='d-flex justify-content-around scrollmenu ' >
-                                                    {pokemon.extras.map((item) => (
-
-
-                                                        <AddonsExtra name={item.name} inputName="extras" price={item.cost} change={(e) => handleCheckboxChange(item, e)} increase={() => increaseAddon(item)} decrease={() => decreaseAddon(item)} q={item.quant} choose={chosen} />
-
-                                                    ))}
-
-
-                                                </div>
-                                            </>)}
-                                        {pokemon.addons && (
-                                            <>
-                                                <div className='d-flex justify-content-around scrollmenu' >
-                                                    {pokemon.addons.map((item) => (
-
-                                                        <AddonsExtra name={item.name} inputName="addons" price={item.cost} img={item.image} change={(e) => handleCheckboxChange(item, e)} q={item.quant} increase={() => increaseAddon(item)} decrease={() => decreaseAddon(item)} />
-
-                                                    ))}
-
-
-                                                </div>
-                                            </>)}
+                                        <CartCard description={pokemon.pokemon.items} src={pokemon.pokemon.image} title={pokemon.pokemon.name} price={pokemon.pokemon.total_price_after_discount}  quant={itemQuant} increase={() => increaseItems(pokemon.pokemon)} decrease={() => decreaseItems(pokemon.pokemon)} />
+                                       
 
                                     </div>
                                     <div className="modal-footer">
-                                        
-                                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => handleCancel(pokemon.item)}>
+                                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => handleCancel()}>
                                             Close
                                         </button>
-                                        
                                         <button
                                             type="button"
-                                            disabled={((pokemon.item.table_name === "meals" && (!pokemon.item.size || pokemon.item.size=='undefined')) ? true : false)}
+                                            // disabled={((pokemon.item.table_name === "meals" && !pokemon.item.size) ? true : false)}
                                             className="btn primary"
-                                            onClick={() => handleAddToCart(pokemon.item, itemQuant)}
+                                            onClick={() => handleAddToCart(pokemon.pokemon, itemQuant)}
                                             data-bs-dismiss="modal"
                                         >
                                             Add to cart
