@@ -9,12 +9,13 @@ import Swal from "sweetalert2";
 
 export default function Cart() {
     const cartTotal = useSelector((state) => state.cartTotal)
-    const cartItems = useSelector((state) => state.cartItems)
+    const customerCartItems = useSelector((state) => state.customerCartItems)
     const tableId = useSelector((state) => state.table_id)
     const tableNum = useSelector((state) => state.table_num)
     const [tableMan, settableMan] = useState()
     const [tables, setTables] = useState([])
     const [error, setError] = useState("")
+    let notes=''
 
     let history = useHistory();
     const dispatcher = useDispatch()
@@ -24,11 +25,11 @@ export default function Cart() {
     let paymentData = {}
 
     localStorage.setItem('cartTotal', JSON.stringify(cartTotal));
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    localStorage.setItem('customerCartItems', JSON.stringify(customerCartItems));
 
 
   useEffect(() => {
-    console.log(cartItems)
+    console.log(customerCartItems)
 
     const getTables = async () => {
       try {
@@ -49,24 +50,31 @@ export default function Cart() {
 
     
     function inputChg(event) {
-        setPaymentMethod(event.target.value)
-        console.log(cartItems)
+        if(event.target.id!=="notes"){
+            setPaymentMethod(event.target.value)
+        }
+        else{
+             notes=event.target.value;
+        }
+        console.log(customerCartItems)
 
     }
 
     function tableChg(id) {
         settableMan(id)
+        console.log(id)
 
     }
     const paymentDetails = () => {
         paymentData.diningtable_id = tableId || tableMan;
         paymentData.total_cost = cartTotal;
+        paymentData.notes=notes;
         paymentData.meal_ids = []
         paymentData.addon_ids = []
         paymentData.extra_ids = []
         paymentData.offer_ids = []
 
-        cartItems.map((item) => {
+        customerCartItems.map((item) => {
             if (item.table_name === "meals") {
                 let size;
                 if (item.size === "Small") {
@@ -233,24 +241,25 @@ export default function Cart() {
                         {tableNum ? (
                             <p>Inside Table-{tableNum}</p>
                         ) : (
-                            <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Choose your table
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                             {tables.map((item) => (
-                                        <a class="dropdown-item" 
-                                        onClick={() => tableChg(item.id)} 
-                                         >{item.place}</a>
-                        
-                     ))}
-                              
-                            </div>
-                          </div>
-                   
-                                 
-                        )}
+                            <select
+                                className="form-select"
+                                aria-label="Default select example"
+                                onChange={(e) => {
+                                    const selectedId = tables.find((item) => item.place === e.target.value)?.id;
+                                    if (selectedId) tableChg(selectedId);
+                                }}
+                                >
+                                <option value="" selected disabled>
+                                    Choose your table
+                                </option>
+                                {tables.map((item) => (
+                                    <option key={item.id} value={item.place}>
+                                    {item.place}
+                                    </option>
+                                ))}
+                                </select>
 
+                        )}
                     </div>
                     <div className="">
                         <strong className="text-left"><p>Payment</p></strong>
@@ -270,6 +279,10 @@ export default function Cart() {
                                     Cash
                                 </label>
                             </div>
+                            <div class="form-floating">
+                                <textarea class="form-control mb-3" placeholder="Leave your notes here" id="notes" style={{height: '100px' }}onChange={inputChg}></textarea>
+                                <label for="notes" className="pt-2">Do you have any notes?</label>
+                            </div>
                             {/* <div className="form-check pb-3">
                                 <input className="form-check-input" type="radio" value="dpay" name="payment" id="dpay" onChange={inputChg} 
                                 checked={paymentMethod === 'dpay'}
@@ -281,12 +294,12 @@ export default function Cart() {
                             <button
 
                                 type="submit"
-                                className="btn primary rounded-pill col-6"
+                                className="btn primary rounded-pill col-6 placeOrder"
                                 onClick={(e) => {
                                     checkOut(e);
 
                                 }}
-                                disabled={(cartItems.length === 0 ? true : false)}
+                                disabled={(customerCartItems.length === 0 ? true : false)}
                             >
                                 Place order
                             </button>
@@ -297,7 +310,7 @@ export default function Cart() {
                 </div>
                 <div className="col-10 col-md-4 text-center mb-4">
                     <strong><p>Cart Summary</p></strong>
-                    {cartItems.map((item) => (
+                    {customerCartItems.map((item) => (
                         <CheckOutCard
                             key={item.name}
                             img={item.image}

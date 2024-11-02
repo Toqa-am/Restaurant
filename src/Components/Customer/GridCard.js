@@ -213,7 +213,7 @@ export function GridCard(pokemon) {
                         }
 
                         <button
-                            className="button rounded-pill"
+                            className="button rounded-pill px-2"
                             data-bs-toggle="modal"
                             data-bs-target={`#staticBackdrop-${pokemon.id}`}
                             onClick={() => {
@@ -293,7 +293,7 @@ export function GridCard(pokemon) {
                                         <button
                                             type="button"
                                             disabled={((pokemon.item.table_name === "meals" && !pokemon.item.size) ? true : false)}
-                                            className="btn primary"
+                                            className="btn primary submmitAdd"
                                             onClick={() => handleAddToCart(pokemon.item, itemQuant)}
                                             data-bs-dismiss="modal"
                                         >

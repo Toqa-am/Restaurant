@@ -3,7 +3,7 @@ import { CartCard } from "./CartCard";
 import { increaseItemQuant , decreaseItemQuant} from "../../Store/action";
 
 export default function FullCart(){
-    const cart=useSelector((state)=>state.cartItems)
+    const cart=useSelector((state)=>state.customerCartItems)
     const cartTotal=useSelector((state)=>state.cartTotal)
     
     const dispatcher=useDispatch()

@@ -3,13 +3,13 @@ import cloneDeep from 'lodash/cloneDeep'
 
 const getCartData = () => {
 
-    let currentCart = localStorage.getItem("cartItems")
+    let currentCart = localStorage.getItem("customerCartItems")
     if (currentCart && currentCart == []) {
         return [];
     }
     else if (!currentCart) {
         currentCart = []
-        localStorage.setItem("cartItems", JSON.stringify(currentCart))
+        localStorage.setItem("customerCartItems", JSON.stringify(currentCart))
         return JSON.parse(currentCart);
     }
     else {
@@ -39,7 +39,7 @@ const getCartTotal = () => {
 
 const VALUE = {
     cartTotal: getCartTotal(),
-    cartItems: getCartData(),
+    customerCartItems: getCartData(),
     searchStatement: "",
     itemQuant: 1,
     table_num: null,
@@ -57,13 +57,13 @@ export default function cartReducer(
         case "INC_ITEM":
             console.log(action.payload)
             if (action.payload.table_name === "meals") {
-                const existingItem = state.cartItems.filter(item => item.name === action.payload.name && item.size === action.payload.size);
+                const existingItem = state.customerCartItems.filter(item => item.name === action.payload.name && item.size === action.payload.size);
 
                 if (existingItem.length !== 0) {
 
                     return {
                         ...state,
-                        cartItems: state.cartItems.map(item =>
+                        customerCartItems: state.customerCartItems.map(item =>
                             item.name === action.payload.name && item.size === action.payload.size
                                 ? { ...item, quant: item.quant + 1 }
                                 : item
@@ -74,13 +74,13 @@ export default function cartReducer(
 
             }
             else if (action.payload.table_name === "offers") {
-                const existingItem = state.cartItems.find(item => item.name === action.payload.name);
+                const existingItem = state.customerCartItems.find(item => item.name === action.payload.name);
                 console.log(existingItem)
                 if (existingItem.length !== 0) {
 
                     return {
                         ...state,
-                        cartItems: state.cartItems.map(item =>
+                        customerCartItems: state.customerCartItems.map(item =>
                             item.name === action.payload.name
                                 ? { ...item, quant: item.quant + 1 }
                                 : item
@@ -91,13 +91,13 @@ export default function cartReducer(
                 }
             }
             else {
-                const existingItem = state.cartItems.find(item => item.name === action.payload.name);
+                const existingItem = state.customerCartItems.find(item => item.name === action.payload.name);
                 console.log(existingItem)
                 if (existingItem.length !== 0) {
 
                     return {
                         ...state,
-                        cartItems: state.cartItems.map(item =>
+                        customerCartItems: state.customerCartItems.map(item =>
                             item.name === action.payload.name
                                 ? { ...item, quant: item.quant + 1 }
                                 : item
@@ -107,7 +107,7 @@ export default function cartReducer(
 
                 }
             }
-            localStorage.setItem("cartItems", JSON.stringify(state.cartItems))
+            localStorage.setItem("customerCartItems", JSON.stringify(state.customerCartItems))
 
 
             return state;
@@ -126,22 +126,22 @@ export default function cartReducer(
         case "DEC_ITEM":
             console.log(action.payload)
             if (action.payload.table_name === "meals") {
-                const existingItem = state.cartItems.filter(item => item.name === action.payload.name && item.size === action.payload.size);
+                const existingItem = state.customerCartItems.filter(item => item.name === action.payload.name && item.size === action.payload.size);
 
                 if (existingItem.length !== 0) {
                     if (existingItem[0].quant === 1) {
 
-                        console.log(state.cartItems)
+                        console.log(state.customerCartItems)
                         return {
                             ...state,
-                            cartItems: state.cartItems.filter((item) => (item !== existingItem[0])),
+                            customerCartItems: state.customerCartItems.filter((item) => (item !== existingItem[0])),
                             cartTotal: Number((state.cartTotal - existingItem[0].cost).toFixed(2)),
                         };
                     } else {
                         // Decrease the item quantity by 1
                         return {
                             ...state,
-                            cartItems: state.cartItems.map(item =>
+                            customerCartItems: state.customerCartItems.map(item =>
                                 item.name === action.payload.name && item.size === action.payload.size
                                     ? { ...item, quant: item.quant - 1 }
                                     : item
@@ -152,21 +152,21 @@ export default function cartReducer(
                 }
             }
             else if (action.payload.table_name === "offers") {
-                const existingItem = state.cartItems.find(item => item.name === action.payload.name);
+                const existingItem = state.customerCartItems.find(item => item.name === action.payload.name);
                 console.log(existingItem)
                 if (existingItem.length !== 0) {
                     if (existingItem.quant === 1) {
                         // Remove the item from the cart if quantity is 1
                         return {
                             ...state,
-                            cartItems: state.cartItems.filter(item => item.name !== action.payload.name),
+                            customerCartItems: state.customerCartItems.filter(item => item.name !== action.payload.name),
                             cartTotal: Number((state.cartTotal - existingItem.total_price_after_discount).toFixed(2)),
                         };
                     } else {
                         // Decrease the item quantity by 1
                         return {
                             ...state,
-                            cartItems: state.cartItems.map(item =>
+                            customerCartItems: state.customerCartItems.map(item =>
                                 item.name === action.payload.name
                                     ? { ...item, quant: item.quant - 1 }
                                     : item
@@ -177,21 +177,21 @@ export default function cartReducer(
                 }
             }
             else {
-                const existingItem = state.cartItems.find(item => item.name === action.payload.name);
+                const existingItem = state.customerCartItems.find(item => item.name === action.payload.name);
                 console.log(existingItem)
                 if (existingItem.length !== 0) {
                     if (existingItem.quant === 1) {
                         // Remove the item from the cart if quantity is 1
                         return {
                             ...state,
-                            cartItems: state.cartItems.filter(item => item.name !== action.payload.name),
+                            customerCartItems: state.customerCartItems.filter(item => item.name !== action.payload.name),
                             cartTotal: Number((state.cartTotal - existingItem.cost).toFixed(2)),
                         };
                     } else {
                         // Decrease the item quantity by 1
                         return {
                             ...state,
-                            cartItems: state.cartItems.map(item =>
+                            customerCartItems: state.customerCartItems.map(item =>
                                 item.name === action.payload.name
                                     ? { ...item, quant: item.quant - 1 }
                                     : item
@@ -201,7 +201,7 @@ export default function cartReducer(
                     }
                 }
             }
-            localStorage.setItem("cartItems", JSON.stringify(state.cartItems))
+            localStorage.setItem("customerCartItems", JSON.stringify(state.customerCartItems))
 
 
             // Default return if no changes were made
@@ -229,57 +229,57 @@ export default function cartReducer(
 
             if (payload[0].table_name === "meals") {
                 console.log(payload[0].table_name)
-                let sizeEx = state.cartItems.filter((item) => (item.size === payload[0].size));
+                let sizeEx = state.customerCartItems.filter((item) => (item.size === payload[0].size));
                 if (sizeEx.length !== 0) {
                     let nameEx = sizeEx.filter((item) => (item.name === payload[0].name))
                     if (nameEx.length !== 0) {
 
-                        state.cartItems.find((item) => (item === nameEx[0])).quant += payload[1]
+                        state.customerCartItems.find((item) => (item === nameEx[0])).quant += payload[1]
                         state.cartTotal = Number(Number(state.cartTotal + (nameEx[0].cost * payload[1])).toFixed(2))
                     }
                     else {
                         payload[0].quant = payload[1]
-                        state.cartItems.push(payload[0])
+                        state.customerCartItems.push(payload[0])
                         state.cartTotal = Number(Number(state.cartTotal + payload[0].cost * payload[1]).toFixed(2))
 
                     }
                 }
                 else {
                     payload[0].quant = payload[1]
-                    state.cartItems.push(payload[0])
+                    state.customerCartItems.push(payload[0])
                     state.cartTotal = Number(Number(state.cartTotal + payload[0].cost * payload[1]).toFixed(2))
                 }
             }
             else if (payload[0].table_name === "offers") {
-                let nameEx = state.cartItems.filter((item) => (item.name === payload[0].name))
+                let nameEx = state.customerCartItems.filter((item) => (item.name === payload[0].name))
                 if (nameEx.length !== 0) {
-                    state.cartItems.find(item => (item.name === payload[0].name)).quant += payload[1]
+                    state.customerCartItems.find(item => (item.name === payload[0].name)).quant += payload[1]
                     state.cartTotal = Number(Number(state.cartTotal + payload[0].total_price_after_discount * payload[1]).toFixed(2))
                 }
                 else {
                     payload[0].quant = payload[1]
-                    state.cartItems.push(payload[0])
+                    state.customerCartItems.push(payload[0])
                     state.cartTotal = Number(Number(state.cartTotal + payload[0].total_price_after_discount * payload[1]).toFixed(2))
                 }
             }
             else {
-                let nameEx = state.cartItems.filter((item) => (item.name === payload[0].name))
+                let nameEx = state.customerCartItems.filter((item) => (item.name === payload[0].name))
                 if (nameEx.length !== 0) {
-                    state.cartItems.find(item => (item.name === payload[0].name)).quant += payload[1]
+                    state.customerCartItems.find(item => (item.name === payload[0].name)).quant += payload[1]
                     state.cartTotal = Number(Number(state.cartTotal + payload[0].cost * payload[1]).toFixed(2))
                 }
                 else {
                     payload[0].quant = payload[1]
-                    state.cartItems.push(payload[0])
+                    state.customerCartItems.push(payload[0])
                     state.cartTotal = Number(Number(state.cartTotal + payload[0].cost * payload[1]).toFixed(2))
                 }
 
             }
-            localStorage.setItem("cartItems", JSON.stringify(state.cartItems))
+            localStorage.setItem("customerCartItems", JSON.stringify(state.customerCartItems))
 
             return {
                 ...state,
-                cartItems: state.cartItems
+                customerCartItems: state.customerCartItems
             }
 
 
@@ -291,11 +291,11 @@ export default function cartReducer(
 
             }
         case "EMP_CART":
-            state.cartItems = []
+            state.customerCartItems = []
             state.cartTotal = 0
             return {
                 ...state,
-                cartItems: state.cartItems,
+                customerCartItems: state.customerCartItems,
                 cartTotal: state.cartTotal
 
             }

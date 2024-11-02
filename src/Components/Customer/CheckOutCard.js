@@ -8,7 +8,7 @@ export default function CheckOutCard(props) {
                 <div className="row g-0">
                     <div className="col-md-4 d-flex">
                     <img
-                    className=" rounded-start align-self-center"
+                    className=" rounded-start align-self-center checkoutCardImg"
                     key={props.img}
                     width={75}
                     height={100}

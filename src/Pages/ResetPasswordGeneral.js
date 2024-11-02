@@ -8,7 +8,7 @@ export function ResetPasswordGeneral(props) {
   const [changed, setChanged] = useState(false);
 
   const location = useLocation();
-  console.log(JSON.parse(localStorage.getItem("cartItems")));
+  console.log(JSON.parse(localStorage.getItem("customerCartItems")));
   console.log(JSON.parse(localStorage.getItem("cartTotal")));
   console.log("khgc");
 

@@ -13,12 +13,12 @@ export function Navbar() {
     const dispatcher = useDispatch()
     const [updated,setUpdated]=useState(false)
     const cartTotal = useSelector((state) => state.cartTotal)
-    const cartItems = useSelector((state) => state.cartItems)
-    console.log(cartItems)
+    const customerCartItems = useSelector((state) => state.customerCartItems)
+    console.log(customerCartItems)
     
     useEffect(() => {
-        localStorage.setItem("cartItems", JSON.stringify(cartItems))
-      }, [cartItems])
+        localStorage.setItem("customerCartItems", JSON.stringify(customerCartItems))
+      }, [customerCartItems])
  
       useEffect(() => {
         localStorage.setItem("cartTotal", JSON.stringify(cartTotal))
@@ -41,7 +41,7 @@ export function Navbar() {
             >
                 <Link to='/customer/menu'>
                     <a className="navbar-brand" href="/">
-                        <img src={logo1} height={45}></img>
+                        <img src={logo1} className="menuLogo" height={45}></img>
                     </a>
 
                 </Link>
@@ -50,9 +50,10 @@ export function Navbar() {
                 <div className='d-flex justify-content-around'>
 
                 <Link to='/customer/offers'>
-                    <a className="navbar-brand" href="/">
+                <button className="btn button offerBtn">Offers</button>
+                    {/* <a className="navbar-brand" href="/">
                     Offers
-                    </a>
+                    </a> */}
 
                 </Link>
                     <input className="form-control me-2 col-6 rounded-pill" type="search" placeholder="Search" onChange={handelSearch} />
@@ -70,18 +71,18 @@ export function Navbar() {
                 </div>
                 <div className="offcanvas-body body">
 
-                    {cartItems.length === 0 ? <EmptyCart /> : <FullCart />}
+                    {customerCartItems.length === 0 ? <EmptyCart /> : <FullCart />}
 
 
                 </div>
-                <div className={(cartItems.length === 0 ? "invisible":"")}>
+                <div className={(customerCartItems.length === 0 ? "invisible":"")}>
 
                 
                 <div className="d-flex justify-content-evenly gap-2 rounded-pill p-3 mb-3 border border-gray-1 ">
                     <h6 className="capitalize text-sm font-medium ">Subtotal</h6>
                     <h6 className='text-success'><strong>{cartTotal} OMR</strong></h6>
                 </div>'
-                <button className='btn primary rounded-pill col-12 m-2 p-3' onClick={handleNavigation} data-bs-dismiss="offcanvas"> 
+                <button className='btn primary rounded-pill col-12 m-2 p-3 checkoutBtn' onClick={handleNavigation} data-bs-dismiss="offcanvas"> 
                    Proceed to CheckOut
                    
                 </button>

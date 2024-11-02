@@ -26,7 +26,9 @@ export function SizeCard(props){
         <br></br>
         Cost: <strong>{props.price}</strong> 
         <br></br>
-        NOP:{props.nop}
+        {
+          props.nop? <span>NOP:{props.nop}</span>:''
+        }
       </div>
         
         

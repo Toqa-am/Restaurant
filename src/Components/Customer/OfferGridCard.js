@@ -207,12 +207,12 @@ setTotal(total)
                 <span className="d-flex justify-content-between align-items-center justify-content-center item-card">
                 <h6 class="card-title"> <strong>{pokemon.pokemon.name}</strong> </h6>
                 
-                <span class="badge bg-danger mb-10">{pokemon.pokemon.discount} %</span>
+                <span class="badge bg-danger mb-10"> -{pokemon.pokemon.discount} </span>
 
                             </span>
                             <div className="">
                     {pokemon.pokemon.items ? 
-                     <span class="text-muted text-black-50 para">
+                     <span class="text-muted text-black-50 para mt-0 py-0">
                             {pokemon.pokemon.items.substring(0,70)}...
 </span>
                         :
@@ -232,7 +232,7 @@ setTotal(total)
                         
 
                         <button
-                            className="button rounded-pill"
+                            className="button rounded-pill px-2"
                             data-bs-toggle="modal"
                             data-bs-target={`#staticBackdrop-${pokemon.pokemon.id}`}
                             onClick={() => {
@@ -269,7 +269,7 @@ setTotal(total)
                                         <button
                                             type="button"
                                             // disabled={((pokemon.item.table_name === "meals" && !pokemon.item.size) ? true : false)}
-                                            className="btn primary"
+                                            className="btn primary submmitAdd"
                                             onClick={() => handleAddToCart(pokemon.pokemon, itemQuant)}
                                             data-bs-dismiss="modal"
                                         >

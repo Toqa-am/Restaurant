@@ -129,12 +129,12 @@ const FetchData = () => {
   const handleCategoryFilter = async (catId,pg) => {
     const els=document.getElementsByClassName('filter-button');
     for (let i = 0; i < els.length; i++) {
-      els[i].classList.remove('active')
+      els[i].classList.remove('activeFilter')
       
     }
    
     if (catId === 'all') {
-      document.getElementById(catId).classList.add('active')
+      document.getElementById(catId).classList.add('activeFilter')
       setData(all)
       setCatName("ALL")
       setUpdated(!updatated)
@@ -142,7 +142,7 @@ const FetchData = () => {
     }
 
     else {
-      document.getElementById(catId.name).classList.add('active')
+      document.getElementById(catId.name).classList.add('activeFilter')
       categories.forEach( cat => {
         if(cat.id===catId.id){
           setCatName(cat.name)
@@ -228,7 +228,7 @@ const FetchData = () => {
         <div className='d-flex justify-content-between '>
         
           <button
-            className={`custom-button ${filter === 'non-vegetarian' ? 'active' : ''}`}
+            className={`custom-button ${filter === 'non-vegetarian' ? 'activeFilter' : ''}`}
             onClick={() => handleFilterChange('non-vegetarian')}
           >
             <img
@@ -240,7 +240,7 @@ const FetchData = () => {
             Non-Veg
           </button>
           <button
-            className={`custom-button ${filter === 'vegetarian' ? 'active' : ''}`}
+            className={`custom-button ${filter === 'vegetarian' ? 'activeFilter' : ''}`}
             onClick={() => handleFilterChange('vegetarian')}
           >
             <img
@@ -263,13 +263,13 @@ const FetchData = () => {
             </h2>
           
         </div>
-        <div>
-        <button className='btn ' onClick={(e)=>changeView("grid",e)}>
+        <div className="d-flex justify-content-between">
+        <button className='btn view-btn' onClick={(e)=>changeView("grid",e)}>
               <i className="bi bi-grid-3x2-gap-fill  view-icon chgView"></i>
 
             </button>
 
-            <button className='btn' onClick={(e)=>changeView("list",e)}>
+            <button className='btn view-btn' onClick={(e)=>changeView("list",e)}>
               <i className="bi bi-view-list view-icon chgView"></i>
 
             </button>

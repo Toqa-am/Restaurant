@@ -178,12 +178,12 @@ export function OfferListCard(pokemon) {
                 <div className="pokemon-details text-black-50 para d-grid h-100">
                     <div className='d-flex justify-content-between'>
                     <h6>{` ${pokemon.pokemon.name}`} </h6>
-                    <span class="badge bg-danger p-1 my-auto">{pokemon.pokemon.discount} %</span>
+                    <span class="badge bg-danger p-1 my-auto"> -{pokemon.pokemon.discount} </span>
                     </div>
                    
 
                     {pokemon.pokemon.items ? 
-                     <span class="truncate text-muted text-black-50 para">
+                     <span class="truncate text-muted text-black-50 para mt-0 py-0">
                             {pokemon.pokemon.items.substring(0,50)}..
 </span>
                         :
@@ -198,7 +198,7 @@ export function OfferListCard(pokemon) {
                         
 
                             <button
-                            className="button rounded-pill"
+                            className="button rounded-pill px-2"
                             data-bs-toggle="modal"
                             data-bs-target={`#staticBackdrop-${pokemon.pokemon.id}`}
                             onClick={() => {
@@ -235,7 +235,7 @@ export function OfferListCard(pokemon) {
                                         <button
                                             type="button"
                                             // disabled={((pokemon.item.table_name === "meals" && !pokemon.item.size) ? true : false)}
-                                            className="btn primary"
+                                            className="btn primary submmitAdd"
                                             onClick={() => handleAddToCart(pokemon.pokemon, itemQuant)}
                                             data-bs-dismiss="modal"
                                         >

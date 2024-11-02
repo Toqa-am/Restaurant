@@ -57,13 +57,10 @@ export function Login(props){
         console.log(adminToken);
 
         try {
-            //'http://127.0.0.1:8000/api/admin/login'
             const response = await axios.post(props.loginEP, formData);
             setIsLoggedIn(true)
             setAdminToken(response.access_token)
-            //'AdminToken'
             localStorage.setItem(props.tokenName, JSON.stringify(adminToken));
-//"/admin/dashboard/add-ons"
             history.push(props.redirect);
             console.log(response);
             
@@ -97,26 +94,9 @@ export function Login(props){
             pathname: '/customer/emailtoresetpassord',
             state: { data: props.fpEndpoint }
           });
-        // console.log(formData.email);
-        // if (formData.email === '') {
-
-        //     setErrors({
-        //         ...errors,
-        //         emailError: "please enter your email to reset your password"
-        //     })
-        // }
-
+       
         e.preventDefault()
-        // var email = { "email": formData.email }
-//         try {
-//             //"http://127.0.0.1:8000/api/admin/employees/forgot-password"
-//             const response = await axios.post(props.fpEndpoint, email)
-//             setRequestedToReset(true)
-
-//         }
-//         catch(error) {
-// console.error(error)
-//         }
+     
 
     }
     return(<>
@@ -134,7 +114,6 @@ export function Login(props){
 
     <label for="email" className="form-label justify-content-center">Email:</label>
     
-    <span className="text-danger">{errors.emailError}</span>
     <input
         className="form-control"
         type="email"
@@ -150,7 +129,6 @@ export function Login(props){
 <div>
     <label for="password" className="form-label mt-3 justify-content-center">Password:</label>
     
-    <span className="text-danger">{errors.passError}</span>
 
     <input
         className="form-control"
@@ -174,7 +152,7 @@ export function Login(props){
     :<></>
 }
 
-<div className=" text-center">
+<div className=" text-center pb-2">
     <a href="" className="pb-3 pl-1" onClick={resetPassword}><p>Forgot password</p></a>
     {/* <span className={"text-danger ml-5 " + (requestedToReset ? "visible" : "invisible")}>Check your email</span> */}
 </div>
@@ -183,7 +161,7 @@ export function Login(props){
 
     {/* ||  errors.passError */}
     <button
-        className="btn btn-dark rounded-pill"
+        className="btn btn-dark rounded-pill m-auto"
 
         onClick={handleSubmit}
         type="button"
