@@ -9,6 +9,7 @@ import ReactPaginate from 'react-paginate';
 import { ListCard } from '../../Components/Customer/ListCard';
 import { GridCard } from '../../Components/Customer/GridCard';
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
+import { Navbar } from '../../Components/Customer/Navbar';
 
 const FetchData = () => {
   const [data, setData] = useState([]);
@@ -40,7 +41,6 @@ const FetchData = () => {
   // Get all the query parameters as an object
   const allParams = Object.fromEntries(searchParams);
   dispatch(setTable([allParams.id,allParams.number]))
-  console.log(allParams.number);
   const handlePageChange = (selectedObject) => {
     handleFetch(selectedObject.selected);
 
@@ -52,7 +52,6 @@ const FetchData = () => {
     try {
       const response = await axios.get(`http://127.0.0.1:8000/api/AllItems`)
       setData(response.data.data)
-      console.log(response.data.data)
       setData(prevData => prevData.map(item => ({
         ...item,
         addons: item.addons?.map(addon => ({
@@ -68,10 +67,8 @@ const FetchData = () => {
         }))
       })));
       setAll(response.data.data);
-      console.log(response.data);
       setisLoaded(true);
       setLoading(false);
-      console.log(data);
     }
     catch (error) {
       setError(error);
@@ -85,12 +82,10 @@ const FetchData = () => {
       try {
         const cats = await axios.get('http://127.0.0.1:8000/api/categories');
         setCategories(cats.data.data)
-        console.log(categories)
 
 
       }
       catch (error) {
-        console.log(error)
 
 
       }
@@ -150,16 +145,12 @@ const FetchData = () => {
         }
       });
       setData(all)
-      console.log(data)
-      console.log(all)
-
+    
       const filtered=all.filter(item =>{
         return item.category_id==catId.id
       })
-      console.log(catId);
       
         setData(filtered);
-        console.log(filtered)
         setUpdated(!updatated)
    
     }
@@ -167,20 +158,16 @@ const FetchData = () => {
 
 
 
- console.log(data)
 
   const filteredData = data.filter(item => {
     if (searchQ === '') {
 
       if (filter === 'vegetarian') {
-        console.log(filter)
-        console.log("vege");
+        
         return item.type === 'vegetarian';
       }
       else if (filter === 'non-vegetarian'){
-        console.log(filter)
-
-        console.log("non-veg")
+       
         return item.type === 'non-vegetarian';
       }
       else
@@ -189,9 +176,7 @@ const FetchData = () => {
 
     }
     else {
-      console.log(searchQ);
-      console.log(item.name);
-      
+     
       return item.name.toLowerCase().includes(searchQ.toLowerCase())
       
     }
@@ -210,11 +195,24 @@ const FetchData = () => {
       e.target.style.color='#f5cfb8'
     }
   }
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  
+  if (loading) return  <div className="main-container">
+  <Navbar />
+  <div className='bg-light '>
+    <p>Loading...</p>;
+    </div>
+    </div>
+  if (error) return  <div className="main-container">
+  <Navbar />
+  <div className='bg-light '>
+    <p>Error: {error.message}</p>;
+    </div>
+    </div>
 
   return (
-
+    <div className="main-container">
+    <Navbar />
+    <div className='bg-light '>
     <div>
       <div className=" d-flex justify-content-around scrollmenu" id="filterCards">
         <FilterCard id='all' title="All" img={all_cat} filterr={(() => handleCategoryFilter('all'))} />
@@ -333,10 +331,12 @@ const FetchData = () => {
         <div>Nothing to display</div>
       )}
     </div>
-
+    
+    </div>
+    </div>
   );
 
-
+  
 };
 
 export default FetchData;

@@ -126,7 +126,10 @@ export default function Invoice({ visible, modalClose }) {
                     {offers.map((offer, index) => (
                       <tr key={index}>
                         <td>x {offer.quantity}</td>
-                        <td>{offer.name}</td>
+                        <td>
+                          <span>{offer.name}</span>
+                          <span>items: {offer.items}</span>
+                        </td>
                         <td>{offer.cost} OMR</td>
                       </tr>
                     ))}

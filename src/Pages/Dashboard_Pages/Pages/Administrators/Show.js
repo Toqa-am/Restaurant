@@ -55,7 +55,7 @@ export default function Show() {
 
         <div className="details">
           <h3>{administrator.name}</h3>
-          <p className="typeRole">admin</p>
+          <p className="typeRole">{administrator.Role}</p>
         </div>
       </div>
 

@@ -413,7 +413,7 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
               className="btn form-control mt-3 fw-bold"
               onClick={() => handleAddToCart()}
             >
-              Add To Cart - <span id="finalTotal"> ${updateFinalTotal()}</span>
+              Add To Cart - <span id="finalTotal"> {updateFinalTotal()} OMR</span>
             </button>
           </div>
         </form>

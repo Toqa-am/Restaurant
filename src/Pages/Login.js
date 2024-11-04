@@ -91,7 +91,7 @@ export function Login(props){
 
     const resetPassword = async (e) => {
         history.push({
-            pathname: '/customer/emailtoresetpassord',
+            pathname: '/customer/emailtoresetpassword',
             state: { data: props.fpEndpoint }
           });
        

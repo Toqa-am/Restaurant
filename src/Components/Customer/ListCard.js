@@ -45,7 +45,6 @@ export function ListCard(pokemon) {
     function increaseItems(item) {
 
         dispatch(increaseItemBCart(item))
-        console.log(item);
         
 
 
@@ -60,10 +59,7 @@ export function ListCard(pokemon) {
     }
 
     function changeSize(size, item, e) {
-        console.log(size);
-        console.log(item);
-        // let i = item
-        console.log(e.target.checked);
+     
 
         if (e.target.checked === true) {
             if (size.size === 1) {
@@ -85,14 +81,11 @@ export function ListCard(pokemon) {
             }
             item.cost = size.cost
             item.nop = size.number_of_pieces
-            console.log(item);
-            console.log("kjhgf")
+      
             setCartItemWSize(item);
-            console.log(cartItemWSize)
             
 
             setCartFormData({ ...CartFormData, items: item })
-            console.log(CartFormData.items)
         }
 
 
@@ -105,7 +98,6 @@ export function ListCard(pokemon) {
         }
         else {
             item.quant++
-            console.log(item)
             setAddon(!addon)
         }
 
@@ -118,12 +110,10 @@ export function ListCard(pokemon) {
             setAddon(!addon)
         }
         else {
-            console.log(item.quant)
             if (item.quant > 1) {
                 item.quant--
 
             }
-            console.log(item)
             setAddon(!addon)
         }
 
@@ -131,8 +121,7 @@ export function ListCard(pokemon) {
     }
 
     const handleCheckboxChange = (item, e) => {
-        console.log(e);
-        console.log(item);
+
         setChosen(true)
         if(!item.quant){
             item.quant=1;
@@ -152,7 +141,6 @@ export function ListCard(pokemon) {
         }
         
 
-        console.log(CartFormData);
     };
 
     const handleAddToCart = (pokemon, itemQuant) => {
@@ -172,7 +160,6 @@ export function ListCard(pokemon) {
         }
         else {
             dispatch(addToCart([CartFormData.items, itemQuant]));
-            console.log(CartFormData.items)
             CartFormData.addons.map((item) => (
                 dispatch(addToCart([item, item.quant]))
             ))
@@ -184,7 +171,6 @@ export function ListCard(pokemon) {
         })
 
         dispatch(zeroQuant())
-        console.log(CartFormData);
 
     };
 
@@ -213,7 +199,6 @@ export function ListCard(pokemon) {
                             data-bs-target={`#staticBackdrop-${pokemon.id}`}
                             onClick={() => {
                                 console.log(pokemon.item);
-                                console.log(pokemon);
                             }}
                         >
                             <i class="bi bi-handbag-fill"></i>

@@ -74,6 +74,11 @@ export default function Employees() {
       key: "phone",
     },
     {
+      title: "ROLE",
+      dataIndex: "role",
+      key: "role",
+    },
+    {
       title: "STATUS",
       key: "status",
       render: (item) => (
@@ -135,6 +140,10 @@ export default function Employees() {
     {
       label: "Status",
       key: "status",
+    },
+    {
+      label: "Role",
+      key: "role",
     },
   ];
 

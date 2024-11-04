@@ -14,7 +14,6 @@ export function Navbar() {
     const [updated,setUpdated]=useState(false)
     const cartTotal = useSelector((state) => state.cartTotal)
     const customerCartItems = useSelector((state) => state.customerCartItems)
-    console.log(customerCartItems)
     
     useEffect(() => {
         localStorage.setItem("customerCartItems", JSON.stringify(customerCartItems))
@@ -39,7 +38,7 @@ export function Navbar() {
             <nav className="navbar sticky-top navbar-expand-lg navbar-light  d-flex justify-content-between py-0"
             style={{backgroundColor:'white'}}
             >
-                <Link to='/customer/menu'>
+                <Link to='/'>
                     <a className="navbar-brand" href="/">
                         <img src={logo1} className="menuLogo" height={45}></img>
                     </a>

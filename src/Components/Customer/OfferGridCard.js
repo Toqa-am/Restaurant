@@ -9,7 +9,6 @@ import { useEffect, useState } from 'react';
 
 
 export function OfferGridCard(pokemon) {
-    console.log(pokemon)
     const dispatch = useDispatch();
     const itemQuant = useSelector(state => state.itemQuant);
     const [totalPrice, setTotal] = useState(0)
@@ -54,7 +53,6 @@ setTotal(total)
     function increaseItems(item) {
 
         dispatch(increaseItemBCart(item))
-        console.log(item);
 
 
     }
@@ -68,11 +66,7 @@ setTotal(total)
     }
 
     function changeSize(size, item, e) {
-        console.log(size);
-        console.log(item);
-        // let i = item
-        console.log(e.target.checked);
-
+       
         if (e.target.checked === true) {
             if (size.size === 1) {
                 item.size = "Small"
@@ -93,14 +87,11 @@ setTotal(total)
             }
             item.cost = size.cost
             item.nop = size.number_of_pieces
-            console.log(item);
-            console.log("kjhgf")
+           
             setCartItemWSize(item);
-            console.log(cartItemWSize)
 
 
             setCartFormData({ ...CartFormData, items: item })
-            console.log(CartFormData.items)
         }
 
 
@@ -113,7 +104,6 @@ setTotal(total)
         }
         else {
             item.quant++
-            console.log(item)
             setAddon(!addon)
         }
 
@@ -126,12 +116,10 @@ setTotal(total)
             setAddon(!addon)
         }
         else {
-            console.log(item.quant)
             if (item.quant > 1) {
                 item.quant--
 
             }
-            console.log(item)
             setAddon(!addon)
         }
 
@@ -139,8 +127,7 @@ setTotal(total)
     }
 
     const handleCheckboxChange = (item, e) => {
-        console.log(e);
-        console.log(item);
+
         setChosen(true)
         if (!item.quant) {
             item.quant = 1;
@@ -158,14 +145,11 @@ setTotal(total)
             })
 
         }
-        // console.log(CartFormData.addons);
 
 
-        console.log(CartFormData);
     };
 
     const handleAddToCart = (pokemon, itemQuant) => {
-        console.log(pokemon)
         if (JSON.stringify(CartFormData.items) === '{}') {
             dispatch(addToCart([pokemon, itemQuant]));
 
@@ -173,7 +157,6 @@ setTotal(total)
         }
         else {
             dispatch(addToCart([CartFormData.items, itemQuant]));
-            console.log(CartFormData.items)
             CartFormData.addons.map((item) => (
                 dispatch(addToCart([item, item.quant]))
             ))
@@ -185,7 +168,6 @@ setTotal(total)
         })
 
         dispatch(zeroQuant())
-        console.log(CartFormData);
 
     };
 

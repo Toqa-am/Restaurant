@@ -4,6 +4,7 @@ import { OfferGridCard } from "../../Components/Customer/OfferGridCard";
 import { OfferListCard } from "../../Components/Customer/OfferListCard"
 import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
+import { Navbar } from "../../Components/Customer/Navbar";
 
 export function Offers() {
 
@@ -51,7 +52,6 @@ export function Offers() {
       setLoading(true)
       try {
         const offers = await axios.get('http://127.0.0.1:8000/api/offers/items');
-        console.log(offers.data)
 
         setOffers(offers.data.data)
         setOffers(prevData => prevData.map(item => ({
@@ -62,7 +62,6 @@ export function Offers() {
         setLoading(false)
       }
       catch (error) {
-        console.log(error)
         setLoading(false)
 
         setError(error)
@@ -84,11 +83,23 @@ export function Offers() {
   })
 
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
+  if (loading) return   <div className="main-container">
+  <Navbar />
+  <div className='bg-light '>
+    <p>Loading...</p>;
+    </div>
+    </div>
+  if (error) return   <div className="main-container">
+  <Navbar />
+  <div className='bg-light '>
+     <p>Error: {error.message}</p>;
+     </div>
+     </div>
   return (
     <>
+    <div className="main-container">
+    <Navbar />
+    <div className='bg-light '>
       <div className=' container d-flex justify-content-between viewContainer'>
         <div className='mb-3'>
 
@@ -152,6 +163,9 @@ export function Offers() {
           nextLabel={">>"}
         />
       </div>
+      </div>
+      </div>
     </>
   )
+
 }

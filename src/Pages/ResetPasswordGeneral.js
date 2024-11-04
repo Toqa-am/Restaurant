@@ -10,7 +10,6 @@ export function ResetPasswordGeneral(props) {
   const location = useLocation();
   console.log(JSON.parse(localStorage.getItem("customerCartItems")));
   console.log(JSON.parse(localStorage.getItem("cartTotal")));
-  console.log("khgc");
 
   const searchParams = new URLSearchParams(location.search);
   const allParams = Object.fromEntries(searchParams);
@@ -61,7 +60,7 @@ export function ResetPasswordGeneral(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     // var url = `http://27.0.0.1:8000/api/auth/reset-password-form?token=${allParams.token}&email=${allParams.email}`
-
+console.log(resetPasswordData)
     try {
       // "http://127.0.0.1:8000/api/auth/reset-password"
       const response = await axios.post(props.endpoint, resetPasswordData);
@@ -73,11 +72,12 @@ export function ResetPasswordGeneral(props) {
   return (
     <>
       <div className=" container w-75 m-auto text-center pt-5">
-        <img src={reset} height={75} width={75} alt="reset"></img>
+        <img src={reset} height={75} width={75} alt="reset" className="verImg"></img>
         <h3>Password Reset</h3>
+        <span className="text-muted">Password should be at least 8 digits</span>
         <form onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="new_password">New Password:</label>
+            <label htmlFor="new_password" className="mx-auto justify-content-center">New Password:</label>
             <br></br>
             <input
               className="form-control m-auto w-50"
@@ -93,7 +93,7 @@ export function ResetPasswordGeneral(props) {
             <span className="text-danger">{errors.new_passwordError}</span>
           </div>
           <div>
-            <label htmlFor="new_password_confirmation">
+            <label htmlFor="new_password_confirmation" className="mx-auto justify-content-center">
               Re-type your new password:
             </label>
             <br></br>
@@ -112,14 +112,16 @@ export function ResetPasswordGeneral(props) {
             </span>
           </div>
           <button
-            className="btn primary my-3 mx-auto"
+            className="btn primary my-3 mx-auto reg-btn"
             type="button"
             onClick={(e) => handleSubmit(e)}
             disabled={
               errors.new_passwordError ||
               errors.new_password_confirmationError ||
               formData.new_password === "" ||
-              formData.new_password_confirmation === ""
+              formData.new_password_confirmation === "" ||
+              formData.new_password.length < 8 ||
+              formData.new_password_confirmation.length < 8
             }
           >
             Change Password

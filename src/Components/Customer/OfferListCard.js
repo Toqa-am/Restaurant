@@ -30,7 +30,6 @@ export function OfferListCard(pokemon) {
     function increaseItems(item) {
 
         dispatch(increaseItemBCart(item))
-        console.log(item);
 
 
     }
@@ -44,11 +43,7 @@ export function OfferListCard(pokemon) {
     }
 
     function changeSize(size, item, e) {
-        console.log(size);
-        console.log(item);
-        // let i = item
-        console.log(e.target.checked);
-
+     
         if (e.target.checked === true) {
             if (size.size === 1) {
                 item.size = "Small"
@@ -69,14 +64,10 @@ export function OfferListCard(pokemon) {
             }
             item.cost = size.cost
             item.nop = size.number_of_pieces
-            console.log(item);
-            console.log("kjhgf")
             setCartItemWSize(item);
-            console.log(cartItemWSize)
             
 
             setCartFormData({ ...CartFormData, items: item })
-            console.log(CartFormData.items)
         }
 
 
@@ -89,7 +80,6 @@ export function OfferListCard(pokemon) {
         }
         else {
             item.quant++
-            console.log(item)
             setAddon(!addon)
         }
 
@@ -102,12 +92,10 @@ export function OfferListCard(pokemon) {
             setAddon(!addon)
         }
         else {
-            console.log(item.quant)
             if (item.quant > 1) {
                 item.quant--
 
             }
-            console.log(item)
             setAddon(!addon)
         }
 
@@ -115,8 +103,7 @@ export function OfferListCard(pokemon) {
     }
 
     const handleCheckboxChange = (item, e) => {
-        console.log(e);
-        console.log(item);
+   
         setChosen(true)
         if(!item.quant){
             item.quant=1;
@@ -136,11 +123,9 @@ export function OfferListCard(pokemon) {
         }
         
 
-        console.log(CartFormData);
     };
 
     const handleAddToCart = (pokemon, itemQuant) => {
-        console.log(pokemon)
         if (JSON.stringify(CartFormData.items) === '{}') {
             dispatch(addToCart([pokemon, itemQuant]));
 
@@ -148,7 +133,6 @@ export function OfferListCard(pokemon) {
         }
         else {
             dispatch(addToCart([CartFormData.items, itemQuant]));
-            console.log(CartFormData.items)
             CartFormData.addons.map((item) => (
                 dispatch(addToCart([item, item.quant]))
             ))
@@ -160,7 +144,6 @@ export function OfferListCard(pokemon) {
         })
 
         dispatch(zeroQuant())
-        console.log(CartFormData);
 
     };
 

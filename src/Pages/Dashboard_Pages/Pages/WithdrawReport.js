@@ -14,7 +14,7 @@ export default function WithDrowReport() {
   const fetchSalesReports = useCallback(async () => {
     try {
       const result = await getData("admin/withdrawals");   
-      console.log(result);
+      // console.log(result);
       sessionStorage.removeItem("origin_data");
       setSalesReports(result);
     } catch (error) {

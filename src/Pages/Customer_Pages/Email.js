@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
+import { Navbar } from "../../Components/Customer/Navbar";
 
 
 export function Email(props){
@@ -9,7 +10,6 @@ export function Email(props){
     let history = useHistory();
     const location = useLocation();
     const { data } = location.state;
-  console.log(data);
     const [email, setEmail] = useState("")
     const [emailError, setEmailError] = useState("")
 
@@ -27,49 +27,7 @@ export function Email(props){
     };
 
 
-//     const handleSubmit = async (e) => {
-//         e.preventDefault();
 
-
-//         setSigned(0)
-
-//         console.log(adminToken);
-
-//         try {
-//             //'http://127.0.0.1:8000/api/admin/login'
-//             const response = await axios.post(props.loginEP, formData);
-//             setIsLoggedIn(true)
-//             setAdminToken(response.access_token)
-//             //'AdminToken'
-//             localStorage.setItem(props.tokenName, JSON.stringify(adminToken));
-// //"/admin/dashboard/add-ons"
-//             history.push(props.redirect);
-//             console.log(response);
-            
-
-//             setErrors({
-//                 ...errors,
-//                 loginError: ""
-//             })
-
-
-//             localStorage.setItem(props.tokenName, JSON.stringify(response.data.access_token));
-//             setAdminToken(JSON.parse(localStorage.getItem(props.tokenName)));
-
-
-
-//             console.log('Form submitted successfully:', response.data);
-//         } catch (error) {
-//             console.error('Error submitting form:', error);
-         
-//             setErrors({
-//                 ...errors,
-//                 loginError: "invalid email or password"
-//             })
-//         }
-
-
-//     };
 
     const resetPassword = async (e) => {
         if (email === '') {
@@ -80,10 +38,8 @@ export function Email(props){
         e.preventDefault()
         var emailToSend = { "email": email }
         try {
-            //"http://127.0.0.1:8000/api/admin/employees/forgot-password"
             const response = await axios.post(data, emailToSend)
             setRequestedToReset(true)
-            console.log(response.data);
 
         }
         catch(error) {
@@ -92,6 +48,9 @@ console.error(error)
 
     }
     return(<>
+    <div className="main-container">
+        <Navbar/>
+        <div className='bg-light '>
     <div className="w-50 color-dark admin-login mx-auto my-5  text-center">
         
     <form className="mx-auto w-75 pb-5"  >
@@ -128,16 +87,18 @@ console.error(error)
 
 
     <button
-        className="btn btn-dark rounded-pill"
+        className="btn btn-dark rounded-pill m-auto"
 
         onClick={resetPassword}
         type="button"
         disabled={emailError || email === ''}
     >
-        Log in
+        Send
     </button>
 
 </form>
+</div>
+</div>
 </div>
     </>)
 }

@@ -55,7 +55,7 @@ export default function Show() {
 
         <div className="details">
           <h3>{employee.name}</h3>
-          <p className="typeRole">{employee.name}</p>
+          <p className="typeRole">{employee.Role}</p>
         </div>
       </div>
 

@@ -14,6 +14,7 @@ export default function Employees({
     email: "",
     phone: "",
     status: "",
+    role: "", // Add role to state
   });
   const [filteredData, setFilteredData] = useState();
 
@@ -36,13 +37,14 @@ export default function Employees({
   };
 
   const handleSearch = () => {
-    const { name, email, phone, status } = employees;
+    const { name, email, phone, status, role } = employees; // include role
     const filtered = filteredData.filter((item) => {
       return (
         (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
         (!email || item.email.toLowerCase().includes(email.toLowerCase())) &&
         (!phone || item.phone.toLowerCase().includes(phone.toLowerCase())) &&
-        (status === "" || item.status === parseInt(status))
+        (status === "" || item.status === parseInt(status)) &&
+        (!role || item.role === role) // filter by role
       );
     });
 
@@ -56,6 +58,7 @@ export default function Employees({
       email: "",
       phone: "",
       status: "",
+      role: "", // Reset role
     });
     setFilteredData(JSON.parse(sessionStorage.getItem("origin_data")));
     filtrated(JSON.parse(sessionStorage.getItem("origin_data")));
@@ -134,6 +137,24 @@ export default function Employees({
                 />
                 <label htmlFor="inactive">inactive</label>
               </div>
+            </div>
+
+            {/* Role Selection */}
+            <div className="col col-12 col-md-6 col-lg-3 mb-3">
+              <label htmlFor="role" className="mb-2">
+                Role
+              </label>
+              <select
+                className="form-control"
+                name="role"
+                id="role"
+                value={employees.role}
+                onChange={(e) => handleChange(e)}
+              >
+                <option value="">--</option>
+                <option value="casher">casher</option>
+                <option value="chef">chef</option>
+              </select>
             </div>
           </div>
 

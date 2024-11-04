@@ -31,7 +31,7 @@ select::-webkit-scrollbar-thumb {
   background-color: #1772ff !important;
 }
 
-img:not(.addon-img):not(.filterImg):not(.menuLogo):not(.button-icon):not(.pokemon-card-img):not(.cartCardImg):not(.grid-img):not(.checkoutCardImg):not(.empty-cart) {
+img:not(.addon-img):not(.filterImg):not(.menuLogo):not(.button-icon):not(.pokemon-card-img):not(.cartCardImg):not(.grid-img):not(.checkoutCardImg):not(.empty-cart):not(.verImg) {
   width: 100%;
   height: 100%;
   font-size: 7px;

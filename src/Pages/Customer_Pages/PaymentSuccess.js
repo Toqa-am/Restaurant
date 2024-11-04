@@ -1,15 +1,18 @@
 import { useDispatch } from "react-redux"
 import success from "../../Images/success.png"
 import { emptyCart } from "../../Store/action"
+import { Navbar } from "../../Components/Customer/Navbar"
 export function Success() {
  
     const dispatcher=useDispatch()
     dispatcher(emptyCart())
     return (
         <>
-
+<div className="main-container">
+        <Navbar/>
+        <div className='bg-light '>
             <div className=" container w-75 m-auto text-center pt-5">
-                <img src={success} width={200} height={200}></img>
+                <img src={success} width={200} height={200} className="verImg"></img>
                 <br></br>
                 <p className=' my-4'>
                     <strong>
@@ -18,6 +21,7 @@ export function Success() {
                     
                 </p>
             </div>
-
+            </div>
+            </div>
         </>)
 }

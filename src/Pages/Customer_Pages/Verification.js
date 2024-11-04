@@ -5,6 +5,7 @@ import loading from '../../Images/loading.png'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min'
 import { useLocation } from 'react-router-dom';
 import axios from 'axios'
+import { Navbar } from '../../Components/Customer/Navbar'
 
 
 export function Verification() {
@@ -19,7 +20,6 @@ export function Verification() {
   // Get all the query parameters as an object
   const allParams = Object.fromEntries(searchParams);
 
-  console.log(allParams);
   const verify1 = async () => {
     var url =`http://127.0.0.1:8000/api/auth/get-token?token=${allParams.token}&email=${allParams.email}`
 
@@ -50,19 +50,22 @@ export function Verification() {
 
     return (
         <>
+        <div className="main-container">
+        <Navbar />
+        <div className='bg-light '>
             <div className=" container w-75 m-auto text-center pt-5">
                 <div className={(verified===1?"invisible":"visible")}>
-                <img src={verifyLogo} width={100} height={100}></img>
+                <img src={verifyLogo} width={100} height={100} className="verImg"></img>
                 <br></br>
-                <button className='btn btn-success my-4' onClick={verify1}>
+                <button className='btn btn-success my-4 mx-auto' onClick={verify1}>
                     Click here to verify your email
                 </button>
                 </div>
                 <div className={"alert alert-primary "+(verified===0?"visible":"invisible")} role="alert">
-                    <div ><img src={loading} height={40}></img> Please wait..</div>
+                    <div ><img src={loading} height={40} className="verImg"></img> Please wait..</div>
                     </div>
                     <div  className={"verified "+(verified===1?"visible":"invisible")} >
-                        <img src={verifiedLogo} height={100} width={100}></img>
+                        <img src={verifiedLogo} height={100} width={100} className="verImg"></img>
                         <br>
                         </br>
                     Congratulations! your email got verified now you can continue to <Link to="/customer/checkout"><strong className='text-success'>Checkout</strong></Link>  page.
@@ -70,6 +73,8 @@ export function Verification() {
 
                  
 
+            </div>
+            </div>
             </div>
         </>
     )

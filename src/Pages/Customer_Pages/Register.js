@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 import Swal from 'sweetalert2';
+import { Navbar } from '../../Components/Customer/Navbar';
 
 
 export function Register() {
@@ -26,7 +27,6 @@ export function Register() {
             ...formData,
             [event.target.name]: event.target.value
         });
-        console.log(event.target.value)
         if (event.target.name === "name") {
             setFormData({
                 ...formData,
@@ -65,7 +65,8 @@ export function Register() {
             })
             setErrors({
                 ...errors,
-                passError: event.target.value.length === 0 ? "This Field is required" : !event.target.validity.valid && "Please enter a vaild password"
+                passError: event.target.value.length === 0 ? "This Field is required" : event.target.value.length < 8 && "Password should be at least 8 digits"
+                // !event.target.validity.valid && "Please enter a vaild password"
             })
         }
         else if (event.target.name === "password_confirmation") {
@@ -84,8 +85,6 @@ export function Register() {
         event.preventDefault();
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/auth/register', formData);
-            console.log('Form submitted successfully:', response.data);
-            console.log("Token",response.data.access_token);
    
             setRegistered(1)
             Swal.fire({
@@ -95,7 +94,6 @@ export function Register() {
               })
             
         } catch (error) {
-            console.log(error.response.data.message)
             if (error.response.data.message =="The email has already been taken."){
                 Swal.fire({
                     title: "Error",
@@ -113,10 +111,12 @@ export function Register() {
             console.error('Error submitting form:', error);
             setRegistered(0)
         }
-        console.log('Form data:', formData);
     };
 
     return (
+        <div className="main-container">
+        <Navbar />
+        <div className='bg-light '>
         <div className="container text-center w-50 border border-dark-subtle my-5">
             <h4 className='my-3'>Please, fill your information</h4>
 
@@ -176,7 +176,6 @@ export function Register() {
                 <div>
                     <label for="password" className="justify-content-center">Password:</label>
                     
-                    {console.log(errors.passError)}
                     <span className="text-danger">{errors.passError}</span>
 
                     <input
@@ -213,13 +212,15 @@ export function Register() {
 
 
 
-                <button className="btn primary my-3 mx-auto" type="button" onClick={(e) => handleSubmit(e)} disabled={errors.emailError || errors.nameError || errors.passError || errors.cpassError
+                <button className="btn primary my-3 mx-auto reg-btn" type="button" onClick={(e) => handleSubmit(e)} disabled={errors.emailError || errors.nameError || errors.passError || errors.cpassError
                     || formData.name === '' || formData.password_confirmation === '' || formData.password === '' || formData.email === ''}>Submit</button>
 
             </form>
             {/* <div className={"alert alert-info mt-3 "+(registered?"visible":"invisible")} role="alert">
                                 Please verify your E-mail, after verification you can continue to <Link to="/customer/checkout">checkOut page</Link> 
             </div> */}
+        </div>
+        </div>
         </div>
         
     );

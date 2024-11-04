@@ -23,6 +23,7 @@ export default function Show() {
   const [pay, setPay] = useState(null);
   const [status, setStatus] = useState(null);
   const [userRole, setUserRole] = useState(null);
+  const [orderOffers, setOrderOffers] = useState(null);
   const [invoiceVisible, setInvoiceVisible] = useState(false);
   const [dataInvoise, setDataInvoise] = useState({
     meals: "",
@@ -49,11 +50,13 @@ export default function Show() {
     if (!id) return;
     try {
       const result = await getData(`admin/orders/${id}`);
-      setDeliveryOrder(result);
-      setUserMeals(result.order_meals);
-      setUserAddons(result.order_addons);
-      setUserExtras(result.order_extras);
-      setOffers(result.order_offers);
+      setDeliveryOrder(result.order);
+      // console.log(result);
+      setUserMeals(result.order.order_meals);
+      setUserAddons(result.order.order_addons);
+      setUserExtras(result.order.order_extras);
+      setOffers(result.order.order_offers);
+      setOrderOffers(result.order_offers);
       setDataInvoise({
         meals: userMeals,
         addons: userAddons,
@@ -307,7 +310,7 @@ export default function Show() {
                           <p className="quantity">
                             Quantity choice: <span className="fw-bold">{meal.quantity} pcs</span>
                           </p>
-                          <b className="total">{meal.total_cost} OMR</b>
+                          <b className="total">Price: {meal.total_cost} OMR</b>
                         </div>
                       </div>
                     ))}
@@ -332,7 +335,7 @@ export default function Show() {
                           <p className="quantity">
                             Quantity choice: <span className="fw-bold">{addon.quantity} pcs</span>
                           </p>
-                          <b className="total">{addon.total_cost} OMR</b>
+                          <b className="total">Price: {addon.total_cost} OMR</b>
                         </div>
                       </div>
                     ))}
@@ -396,6 +399,8 @@ export default function Show() {
                               {offer.quantity} pcs
                             </span>
                           </p>
+                          <p className="name fw-bold" >items : </p>
+                          <p className="name">{orderOffers[index].items}</p>
                           <b className="total">price: {offer.total_cost} OMR</b>
                         </div>
                       </div>

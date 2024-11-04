@@ -126,27 +126,9 @@ export default function EditAdministrator({
                     value={administrator.role}
                     onChange={(e) => handleChange(e)}
                   >
-                    <option
-                      value="admin"
-                      selected
-                      disabled={administrator.role === "admin"}
-                    >
-                      admin
-                    </option>
-                    <option
-                      value="casher"
-                      selected
-                      disabled={administrator.role === "casher"}
-                    >
-                      casher
-                    </option>
-                    <option
-                      value="chef"
-                      selected
-                      disabled={administrator.role === "chef"}
-                    >
-                      chef
-                    </option>
+                    <option value="admin">admin</option>
+                    <option value="casher">casher</option>
+                    <option value="chef">chef</option>
                   </select>
                 </div>
               </div>

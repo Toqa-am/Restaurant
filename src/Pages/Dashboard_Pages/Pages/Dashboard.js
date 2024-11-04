@@ -26,35 +26,26 @@ export default function Dashboard() {
 
 
 
-  const data = [
-    { date: "2024-07-01", sales: 4.5 },
-    { date: "2024-07-02", sales: 0.0 },
-    { date: "2024-07-03", sales: 0.0 },
-    { date: "2024-07-04", sales: 0.0 },
-  ];
-
-  useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) setGreeting("Good morning!");
-    else if (hour < 18) setGreeting("Good afternoon!");
-    else setGreeting("Good evening!");
-  }, []);
-
-  useEffect(() => {
-      if (isAuth()) {
-        const user = getUser();
-        setUserRole(user.Role);
-      }
-  }, []);
+  // const data =sales;
 
 
   const fetchDataSales = useCallback(async () => {
     try {
       const result = await getData("admin/sales");
       sessionStorage.removeItem("origin_data");
-      setSales(result);
+
+      const formattedSales = result.map(item => {
+        const sale = parseFloat(item.sales.replace(/,/g, '')) || 0;
+        return {
+          date: item.date,
+          sale,
+        };
+      });
+
+      setSales(formattedSales); 
+      console.log("formattedSales : ",formattedSales);
     } catch (error) {
-      console.error(error.response?.data?.message);
+      console.error("catch : ",error);
     }
   }, []);
 
@@ -91,7 +82,7 @@ export default function Dashboard() {
   const fetchCurrentMonthSalesSummary = useCallback(async () => {
     try {
       const result = await getData("admin/orders/currentMonthSalesSummary");
-      console.log(result);
+      // console.log(result);
       
       sessionStorage.removeItem("origin_data");
       setCurrentMonthSalesSummary(result);
@@ -112,7 +103,19 @@ export default function Dashboard() {
   
 
   useEffect(() => {
-    if (userRole && userRole === "admin") {
+    const hour = new Date().getHours();
+    setGreeting(hour < 12 ? "Good morning!" : hour < 18 ? "Good afternoon!" : "Good evening!");
+  
+    if (isAuth()) {
+      const user = getUser();
+      if (user) {
+        setUserRole(user.Role);
+      }
+    }
+  }, []);
+  
+  useEffect(() => {
+    if (userRole === "admin") {
       fetchCountActiveCustomers();
       fetchCurrentMonthSalesSummary();
       fetchDataSales();
@@ -120,8 +123,16 @@ export default function Dashboard() {
     }
     fetchMostPopularItems();
     fetchDataEmployee();
-  }, [fetchMostPopularItems,fetchDataEmployee,fetchDataSales,fetchCountTotalItems,
-      fetchCurrentMonthSalesSummary,fetchCountActiveCustomers]);
+  }, [
+    fetchMostPopularItems,
+    fetchDataEmployee,
+    fetchDataSales,
+    fetchCountTotalItems,
+    fetchCurrentMonthSalesSummary,
+    fetchCountActiveCustomers,
+    userRole
+  ]);
+  
 
   return (
     <div className="Dashboard">
@@ -228,7 +239,7 @@ export default function Dashboard() {
             </div>
 
             <div className="section-chart">
-              <LineChartComponent data={data} />
+              <LineChartComponent data={sales} />
             </div>
           </div>
         </div>

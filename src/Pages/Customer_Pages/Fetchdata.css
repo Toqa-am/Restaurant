@@ -285,7 +285,15 @@ a, a:hover{
     color:#e2bfaa;
 
 }
-@media (max-width: 1200px) {
+@media (max-width: 1550px) {
+
+.main-container{
+    padding: 10px;
+    margin: 0px;
+}
+}
+
+@media (max-width: 1250px) {
     .pokemon-card {
         width: calc(50% - 20px);
         margin: 5px;
@@ -307,7 +315,7 @@ a, a:hover{
     }
 }
 
- @media (max-width: 650px) { 
+ @media (max-width: 700px) { 
     .pokemon-card {
         width: calc(100% - 20px);
     }

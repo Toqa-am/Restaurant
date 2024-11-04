@@ -41,7 +41,7 @@ export default function EditEmployee({
     const formData = new FormData();
     formData.append("name", employee.name);
     formData.append("email", employee.email);
-    formData.append("role", employee.role);
+    formData.append("Role", employee.role);
     formData.append("phone", employee.phone);
     formData.append("password", employee.password);
     formData.append("password_confirmation", employee.password_confirmation);
@@ -121,29 +121,11 @@ export default function EditEmployee({
                     name="role"
                     id="role"
                     value={employee.role}
-                    onChange={(e) => handleChange(e)}
+                    onChange={handleChange}
                   >
-                    <option
-                      value="admin"
-                      selected
-                      disabled={employee.role === "admin"}
-                    >
-                      admin
-                    </option>
-                    <option
-                      value="casher"
-                      selected
-                      disabled={employee.role === "casher"}
-                    >
-                      casher
-                    </option>
-                    <option
-                      value="chef"
-                      selected
-                      disabled={employee.role === "chef"}
-                    >
-                      chef
-                    </option>
+                    <option value="admin">admin</option>
+                    <option value="casher">casher</option>
+                    <option value="chef">chef</option>
                   </select>
                 </div>
               </div>

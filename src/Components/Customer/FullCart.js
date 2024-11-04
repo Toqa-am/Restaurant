@@ -9,12 +9,10 @@ export default function FullCart(){
     const dispatcher=useDispatch()
   
     function increaseItems(item){
-        console.log(item)
         dispatcher(increaseItemQuant(item))
         // dispatcher(changeCartTotal(item.cost))
     }
     function decreaseItems(item){
-        console.log(item)
 
         dispatcher(decreaseItemQuant(item))
         // dispatcher(changeCartTotal(-item.cost))
@@ -31,7 +29,7 @@ export default function FullCart(){
 
                 title={`${typeof item.size!=="undefined"?item.size:""} ${item.name}`}
                 // description={item.description}
-                price={item.cost}
+                price={item.cost || item.total_price_after_discount}
                 quant={item.quant} 
                 increase={()=>increaseItems(item)}
                 decrease={()=>decreaseItems(item)}

@@ -45,7 +45,12 @@ function Employees({ visible, visibleToggle, updated }) {
 
     try {
       const response = await addData("admin/employees", formData);
-      if (response.status === "success") {
+      console.log(response);
+      
+      if (response.request_status === "success") {
+        setTimeout(() => {
+          Swal.fire("Saved!", response.message , "success");
+        }, 250);
         updated();
         setEmployee({
           name: "",
@@ -57,9 +62,7 @@ function Employees({ visible, visibleToggle, updated }) {
           role: "",
           identity_card: "",
         });
-        setTimeout(() => {
-          Swal.fire("Saved!", response.message, "success");
-        }, 250);
+       
       }
     } catch (error) {
       Swal.fire("Error!", error.response?.data?.message, "error");

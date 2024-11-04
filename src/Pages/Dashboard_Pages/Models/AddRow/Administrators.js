@@ -48,7 +48,10 @@ export default function Administrator({ visible, visibleToggle, updated }) {
 
     try {
       const response = await addData("admin/employees", formData);
-      if (response.status === "success") {
+      if (response.request_status === "success") {
+        setTimeout(() => {
+          Swal.fire("Saved!", response.message, "success");
+        }, 250);
         updated();
         setAdministrator({
           name: "",
@@ -60,9 +63,7 @@ export default function Administrator({ visible, visibleToggle, updated }) {
           role: "",
           identity_card: "",
         });
-        setTimeout(() => {
-          Swal.fire("Saved!", response.message, "success");
-        }, 250);
+        
       }
     } catch (error) {
       Swal.fire("Error!", error.response?.data?.message, "error");

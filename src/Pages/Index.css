@@ -7,8 +7,8 @@
     justify-content: center;
 }
 
-.btn:not(.view-btn):not(.submmitAdd):not(.checkoutBtn):not(.placeOrder):not(.offerBtn),
-.btn:hover:not(.view-btn):not(.submmitAdd):not(.checkoutBtn):not(.placeOrder):not(.offerBtn) {
+.btn:not(.view-btn):not(.submmitAdd):not(.checkoutBtn):not(.placeOrder):not(.offerBtn):not(.reg-btn),
+.btn:hover:not(.view-btn):not(.submmitAdd):not(.checkoutBtn):not(.placeOrder):not(.offerBtn):not(.reg-btn) {
     color: #fff;
     border-radius: 7px;
     text-decoration: none;

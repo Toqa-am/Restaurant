@@ -3,6 +3,7 @@ import CheckOutCard from "../../Components/Customer/CheckOutCard"
 import { Link, useHistory } from "react-router-dom/cjs/react-router-dom.min"
 import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { Navbar } from "../../Components/Customer/Navbar"
 
 import { emptyCart } from "../../Store/action";
 import Swal from "sweetalert2";
@@ -29,18 +30,15 @@ export default function Cart() {
 
 
   useEffect(() => {
-    console.log(customerCartItems)
 
     const getTables = async () => {
       try {
         const tabs = await axios.get('http://127.0.0.1:8000/api/dining-tables');
         setTables(tabs.data.data)
-        console.log(tables)
 
 
       }
       catch (error) {
-        console.log(error)
 
 
       }
@@ -56,13 +54,11 @@ export default function Cart() {
         else{
              notes=event.target.value;
         }
-        console.log(customerCartItems)
 
     }
 
     function tableChg(id) {
         settableMan(id)
-        console.log(id)
 
     }
     const paymentDetails = () => {
@@ -122,7 +118,6 @@ export default function Cart() {
         if (paymentData.offer_ids.length === 0) {
             delete paymentData.offer_ids
         }
-        console.log(paymentData)
 
     }
     const checkOut = async (e) => {
@@ -130,11 +125,9 @@ export default function Cart() {
         e.preventDefault()
 
 
-        console.log(paymentData)
         if (JSON.parse(localStorage.getItem('CustomerToken'))) {
 
-            console.log(accessToken);
-            console.log(isLoggedIn)
+           
             paymentDetails()
             if (paymentMethod === "dpay") {
                 try {
@@ -151,7 +144,6 @@ export default function Cart() {
                     );
                     window.open(response.data["Invoice Data"].Data.InvoiceURL, '_blank');
 
-                    console.log(response.data["Invoice Data"].Data.InvoiceURL);
 
                     Swal.fire({
                         title: "Done",
@@ -189,7 +181,6 @@ export default function Cart() {
                     dispatcher(emptyCart())
                     setIsLoggedIn(true)
 
-                    console.log(response.data)
                     setError('')
                     Swal.fire({
                         title: "Done",
@@ -198,8 +189,6 @@ export default function Cart() {
                       })
                 }
                 catch (error) {
-                    console.error(error)
-                    console.log(error.response.data.message);
                     if (error.response.data.message === "Unauthenticated.") {
                         history.push("/customer/login")
                     } else if (error.response.data.message === "Either location_id (for delivery) or diningtable_id (for in-restaurant) must be provided.") {
@@ -215,7 +204,6 @@ export default function Cart() {
         }
         else if (!JSON.parse(localStorage.getItem('CustomerToken'))) {
             setIsLoggedIn(false)
-            console.log(isLoggedIn)
             history.push("/customer/login");
 
 
@@ -226,11 +214,13 @@ export default function Cart() {
 
     return (
         <>
-        
-            <div className="d-flex justify-content-around container pt-5 flex-wrap">
+         <div className="main-container">
+  <Navbar />
+  <div className='bg-light '>
+            <div className="d-flex justify-content-around  pt-5 flex-wrap">
                 <div className="col-12 col-md-6 mb-4">
                     <div className="text-left" >
-                    <Link to="/customer/menu">
+                    <Link to="/">
                         <i className="fa-solid fa-backward pb-3 text-left"></i> Back to Home
                     </Link>
                     </div>
@@ -317,7 +307,7 @@ export default function Cart() {
                             title={`${typeof item.size === "undefined" ? "" : item.size + "-"} ${item.name}`}
                             price={item.cost || item.total_price_after_discount}
                             quant={item.quant}
-                            desc={item.description}
+                            desc={item.description || item.items}
                         />
                     ))}
                     <div className="border rounded p-2">
@@ -333,7 +323,8 @@ export default function Cart() {
                     </div>
                 </div>
             </div>
-
+            </div>
+            </div>
         </>
     )
 }
