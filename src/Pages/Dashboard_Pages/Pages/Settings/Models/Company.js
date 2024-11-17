@@ -1,10 +1,10 @@
 import "./SubModels.css";
 import { FaCheckCircle } from "react-icons/fa";
 
-export default function Company() {
+export default function Information() {
   return (
     <div className="AddTable">
-      <div className="title">company</div>
+      <div className="title">Restaurant Information</div>
       <form>
         <div className="row">
           <div className="col-12 col-md-6">
@@ -52,7 +52,7 @@ export default function Company() {
             </div>
           </div>
 
-          <div className="col-12 col-md-6">
+          {/* <div className="col-12 col-md-6">
             <div className="mb-3">
               <label htmlFor="website" className="form-label">
                 website
@@ -65,9 +65,9 @@ export default function Company() {
                 required
               />
             </div>
-          </div>
+          </div> */}
 
-          <div className="col-12 col-md-6">
+          {/* <div className="col-12 col-md-6">
             <div className="mb-3">
               <label htmlFor="city" className="form-label">
                 city
@@ -80,9 +80,9 @@ export default function Company() {
                 required
               />
             </div>
-          </div>
+          </div> */}
 
-          <div className="col-12 col-md-6">
+          {/* <div className="col-12 col-md-6">
             <div className="mb-3">
               <label htmlFor="status" className="form-label">
                 status
@@ -95,9 +95,9 @@ export default function Company() {
                 required
               />
             </div>
-          </div>
+          </div> */}
 
-          <div className="col-12 col-md-6">
+          {/* <div className="col-12 col-md-6">
             <div className="mb-3">
               <label htmlFor="country_code" className="form-label">
                 country code
@@ -110,9 +110,9 @@ export default function Company() {
                 required
               />
             </div>
-          </div>
+          </div> */}
 
-          <div className="col-12 col-md-6">
+          {/* <div className="col-12 col-md-6">
             <div className="mb-3">
               <label htmlFor="zip_code" className="form-label">
                 zip code
@@ -125,7 +125,7 @@ export default function Company() {
                 required
               />
             </div>
-          </div>
+          </div> */}
 
           <div className="col-12">
             <div className="mb-3">

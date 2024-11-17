@@ -14,6 +14,10 @@
     transform: translateY(-30px);
 }
 
+.nowrap {
+    white-space: nowrap;
+}
+
 .Pos .modal-overlay.visible {
     opacity: 1;
     visibility: visible;

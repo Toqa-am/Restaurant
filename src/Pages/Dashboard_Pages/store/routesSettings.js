@@ -19,7 +19,7 @@ import { RiMoneyEuroCircleLine } from "react-icons/ri";
 import { TbLicense } from "react-icons/tb";
 
 // component
-import Company from "../Pages/Settings/Models/Company";
+import Information from "../Pages/Settings/Models/Company";
 import Site from "../Pages/Settings/Models/Site";
 import Branched from "../Pages/Settings/Models/Branches";
 import Mail from "../Pages/Settings/Models/Mail";
@@ -41,9 +41,9 @@ import License from "../Pages/Settings/Models/License";
 const routesSettings = [
   {
     path: "/settings/company",
-    name: "company",
+    name: "Restaurant Information",
     icon: RiCommunityLine,
-    component: Company,
+    component: Information,
     role: ["admin"],
   },
   {

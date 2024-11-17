@@ -19,7 +19,15 @@
     visibility: visible;
     transform: translateY(0);
 }
+.table td {
+    white-space: nowrap;
+  }
 
+  .nowrap {
+    white-space: nowrap;
+  }
+  
+  
 .Pos .modal-overlay .modal-container {
     width: 400px;
     height: fit-content;

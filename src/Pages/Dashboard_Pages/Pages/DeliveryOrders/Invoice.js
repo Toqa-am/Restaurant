@@ -91,7 +91,7 @@ export default function Invoice({ visible, modalClose }) {
                         <p>{item.name}</p>
                         <p>size: {item.size}</p>
                       </td>
-                      <td>{item.cost} OMR</td>
+                      <td className="nowrap">{item.cost} OMR</td>
                     </tr>
                   ))}
                   </>
@@ -103,7 +103,7 @@ export default function Invoice({ visible, modalClose }) {
                       <tr key={index}>
                         <td>x {addon.quantity}</td>
                         <td>{addon.name}</td>
-                        <td>{addon.cost} OMR</td>
+                        <td className="nowrap">{addon.cost} OMR</td>
                       </tr>
                     ))}
                   </>
@@ -115,7 +115,7 @@ export default function Invoice({ visible, modalClose }) {
                       <tr key={index}>
                         <td>x {extra.quantity}</td>
                         <td>{extra.name}</td>
-                        <td>{extra.cost} OMR</td>
+                        <td className="nowrap">{extra.cost} OMR</td>
                       </tr>
                     ))}
                   </>
@@ -130,7 +130,7 @@ export default function Invoice({ visible, modalClose }) {
                           <span>{offer.name}</span>
                           <span>items: {offer.items}</span>
                         </td>
-                        <td>{offer.cost} OMR</td>
+                        <td className="nowrap">{offer.cost} OMR</td>
                       </tr>
                     ))}
                   </>
@@ -153,7 +153,7 @@ export default function Invoice({ visible, modalClose }) {
             {order.delivery_fee > 0 && (
               <div className="row">
                 <div className="col">Delivery Fee</div>
-                <div>{order.delivery_fee.toFixed(2)} OMR</div>
+                <div className="col">{order.delivery_fee.toFixed(2)} OMR</div>
               </div>
             )}
 
