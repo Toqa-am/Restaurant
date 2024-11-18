@@ -2,7 +2,7 @@ import "./DataTable.css";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Table } from "antd";
 import Breadcrumb from "../../../Components/Dashboard/Features/Breadcrumb";
-import Filtration from "../Models/Filtration/SalesReports";
+import Filtration from "../Models/Filtration/ItemsReports";
 import { getData } from "../../../axiosConfig/API";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { BsEye } from "react-icons/bs";
@@ -13,7 +13,7 @@ export default function SalesReports() {
 
   const fetchSalesReports = useCallback(async () => {
     try {
-      const result = await getData("admin/items-reports");      
+      const result = await getData("admin/items-reports");
       sessionStorage.removeItem("origin_data");
       setSalesReports(result);
     } catch (error) {
@@ -45,10 +45,10 @@ export default function SalesReports() {
       dataIndex: "image",
       key: "image",
       render: (image) => (
-        <img 
-          src={`http://127.0.0.1:8000/storage/${image}`} 
-          alt="Product" 
-          style={{ width: 50, height: 50 }} 
+        <img
+          src={`http://127.0.0.1:8000/storage/${image}`}
+          alt="Product"
+          style={{ width: 50, height: 50 }}
         />
       ),
     },
@@ -65,7 +65,7 @@ export default function SalesReports() {
               : "inactive"
           }
         >
-          {item.status === 1 ? "active" : "inactive" }
+          {item.status === 1 ? "active" : "inactive"}
         </span>
       ),
     },

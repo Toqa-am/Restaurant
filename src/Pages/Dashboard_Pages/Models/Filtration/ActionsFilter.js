@@ -4,12 +4,23 @@ import { Button, Space } from "antd";
 import { CSVLink } from "react-csv";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { LuPrinter } from "react-icons/lu";
-import { FaFileExcel, FaFileExport, FaFilter, FaPlus ,FaBalanceScale } from "react-icons/fa";
+import {
+  FaFileExcel,
+  FaFileExport,
+  FaFilter,
+  FaPlus,
+  FaBalanceScale,
+} from "react-icons/fa";
 import { getData } from "../../../../axiosConfig/API";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import axios from "axios";
 
-export default function ActionsFilter({ handleModalToggle, data, headers ,balance }) {
+export default function ActionsFilter({
+  handleModalToggle,
+  data,
+  headers,
+  balance,
+}) {
   const exportRef = useRef(null);
   const [isListPrintVisible, setIsListPrintVisible] = useState(false);
   const [pathname, setPathname] = useState();
@@ -24,17 +35,11 @@ export default function ActionsFilter({ handleModalToggle, data, headers ,balanc
   //     console.log(error);
   //   }
   // };
-  
-
-
 
   useEffect(() => {
     // f()
     setPathname(window.location.pathname.replace("/admin/dashboard/", ""));
   }, []);
-
-
-
 
   const generateUniqueFilename = () => {
     const date = new Date();
@@ -97,7 +102,7 @@ export default function ActionsFilter({ handleModalToggle, data, headers ,balanc
     }
   };
 
-  const location = useLocation()
+  const location = useLocation();
 
   return (
     <div className="head not-print">
@@ -106,14 +111,21 @@ export default function ActionsFilter({ handleModalToggle, data, headers ,balanc
       </div>
 
       <Space className="actions">
-    {location.pathname === "/admin/dashboard/transactions" || location.pathname === "/admin/dashboard/withdraw" ?  <Button style={{background:"#FF4F99",color:"white"}}
-          // icon={<FaFilter />}
-          // onClick={() => setToggleFilter(!toggleFilter)}
-        >
-          {FaBalanceScale} current Balance {balance?.balance ? balance?.balance  : 0} ORM
-          {/* <IoMdArrowDropdown /> */}
-        </Button>:""}
-        
+        {location.pathname === "/admin/dashboard/transactions" ||
+        location.pathname === "/admin/dashboard/withdraw" ? (
+          <Button
+            style={{ background: "#FF4F99", color: "white" }}
+            // icon={<FaFilter />}
+            // onClick={() => setToggleFilter(!toggleFilter)}
+          >
+            {FaBalanceScale} current Balance{" "}
+            {balance?.balance ? balance?.balance : 0} ORM
+            {/* <IoMdArrowDropdown /> */}
+          </Button>
+        ) : (
+          ""
+        )}
+
         <Button
           icon={<FaFilter />}
           onClick={() => setToggleFilter(!toggleFilter)}
@@ -121,8 +133,6 @@ export default function ActionsFilter({ handleModalToggle, data, headers ,balanc
           Filter
           <IoMdArrowDropdown />
         </Button>
-
-        
 
         {Object(data).length > 0 ? (
           <>
@@ -175,8 +185,12 @@ export default function ActionsFilter({ handleModalToggle, data, headers ,balanc
           className="AddRow"
           icon={<FaPlus />}
           // onClick={handleModalToggle}
-          onClick={location.pathname === "/admin/dashboard/transactions" || location.pathname === "/admin/dashboard/withdraw" ? () => setToggleFilter(!toggleFilter) :  handleModalToggle}
-
+          onClick={
+            location.pathname === "/admin/dashboard/transactions" ||
+            location.pathname === "/admin/dashboard/withdraw"
+              ? () => setToggleFilter(!toggleFilter)
+              : handleModalToggle
+          }
         >
           Add {pathname}
         </Button>

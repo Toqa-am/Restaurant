@@ -31,16 +31,6 @@ export default function Offers({
         ...prevData,
         status: id === "active" ? 1 : 0,
       }));
-    } else if (name === "start_data") {
-      setOffers((prevData) => ({
-        ...prevData,
-        start_data: formatDate(value),
-      }));
-    } else if (name === "end_data") {
-      setOffers((prevData) => ({
-        ...prevData,
-        end_data: formatDate(value),
-      }));
     } else if (name === "type") {
       setOffers((prevData) => ({
         ...prevData,
@@ -59,19 +49,39 @@ export default function Offers({
 
   const handleSearch = () => {
     const { name, start_data, end_data, discount, status } = offers;
+  
+    console.log("Filter Inputs:", { name, start_data, end_data, discount, status });
+    console.log("Original Data:", filteredData);
+  
     const filtered = filteredData.filter((item) => {
+      const itemStartDate = new Date(item.startDate).getTime(); 
+      const itemEndDate = new Date(item.endDate).getTime(); 
+      const startDate = start_data ? new Date(start_data).getTime() : null;
+      const endDate = end_data ? new Date(end_data).getTime() : null;
+    
+      // console.log("Checking item:", item);
+      // console.log("Item Start Date:", itemStartDate);
+      // console.log("Item End Date:", itemEndDate);
+      // console.log("Start Date:", startDate);
+      // console.log("End Date:", endDate);
+    
       return (
         (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
-        (!start_data || item.start_data >= start_data) &&
-        (!end_data || item.end_data <= end_data) &&
+        (!start_data || (startDate && itemStartDate >= startDate)) &&
+        (!end_data || (endDate && itemEndDate <= endDate)) &&
         (discount === "" || item.discount === parseFloat(discount)) &&
         (status === "" || item.status === parseInt(status))
       );
     });
-
+    
+  
+    console.log("Filtered Data:", filtered);
+  
     setFilteredData(filtered);
     filtrated(filtered);
   };
+  
+  
 
   const handleClear = () => {
     setOffers({
@@ -129,7 +139,7 @@ export default function Offers({
                 start data
               </label>
               <input
-                type="datetime-local"
+                type="date"
                 className="form-control"
                 name="start_data"
                 id="start_data"
@@ -143,7 +153,7 @@ export default function Offers({
                 end data
               </label>
               <input
-                type="datetime-local"
+                type="date"
                 className="form-control"
                 name="end_data"
                 id="end_data"

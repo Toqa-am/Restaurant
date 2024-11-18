@@ -1,298 +1,319 @@
-import { SizeCard } from './SizeCard';
-import { AddonsExtra } from './AddonsExtra';
-import { CartCard } from './CartCard';
-import { addToCart, decreaseItemBCart, increaseItemBCart, increaseItemQuant, zeroQuant } from '../../Store/action';
-import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
-
-
+import { SizeCard } from "./SizeCard";
+import { AddonsExtra } from "./AddonsExtra";
+import { CartCard } from "./CartCard";
+import {
+  addToCart,
+  decreaseItemBCart,
+  increaseItemBCart,
+  increaseItemQuant,
+  zeroQuant,
+} from "../../Store/action";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 
 export function GridCard(pokemon) {
-    const dispatch = useDispatch();
-    const itemQuant = useSelector(state => state.itemQuant);
-    const [CartFormData, setCartFormData] = useState({
+  const dispatch = useDispatch();
+  const itemQuant = useSelector((state) => state.itemQuant);
+  const [CartFormData, setCartFormData] = useState({
+    items: {},
+    addons: [],
+  });
+  const [cartItemWSize, setCartItemWSize] = useState({});
+  const [chosen, setChosen] = useState(false);
+  const [addon, setAddon] = useState(true);
 
-        items: {},
-        addons: []
-
+  const handleCancel = (item) => {
+    dispatch(zeroQuant());
+    let inputs = document.getElementsByTagName("input");
+    let checkboxes = [];
+    for (let i = 0; i < inputs.length; i++) {
+      if (
+        inputs[i].getAttribute("type") == "checkbox" ||
+        inputs[i].getAttribute("type") == "radio"
+      ) {
+        checkboxes.push(inputs[i]);
+      }
+    }
+    for (let i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = false;
+    }
+    if (item.size) {
+      delete item.size;
+    }
+    setCartFormData({
+      items: {},
+      addons: [],
     });
-    const [cartItemWSize, setCartItemWSize] = useState({})
-    const [chosen, setChosen] = useState(false)
-    const [addon, setAddon] = useState(true)
+  };
 
+  function increaseItems(item) {
+    dispatch(increaseItemBCart(item));
+  }
+  function decreaseItems(item) {
+    dispatch(decreaseItemBCart(item.id));
+  }
 
+  function changeSize(size, item, e) {
+    // let i = item
 
-    const handleCancel = (item) => {
-        dispatch(zeroQuant())
-        let inputs=document.getElementsByTagName('input');
-        let checkboxes=[];
-        for (let i = 0; i < inputs.length; i++) {
-            if(inputs[i].getAttribute('type')=='checkbox' ||  inputs[i].getAttribute('type')=='radio'){
-                checkboxes.push(inputs[i])
-            }
-        }
-        for (let i = 0; i < checkboxes.length; i++) {
-            checkboxes[i].checked=false;
-        }
-        if(item.size){
-            delete item.size;
-        }
-        setCartFormData({
-            items: {},
-            addons: []
-        })
+    if (e.target.checked === true) {
+      if (size.size === 1) {
+        item.size = "Small";
+      } else if (size.size === 2) {
+        item.size = "Medium";
+      } else if (size.size === 3) {
+        item.size = "Big";
+      } else if (size.size === 4) {
+        item.size = "Family";
+      }
+      item.cost = size.cost;
+      item.nop = size.number_of_pieces;
+
+      setCartItemWSize(item);
+
+      setCartFormData({ ...CartFormData, items: item });
     }
+  }
 
-    function increaseItems(item) {
-
-        dispatch(increaseItemBCart(item))
-
-
+  function increaseAddon(item) {
+    if (typeof item.quant === "undefined") {
+      item.quant = 1;
+      setAddon(!addon);
+    } else {
+      item.quant++;
+      setAddon(!addon);
     }
-    function decreaseItems(item) {
+  }
 
-
-        dispatch(decreaseItemBCart(item.id))
-
-
-
+  function decreaseAddon(item) {
+    if (typeof item.quant === "undefined") {
+      item.quant = 1;
+      setAddon(!addon);
+    } else {
+      if (item.quant > 1) {
+        item.quant--;
+      }
+      setAddon(!addon);
     }
+  }
 
-    function changeSize(size, item, e) {
-       
-        // let i = item
-
-        if (e.target.checked === true) {
-            if (size.size === 1) {
-                item.size = "Small"
-
-            }
-            else if (size.size === 2) {
-                item.size = "Medium"
-
-            }
-            else if (size.size === 3) {
-                item.size = "Big"
-
-            }
-            else if (size.size === 4) {
-                item.size = "Family"
-
-
-            }
-            item.cost = size.cost
-            item.nop = size.number_of_pieces
-            
-            setCartItemWSize(item);
-
-
-            setCartFormData({ ...CartFormData, items: item })
-        }
-
-
+  const handleCheckboxChange = (item, e) => {
+    setChosen(true);
+    if (!item.quant) {
+      item.quant = 1;
     }
-
-    function increaseAddon(item) {
-        if (typeof item.quant === "undefined") {
-            item.quant = 1
-            setAddon(!addon)
-        }
-        else {
-            item.quant++
-            setAddon(!addon)
-        }
-
-
+    // item.quant=1;
+    if (e.target.checked) {
+      setCartFormData({
+        ...CartFormData,
+        addons: [...CartFormData.addons, item],
+      });
+    } else {
+      setCartFormData({
+        ...CartFormData,
+        addons: [
+          ...CartFormData.addons.filter(function (addon) {
+            return addon.name !== item.name;
+          }),
+        ],
+      });
     }
+  };
 
-    function decreaseAddon(item) {
-        if (typeof item.quant === "undefined") {
-            item.quant = 1
-            setAddon(!addon)
-        }
-        else {
-            if (item.quant > 1) {
-                item.quant--
-
-            }
-            setAddon(!addon)
-        }
-
-
+  const handleAddToCart = (pokemon, itemQuant) => {
+    let inputs = document.getElementsByTagName("input");
+    let checkboxes = [];
+    for (let i = 0; i < inputs.length; i++) {
+      if (
+        inputs[i].getAttribute("type") == "checkbox" ||
+        inputs[i].getAttribute("type") == "radio"
+      ) {
+        checkboxes.push(inputs[i]);
+      }
     }
+    for (let i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = false;
+    }
+    if (JSON.stringify(CartFormData.items) === "{}") {
+      dispatch(addToCart([pokemon, itemQuant]));
+    } else {
+      dispatch(addToCart([CartFormData.items, itemQuant]));
+      CartFormData.addons.map((item) =>
+        dispatch(addToCart([item, item.quant]))
+      );
+    }
+    delete pokemon.size;
+    setCartFormData({
+      items: {},
+      addons: [],
+    });
 
-    const handleCheckboxChange = (item, e) => {
-       
-        setChosen(true)
-        if(!item.quant){
-            item.quant=1;
-        }
-        // item.quant=1;
-        if (e.target.checked) {
-            setCartFormData({ ...CartFormData, addons: [...CartFormData.addons, item] })
+    dispatch(zeroQuant());
+  };
 
-        }
-        else {
-            setCartFormData({
-                ...CartFormData, addons: [...CartFormData.addons.filter(function (addon) {
-                    return addon.name !== item.name
-                })]
-            })
+  return (
+    <>
+      {/* style="max-width: 540px;" */}
+      {/* <div className='d-flex wrap '> */}
+      <div key={pokemon.id} className="card mb-3 grid-card ">
+        <img
+          className="grid-img"
+          key={pokemon.image}
+          src={`http://127.0.0.1:8000/storage/${pokemon.image}`}
+          width={100}
+        />
+        <div class="card-body">
+          <h6 class="card-title">
+            {" "}
+            <strong>{pokemon.name}</strong>{" "}
+          </h6>
+          <p class="card-text description">
+            <small class="text-muted">
+              {" "}
+              {pokemon.description.substring(0, 70)}...
+            </small>
+          </p>
+          <div className="d-flex justify-content-between align-items-center justify-content-center item-card">
+            {pokemon.cost ? (
+              <h4 className="price mb-0"> OMR {pokemon.cost}</h4>
+            ) : (
+              <p className="price"> OMR {pokemon.meal_size_costs[0].cost}</p>
+            )}
 
-        }
+            <button
+              className="button rounded-pill px-2"
+              data-bs-toggle="modal"
+              data-bs-target={`#staticBackdrop-${pokemon.id}`}
+              onClick={() => {
+                console.log(pokemon.item);
+              }}
+            >
+              {" "}
+              <i class="bi bi-handbag-fill"></i>
+              <span>Add</span>
+            </button>
 
-
-    };
-
-    const handleAddToCart = (pokemon, itemQuant) => {
-        let inputs=document.getElementsByTagName('input');
-        let checkboxes=[];
-        for (let i = 0; i < inputs.length; i++) {
-            if(inputs[i].getAttribute('type')=='checkbox' ||  inputs[i].getAttribute('type')=='radio'){
-                checkboxes.push(inputs[i])
-            }
-        }
-        for (let i = 0; i < checkboxes.length; i++) {
-            checkboxes[i].checked=false;
-        }
-        if (JSON.stringify(CartFormData.items) === '{}') {
-            dispatch(addToCart([pokemon, itemQuant]));
-
-
-        }
-        else {
-            dispatch(addToCart([CartFormData.items, itemQuant]));
-            CartFormData.addons.map((item) => (
-                dispatch(addToCart([item, item.quant]))
-            ))
-        }
-        delete pokemon.size
-        setCartFormData({
-            items: {},
-            addons: []
-        })
-
-        dispatch(zeroQuant())
-
-    };
-
-
-    return (
-        <>
-            {/* style="max-width: 540px;" */}
-            {/* <div className='d-flex wrap '> */}
-                <div key={pokemon.id}  className="card mb-3 grid-card ">
-                    <img
-                    className='grid-img'
-                        key={pokemon.image}
-                        src={`http://127.0.0.1:8000/storage/${pokemon.image}`}
-                        width={100}
-
+            {/* <!-- Modal --> */}
+            <div
+              className="modal fade"
+              id={`staticBackdrop-${pokemon.id}`}
+              data-bs-backdrop="static"
+              data-bs-keyboard="false"
+              tabIndex="-1"
+              aria-labelledby={`staticBackdropLabel-${pokemon.id}`}
+              aria-hidden="true"
+            >
+              <div className="modal-dialog">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                      onClick={() => handleCancel(pokemon.item)}
+                    ></button>
+                  </div>
+                  <div className="modal-body">
+                    <CartCard
+                      src={pokemon.image}
+                      title={`${
+                        typeof pokemon.item.size === "undefined"
+                          ? ""
+                          : pokemon.item.size
+                      } ${pokemon.name} `}
+                      price={pokemon.item.cost}
+                      description={pokemon.item.description}
+                      quant={itemQuant}
+                      increase={() => increaseItems(pokemon.item)}
+                      decrease={() => decreaseItems(pokemon.item)}
                     />
-                    <div class="card-body">
-                        <h6 class="card-title"> <strong>{pokemon.name}</strong> </h6>
-                        <p class="card-text description"><small class="text-muted"> {pokemon.description.substring(0,70)}...</small></p>
-                        <div className="d-flex justify-content-between align-items-center justify-content-center item-card">
-                        {pokemon.cost ? <h4 className="price mb-0"> OMR {pokemon.cost}</h4> :
-                            <p className="price"> OMR {pokemon.meal_size_costs[0].cost}</p>
-                        }
-
-                        <button
-                            className="button rounded-pill px-2"
-                            data-bs-toggle="modal"
-                            data-bs-target={`#staticBackdrop-${pokemon.id}`}
-                            onClick={() => {
-                                console.log(pokemon.item);
-                            }}
-                        >   <i class="bi bi-handbag-fill"></i>
-                            <span >Add</span>
-                        </button>
-
-                        {/* <!-- Modal --> */}
-                        <div
-                            className="modal fade"
-                            id={`staticBackdrop-${pokemon.id}`}
-                            data-bs-backdrop="static"
-                            data-bs-keyboard="false"
-                            tabIndex="-1"
-                            aria-labelledby={`staticBackdropLabel-${pokemon.id}`}
-                            aria-hidden="true"
-                        >
-                            <div className="modal-dialog">
-                                <div className="modal-content">
-                                    <div className="modal-header">
-                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => handleCancel(pokemon.item)}></button>
-                                    </div>
-                                    <div className="modal-body">
-                                    <CartCard src={pokemon.image} title={`${typeof pokemon.item.size === "undefined" ? "" : pokemon.item.size} ${pokemon.name} `} price={pokemon.item.cost} description={pokemon.item.description} quant={itemQuant} increase={() => increaseItems(pokemon.item)} decrease={() => decreaseItems(pokemon.item)} />
-                                    {/* <h1>{pokemon.image} jkhu</h1> */}
-                                        {pokemon.meal_size_costs && (
-                                            <>
-
-
-                                                <div className='d-flex justify-content-around scrollmenu ' >
-
-                                                    {pokemon.meal_size_costs.map((size) => (
-
-
-                                                        <SizeCard size={size.size} price={size.cost} nop={size.number_of_pieces} changeSize={(e) => changeSize(size, pokemon.item, e)} />
-
-
-                                                    ))}
-
-
-                                                </div>
-                                            </>)}
-
-                                        {pokemon.extras && (
-                                            <>
-                                                <div className='d-flex justify-content-around scrollmenu ' >
-                                                    {pokemon.extras.map((item) => (
-
-
-                                                        <AddonsExtra name={item.name} inputName="extras" price={item.cost} change={(e) => handleCheckboxChange(item, e)} increase={() => increaseAddon(item)} decrease={() => decreaseAddon(item)} q={item.quant} choose={chosen} />
-
-                                                    ))}
-
-
-                                                </div>
-                                            </>)}
-                                        {pokemon.addons && (
-                                            <>
-                                                <div className='d-flex justify-content-around scrollmenu ' >
-                                                    {pokemon.addons.map((item) => (
-
-                                                        <AddonsExtra name={item.name} inputName="addons" price={item.cost} img={item.image} change={(e) => handleCheckboxChange(item, e)} q={item.quant} increase={() => increaseAddon(item)} decrease={() => decreaseAddon(item)} />
-
-                                                    ))}
-
-
-                                                </div>
-                                            </>)}
-
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => handleCancel(pokemon.item)}>
-                                            Close
-                                        </button>
-                                        <button
-                                            type="button"
-                                            disabled={((pokemon.item.table_name === "meals" && !pokemon.item.size) ? true : false)}
-                                            className="btn primary submmitAdd"
-                                            onClick={() => handleAddToCart(pokemon.item, itemQuant)}
-                                            data-bs-dismiss="modal"
-                                        >
-                                            Add to cart
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                    {/* <h1>{pokemon.image} jkhu</h1> */}
+                    {pokemon.meal_size_costs && (
+                      <>
+                        <div className="d-flex justify-content-around scrollmenu ">
+                          {pokemon.meal_size_costs.map((size) => (
+                            <SizeCard
+                              size={size.size}
+                              price={size.cost}
+                              nop={size.number_of_pieces}
+                              changeSize={(e) =>
+                                changeSize(size, pokemon.item, e)
+                              }
+                            />
+                          ))}
                         </div>
-                        {/* Modal */}
-                    </div>
-                </div>
-            </div>
+                      </>
+                    )}
 
-        </>
-    )
+                    {pokemon.extras && (
+                      <>
+                        <div className="d-flex justify-content-around scrollmenu ">
+                          {pokemon.extras.map((item) => (
+                            <AddonsExtra
+                              name={item.name}
+                              inputName="extras"
+                              price={item.cost}
+                              change={(e) => handleCheckboxChange(item, e)}
+                              increase={() => increaseAddon(item)}
+                              decrease={() => decreaseAddon(item)}
+                              q={item.quant}
+                              choose={chosen}
+                            />
+                          ))}
+                        </div>
+                      </>
+                    )}
+                    {pokemon.addons && (
+                      <>
+                        <div className="d-flex justify-content-around scrollmenu ">
+                          {pokemon.addons.map((item) => (
+                            <AddonsExtra
+                              name={item.name}
+                              inputName="addons"
+                              price={item.cost}
+                              img={item.image}
+                              change={(e) => handleCheckboxChange(item, e)}
+                              q={item.quant}
+                              increase={() => increaseAddon(item)}
+                              decrease={() => decreaseAddon(item)}
+                            />
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                      onClick={() => handleCancel(pokemon.item)}
+                    >
+                      Close
+                    </button>
+                    <button
+                      type="button"
+                      disabled={
+                        pokemon.item.table_name === "meals" &&
+                        !pokemon.item.size
+                          ? true
+                          : false
+                      }
+                      className="btn primary submmitAdd"
+                      onClick={() => handleAddToCart(pokemon.item, itemQuant)}
+                      data-bs-dismiss="modal"
+                    >
+                      Add to cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Modal */}
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }

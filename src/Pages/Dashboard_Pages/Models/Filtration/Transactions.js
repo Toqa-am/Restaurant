@@ -20,24 +20,25 @@ export default function Transactions({
   });
   const [filteredData, setFilteredData] = useState();
   const [AmountwithDraw, setAmountwithDraw] = useState({
-    amount:""
-});
-const [balance, setBalance] = useState({});
-const fetchBalance = async () => {
-  try {
-    const response = await axios.get('http://127.0.0.1:8000/api/admin/current-balance');
-    setBalance(response.data)
-    console.log(response);
-  } catch (error) {
-    console.log(error);
-  }
-};
-const handleOnChange =(e)=>{
- const data ={...AmountwithDraw}
- data[e.target.name] = e.target.value
- setAmountwithDraw(data)
-}
-
+    amount: "",
+  });
+  const [balance, setBalance] = useState({});
+  const fetchBalance = async () => {
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:8000/api/admin/current-balance"
+      );
+      setBalance(response.data);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleOnChange = (e) => {
+    const data = { ...AmountwithDraw };
+    data[e.target.name] = e.target.value;
+    setAmountwithDraw(data);
+  };
 
   useEffect(() => {
     fetchBalance();
@@ -92,7 +93,6 @@ const handleOnChange =(e)=>{
     filtrated(JSON.parse(sessionStorage.getItem("origin_data")));
   };
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     Swal.fire({
@@ -105,17 +105,19 @@ const handleOnChange =(e)=>{
       confirmButtonText: `Yes,`,
       cancelButtonText: "No, cancel",
     }).then(async (result) => {
-      // inside i will make all operation to send object of data 
-      let custObj={}
-      if(AmountwithDraw.amount !== null){
-     custObj.amount=AmountwithDraw.amount
+      // inside i will make all operation to send object of data
+      let custObj = {};
+      if (AmountwithDraw.amount !== null) {
+        custObj.amount = AmountwithDraw.amount;
       }
       if (result.isConfirmed) {
         try {
-          const response = await addData("admin/withdrawals", {amount:custObj.amount});
+          const response = await addData("admin/withdrawals", {
+            amount: custObj.amount,
+          });
           console.log("response", response);
           if (response.status === "success") {
-            fetchBalance()
+            fetchBalance();
             setAmountwithDraw({ amount: "" });
             const event = new Event("storageUpdated");
             window.dispatchEvent(event);
@@ -127,10 +129,8 @@ const handleOnChange =(e)=>{
           Swal.fire("Error!", error.response?.data?.message, "error");
         }
       }
-    }
-
-    );
-  }
+    });
+  };
 
   return (
     <div className="headerTable">
@@ -160,16 +160,30 @@ const handleOnChange =(e)=>{
                 onChange={(e) => handleChange(e)}
               />
             </div> */}
-              {/* form send id */}
-              <form onSubmit={handleSubmit}>
-                            <div class="form-group">
-                                <label for="exampleInputPassword1" >enter amount of withdrawals</label>
-                                <input type="text" value={AmountwithDraw.amount} required min={0} onChange={handleOnChange} name="amount" class="form-control" id="exampleInputPassword1" placeholder="Enter your amount with drow will sent" />
-                                <div style={{direction:"rtl" }} className="mt-2">
-                                <button className="btn btn-info" type="submit" >send</button>
-                                </div>
-                            </div>
-                        </form>
+            {/* form send id */}
+            <form onSubmit={handleSubmit}>
+              <div class="form-group">
+                <label for="exampleInputPassword1">
+                  enter amount of withdrawals
+                </label>
+                <input
+                  type="text"
+                  value={AmountwithDraw.amount}
+                  required
+                  min={0}
+                  onChange={handleOnChange}
+                  name="amount"
+                  class="form-control"
+                  id="exampleInputPassword1"
+                  placeholder="Enter your amount with drow will sent"
+                />
+                <div style={{ direction: "rtl" }} className="mt-2">
+                  <button className="btn btn-info" type="submit">
+                    send
+                  </button>
+                </div>
+              </div>
+            </form>
 
             <div className="col col-12 col-md-6 col-lg-3 mb-3">
               <label htmlFor="payment_method" className="mb-2">

@@ -43,7 +43,12 @@ export default function Information({ data }) {
             <span>{data.total_price_after_discount} OMR</span>
           </div>
         </Col>
-        
+        <Col span={24}>
+          <div className="d-flex pt-2 pb-2">
+            <label>items</label>
+            <span>{data.items}</span>
+          </div>
+        </Col>
         <Col span={12}>
           <div className="d-flex pt-2 pb-2">
             <label>Status</label>

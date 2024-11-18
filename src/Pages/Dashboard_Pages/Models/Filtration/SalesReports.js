@@ -10,84 +10,66 @@ export default function SalesReports({
   filtrated,
 }) {
   const [salesReports, setSalesReports] = useState({
-    created_at: "",
-    name: "",
+    from_date: "",
+    to_date: "",
+    PaymentType: "",
     id: "",
-    count: "",
-    status:""
+    total_cost: "",
+    pay: "",
   });
-  const [filteredData, setFilteredData] = useState();
+
+  const [filteredData, setFilteredData] = useState([]); 
+  const [originalData, setOriginalData] = useState([]); 
 
   useEffect(() => {
     setFilteredData(data);
+    // setOriginalData(data); 
   }, [data]);
 
   const handleChange = (e) => {
-    setFilteredData(JSON.parse(sessionStorage.getItem("origin_data")));
     const { name, value } = e.target;
-    if (name === "created_at") {
-      setSalesReports((prevData) => ({
-        ...prevData,
-        created_at: formatDate(value),
-      }));
-    } else {
-      setSalesReports({ ...salesReports, [name]: value });
-    }
+    setSalesReports((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  function formatDate(dateString) {
-    return new Date(dateString)
-      .toLocaleString("sv-SE", { timeZone: "UTC" })
-      .replace("T", " ");
-  }
-
-  // const handleSearch = () => {
-  //   const { created_at, name, id, count } = salesReports;
-  //   const filtered = filteredData.filter((item) => {
-  //     return (
-  //       (!created_at || item.created_at <= created_at) &&
-  //       (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
-  //       (id === "" || item.id === parseInt(id)) &&
-  //       (count === "" || item.count === parseInt(count))
-  //     );
-  //   });
-
-  //   setFilteredData(filtered);
-  //   filtrated(filtered);
-  // };
-
-
-
   const handleSearch = () => {
-    const { created_at, name, id, count , status } = salesReports;
-
-    const originalData = JSON.parse(sessionStorage.getItem("origin_data"));
+    const { from_date, to_date, PaymentType, id, total_cost, pay } = salesReports;
     const filtered = originalData.filter((item) => {
+      const createdAt = new Date(item.created_at);
+      const fromDate = from_date ? new Date(from_date) : null;
+      const toDate = to_date ? new Date(to_date) : null;
+
       return (
-        (!created_at || item.created_at <= created_at) &&
-        (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
-       ( !status || item.status === parseInt(status))&&
-        (!id || item.id === parseInt(id)) &&
-        (!count || item.count === parseInt(count))
+        (!from_date || createdAt >= fromDate) &&
+        (!to_date || createdAt <= toDate) &&
+        (!PaymentType ||
+          (item.PaymentType &&
+            item.PaymentType.toLowerCase().includes(PaymentType.toLowerCase()))) &&
+        (id === "" || item.id === parseInt(id)) &&
+        (total_cost === "" || item.total_cost == parseFloat(total_cost)) &&
+        (pay === "" || item.pay === parseInt(pay))
       );
     });
 
     setFilteredData(filtered);
     filtrated(filtered);
   };
+
   const handleClear = () => {
     setSalesReports({
-      created_at: "",
-      name: "",
+      from_date: "",
+      to_date: "",
+      PaymentType: "",
       id: "",
-      count: "",
-      status:""
+      total_cost: "",
+      pay: "",
     });
+
     setFilteredData(JSON.parse(sessionStorage.getItem("origin_data")));
     filtrated(JSON.parse(sessionStorage.getItem("origin_data")));
-  };
-
-
+   };
 
   return (
     <div className="headerTable">
@@ -103,55 +85,9 @@ export default function SalesReports({
       >
         <div className="row pb-4">
           <div className="row mt-3">
-            {/* <div className="col col-12 col-md-6 col-lg-3 mb-3">
-              <label htmlFor="created_at" className="mb-2">
-                date
-              </label>
-              <input
-                type="datetime-local"
-                className="form-control"
-                name="created_at"
-                id="created_at"
-                value={salesReports.created_at}
-                onChange={(e) => handleChange(e)}
-              />
-            </div> */}
-
             <div className="col col-12 col-md-6 col-lg-3 mb-3">
-              <label htmlFor="payment_method" className="mb-2">
-                name of Meal
-              </label>
-              <input
-                className="form-control"
-                name="name"
-                id="name"
-                value={salesReports.name}
-                onChange={(e) => handleChange(e)}
-              />
-            
-            </div>
-            <div className="col col-12 col-md-6 col-lg-3 mb-3">
-              <label htmlFor="itemsReports" className="mb-2">
-                Status
-              </label>
-              <select
-                className="form-control"
-                name="status"
-                id="status"
-                value={salesReports.status}
-                onChange={(e) => handleChange(e)}
-              >
-                <option value="" selected disabled>
-                  --
-                </option>
-                <option value="1">active</option>
-                <option value="0">inactive</option>
-              </select>
-            </div>
-
-            <div className="col col-12 col-md-6 col-lg-3 mb-3">
-              <label htmlFor="order_id" className="mb-2">
-                Item id
+              <label htmlFor="id" className="mb-2">
+                Order ID
               </label>
               <input
                 type="number"
@@ -159,21 +95,87 @@ export default function SalesReports({
                 name="id"
                 id="id"
                 value={salesReports.id}
-                onChange={(e) => handleChange(e)}
+                onChange={handleChange}
               />
             </div>
 
             <div className="col col-12 col-md-6 col-lg-3 mb-3">
-              <label htmlFor="amount" className="mb-2">
-                Count
+              <label htmlFor="from_date" className="mb-2">
+                From Date
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                name="from_date"
+                id="from_date"
+                value={salesReports.from_date}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="col col-12 col-md-6 col-lg-3 mb-3">
+              <label htmlFor="to_date" className="mb-2">
+                To Date
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                name="to_date"
+                id="to_date"
+                value={salesReports.to_date}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="col col-12 col-md-6 col-lg-3 mb-3">
+              <label htmlFor="PaymentType" className="mb-2">
+                Payment Method
+              </label>
+              <select
+                className="form-control"
+                name="PaymentType"
+                id="PaymentType"
+                value={salesReports.PaymentType}
+                onChange={handleChange}
+              >
+                <option value="" disabled>
+                  --
+                </option>
+                <option value="cashed">Cashed</option>
+                <option value="VisaMasterCard">Visa/MasterCard</option>
+              </select>
+            </div>
+
+            <div className="col col-12 col-md-6 col-lg-3 mb-3">
+              <label htmlFor="pay" className="mb-2">
+                Pay
+              </label>
+              <select
+                className="form-control"
+                name="pay"
+                id="pay"
+                value={salesReports.pay}
+                onChange={handleChange}
+              >
+                <option value="" disabled>
+                  --
+                </option>
+                <option value="1">Pay</option>
+                <option value="0">Unpaid</option>
+              </select>
+            </div>
+
+            <div className="col col-12 col-md-6 col-lg-3 mb-3">
+              <label htmlFor="total_cost" className="mb-2">
+                Total Cost
               </label>
               <input
                 type="number"
                 className="form-control"
-                name="count"
-                id="count"
-                value={salesReports.count}
-                onChange={(e) => handleChange(e)}
+                name="total_cost"
+                id="total_cost"
+                value={salesReports.total_cost}
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -186,7 +188,7 @@ export default function SalesReports({
                 onClick={handleSearch}
               >
                 <FaSearch />
-                <span className="ps-2">search</span>
+                <span className="ps-2">Search</span>
               </button>
               <button
                 type="clear"
@@ -194,7 +196,7 @@ export default function SalesReports({
                 onClick={handleClear}
               >
                 <HiXMark />
-                <span className="ps-2">clear</span>
+                <span className="ps-2">Clear</span>
               </button>
             </div>
           </div>
