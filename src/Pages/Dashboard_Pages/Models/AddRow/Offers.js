@@ -8,6 +8,7 @@ import { addData } from "../../../../axiosConfig/API";
 
 export default function Offers({ visible, visibleToggle, updated }) {
   const imageRef = useRef(null);
+  const [error, setErrors] = useState([]);
   const [offer, setOffer] = useState({
     name: "",
     discount: "",
@@ -58,11 +59,13 @@ export default function Offers({ visible, visibleToggle, updated }) {
           image: null,
         });
         if (imageRef.current) imageRef.current.value = null;
+        setErrors([]);
         setTimeout(() => {
           Swal.fire("Saved!", response.message, "success");
         }, 250);
       }
     } catch (error) {
+      setErrors(error.response?.data?.errors);
       Swal.fire("Error!", error.response?.data?.message, "error");
     }
   };
@@ -96,6 +99,7 @@ export default function Offers({ visible, visibleToggle, updated }) {
                     value={offer.name}
                     required
                   />
+                  {error?.name && <div className="invalid-data">{error.name}</div>}
                 </div>
               </div>
 
@@ -113,6 +117,7 @@ export default function Offers({ visible, visibleToggle, updated }) {
                     value={offer.discount}
                     required
                   />
+                  {error?.discount && <div className="invalid-data">{error.discount}</div>}
                 </div>
               </div>
 
@@ -130,6 +135,7 @@ export default function Offers({ visible, visibleToggle, updated }) {
                     value={offer.startDate}
                     required
                   />
+                  {error?.startDate && <div className="invalid-data">{error.startDate}</div>}
                 </div>
               </div>
 
@@ -147,6 +153,7 @@ export default function Offers({ visible, visibleToggle, updated }) {
                     value={offer.endDate}
                     required
                   />
+                  {error?.endDate && <div className="invalid-data">{error.endDate}</div>}
                 </div>
               </div>
 
@@ -181,6 +188,7 @@ export default function Offers({ visible, visibleToggle, updated }) {
                       <label htmlFor="inactive">inactive</label>
                     </div>
                   </div>
+                  {error?.status && <div className="invalid-data">{error.status}</div>}
                 </div>
               </div>
 
@@ -199,6 +207,7 @@ export default function Offers({ visible, visibleToggle, updated }) {
                     required
                   />
                 </div>
+                {error?.image && <div className="invalid-data">{error.image}</div>}
               </div>
             </div>
 

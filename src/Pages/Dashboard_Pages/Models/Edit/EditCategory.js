@@ -12,6 +12,7 @@ export default function EditCategories({
   updated,
 }) {
   const imageRef = useRef(null);
+  const [error, setErrors] = useState([]);
   const [category, setCategory] = useState({
     name: "",
     description: "",
@@ -60,11 +61,13 @@ export default function EditCategories({
       if (response.status === "success") {
         updated();
         if (imageRef.current) imageRef.current.value = null;
+        setErrors([]);
         setTimeout(() => {
           Swal.fire("Updated!", response.message, "success");
         }, 250);
       }
     } catch (error) {
+      setErrors(error.response?.data?.errors);
       Swal.fire("Error!", error.response?.data?.message, "error");
     }
   };
@@ -98,6 +101,7 @@ export default function EditCategories({
                     value={category.name}
                     onChange={(e) => handleChange(e)}
                   />
+                  {error?.name && <div className="invalid-data">{error.name}</div>}
                 </div>
               </div>
 
@@ -114,6 +118,7 @@ export default function EditCategories({
                     ref={imageRef}
                     onChange={(e) => handleChange(e)}
                   />
+                  {error?.image && <div className="invalid-data">{error.image}</div>}
                 </div>
               </div>
 
@@ -130,6 +135,7 @@ export default function EditCategories({
                     onChange={(e) => handleChange(e)}
                   ></textarea>
                 </div>
+                {error?.description && <div className="invalid-data">{error.description}</div>}
               </div>
             </div>
 

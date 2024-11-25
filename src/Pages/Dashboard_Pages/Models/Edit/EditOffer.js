@@ -7,6 +7,7 @@ import { updateData } from "../../../../axiosConfig/API";
 
 export default function EditOffer({ visible, visibleToggle, item, updated }) {
   const imageRef = useRef(null);
+  const [error, setErrors] = useState([]);
   const [offer, setOffer] = useState({
     name: "",
     discount: "",
@@ -58,11 +59,13 @@ export default function EditOffer({ visible, visibleToggle, item, updated }) {
 
       if (response.status === "success") {
         updated();
+        setErrors([]);
         setTimeout(() => {
           Swal.fire("Updated!", response.message, "success");
         }, 250);
       }
     } catch (error) {
+      setErrors(error.response?.data?.errors);
       Swal.fire("Error!", error.response?.data?.message, "error");
     }
   };
@@ -95,6 +98,7 @@ export default function EditOffer({ visible, visibleToggle, item, updated }) {
                     onChange={(e) => handleChange(e)}
                     value={offer.name}
                   />
+                  {error?.name && <div className="invalid-data">{error.name}</div>}
                 </div>
               </div>
 
@@ -111,6 +115,7 @@ export default function EditOffer({ visible, visibleToggle, item, updated }) {
                     onChange={(e) => handleChange(e)}
                     value={offer.discount}
                   />
+                  {error?.discount && <div className="invalid-data">{error.discount}</div>}
                 </div>
               </div>
 
@@ -127,6 +132,7 @@ export default function EditOffer({ visible, visibleToggle, item, updated }) {
                     onChange={(e) => handleChange(e)}
                     value={offer.startDate}
                   />
+                  {error?.startDate && <div className="invalid-data">{error.startDate}</div>}
                 </div>
               </div>
 
@@ -143,6 +149,7 @@ export default function EditOffer({ visible, visibleToggle, item, updated }) {
                     onChange={(e) => handleChange(e)}
                     value={offer.endDate}
                   />
+                  {error?.endDate && <div className="invalid-data">{error.endDate}</div>}
                 </div>
               </div>
 
@@ -160,6 +167,7 @@ export default function EditOffer({ visible, visibleToggle, item, updated }) {
                     onChange={(e) => handleChange(e)}
                   />
                 </div>
+                {error?.image && <div className="invalid-data">{error.image}</div>}
               </div>
             </div>
 

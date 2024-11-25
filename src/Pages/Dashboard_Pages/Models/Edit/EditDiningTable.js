@@ -16,6 +16,7 @@ export default function EditDiningTable({
     size: "",
     floor: "",
   });
+  const [error, setErrors] = useState([]);
 
   useEffect(() => {
     if (item) setDiningTable(item);
@@ -48,11 +49,13 @@ export default function EditDiningTable({
 
       if (response.status === "success") {
         updated();
+        setErrors([]);
         setTimeout(() => {
           Swal.fire("Updated!", response.message, "success");
         }, 250);
       }
     } catch (error) {
+      setErrors(error.response?.data?.errors);
       Swal.fire("Error!", error.response?.data?.message, "error");
     }
   };
@@ -84,6 +87,7 @@ export default function EditDiningTable({
                     value={diningTable.num}
                     onChange={(e) => handleChange(e)}
                   />
+                  {error?.num && <div className="invalid-data">{error.num}</div>}
                 </div>
               </div>
 
@@ -100,6 +104,7 @@ export default function EditDiningTable({
                     value={diningTable.size}
                     onChange={(e) => handleChange(e)}
                   />
+                  {error?.size && <div className="invalid-data">{error.size}</div>}
                 </div>
               </div>
 
@@ -117,6 +122,7 @@ export default function EditDiningTable({
                     value={diningTable.floor}
                   />
                 </div>
+                {error?.floor && <div className="invalid-data">{error.floor}</div>}
               </div>
             </div>
 

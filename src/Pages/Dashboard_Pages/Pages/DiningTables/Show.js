@@ -12,7 +12,17 @@ export default function Show() {
   const { id } = useParams();
   const [diningTable, setDiningTable] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [information, setInformation] = useState([]);
 
+  const fetchInformation = useCallback(async () => {
+    try {
+      const result = await getData("admin/settings");
+      setInformation(result);
+      console.log(result);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  }, []);
   const fetchDiningTable = useCallback(async (id) => {
     if (!id) return;
     try {
@@ -26,8 +36,9 @@ export default function Show() {
   }, []);
 
   useEffect(() => {
+    fetchInformation();
     fetchDiningTable(id);
-  }, [id, fetchDiningTable]);
+  }, [id, fetchDiningTable,fetchInformation]);
 
   const downloadQRCode = (item) => {
     const canvas = document.getElementById(`canvas_${item.id}`);
@@ -90,9 +101,16 @@ export default function Show() {
           <div className="logo">
             <img loading="lazy" src={Logo} alt="Logo" />
           </div>
-          <p>mirpur 1 (main)</p>
-          <p>+48446843546</p>
-          <p>house: 25, road no: 2, block a, mirpur-1, dhaka 1216</p>
+          <div className="message-qrCode">
+            {information.name}
+          </div>
+
+          <div className="restaurant-address">
+            {information.city && <p>city : {information.city}</p>}
+            {information.address && <p>address : {information.address}</p>}
+            {information.phone1 && <p>tel 1: {information.phone1}</p>}
+            {information.phone2 && <p>tel 2: {information.phone2}</p>}
+          </div>
 
           <div className="qrCode">
             {diningTable?.qr_code_link || diningTable?.qr_code ? (

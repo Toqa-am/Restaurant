@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Collapse } from "bootstrap";
 import { Button, Space } from "antd";
 import { CSVLink } from "react-csv";
@@ -11,9 +11,7 @@ import {
   FaPlus,
   FaBalanceScale,
 } from "react-icons/fa";
-import { getData } from "../../../../axiosConfig/API";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
-import axios from "axios";
 
 export default function ActionsFilter({
   handleModalToggle,

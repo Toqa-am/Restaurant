@@ -35,13 +35,14 @@ const statusMap = {
     if (!id) return;
     try {
       const result = await getData(`admin/orders/${id}`);
-      setDeliveryOrder(result);
-      setUserMeals(result.order_meals);
-      setUserAddons(result.order_addons);
-      setUserExtras(result.order_extras);
-      setOffers(result.order_offers);
-      setPay(result.pay === 1 ? "Paid" : "Not Paid");
-      setStatus(result.status);
+      setDeliveryOrder(result.order);
+      console.log(result);
+      setUserMeals(result.order.order_meals);
+      setUserAddons(result.order.order_addons);
+      setUserExtras(result.order.order_extras);
+      setOffers(result.order.order_offers);
+      setPay(result.order.pay === 1 ? "Paid" : "Not Paid");
+      setStatus(result.order.status);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -123,7 +124,7 @@ const statusMap = {
                           <p className="name">{meal.meal.name}</p>
                           <p className="name">Size: {sizeMap[meal.size]}</p>
                           <p className="quantity">
-                            Quantity choice: <span className="fw-bold">{meal.quantity} pcs</span>
+                            Quantity choice: <span className="fw-bold">{meal.quantity} </span>
                           </p>
                           <b className="total">{meal.total_cost} OMR</b>
                         </div>
@@ -148,7 +149,7 @@ const statusMap = {
                         <div className="card-text">
                           <p className="name fw-bold">{addon.addon.name}</p>
                           <p className="quantity">
-                            Quantity choice: <span className="fw-bold">{addon.quantity} pcs</span>
+                            Quantity choice: <span className="fw-bold">{addon.quantity} </span>
                           </p>
                           <b className="total">{addon.total_cost} OMR</b>
                         </div>
@@ -180,7 +181,7 @@ const statusMap = {
                           <p className="quantity">
                             quantity choice:
                             <span className="fw-bold">
-                              {extra.quantity} pcs
+                              {extra.quantity} 
                             </span>
                           </p>
                           <b className="total">Price: {extra.total_cost} OMR</b>
@@ -211,7 +212,7 @@ const statusMap = {
                           <p className="quantity">
                             quantity choice:
                             <span className="fw-bold">
-                              {offer.quantity} pcs
+                              {offer.quantity} 
                             </span>
                           </p>
                           <b className="total">price: {offer.total_cost} OMR</b>

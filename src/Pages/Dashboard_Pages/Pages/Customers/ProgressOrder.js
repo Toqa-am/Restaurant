@@ -41,13 +41,13 @@ const ProgressOrder = ({ currentStep }) => {
         </ProgressBar>
       </div>
 
-      <div className="address">
+      {/* <div className="address">
         <p>Mirpur-1 (main)</p>
         <p>
           <FaLocationDot /> House # 25, Road No. 2, Block A, Mirpur-1, Dhaka
           1216
         </p>
-      </div>
+      </div> */}
     </>
   );
 };

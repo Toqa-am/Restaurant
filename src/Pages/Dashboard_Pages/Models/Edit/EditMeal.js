@@ -8,6 +8,7 @@ import { getData, updateData } from "../../../../axiosConfig/API";
 export default function EditMeal({ visible, visibleToggle, item, updated }) {
   const imageRef = useRef(null);
   const [categories, setCategories] = useState([]);
+  const [error, setErrors] = useState([]);
   const [meal, setMeal] = useState({
     name: "",
     category_id: "",
@@ -74,11 +75,13 @@ export default function EditMeal({ visible, visibleToggle, item, updated }) {
       if (response.status === "success") {
         updated();
         if (imageRef.current) imageRef.current.value = null;
+        setErrors([]);
         setTimeout(() => {
           Swal.fire("Updated!", response.message, "success");
         }, 250);
       }
     } catch (error) {
+      setErrors(error.response?.data?.errors);
       Swal.fire("Error!", error.response?.data?.message, "error");
     }
   };
@@ -125,6 +128,7 @@ export default function EditMeal({ visible, visibleToggle, item, updated }) {
                     value={meal.name}
                     onChange={(e) => handleChange(e)}
                   />
+                  {error?.name && <div className="invalid-data">{error.name}</div>}
                 </div>
               </div>
 
@@ -147,6 +151,7 @@ export default function EditMeal({ visible, visibleToggle, item, updated }) {
                         </option>
                       ))}
                   </select>
+                  {error?.category_id && <div className="invalid-data">{error.category_id}</div>}
                 </div>
               </div>
 
@@ -163,6 +168,7 @@ export default function EditMeal({ visible, visibleToggle, item, updated }) {
                     ref={imageRef}
                     onChange={(e) => handleChange(e)}
                   />
+                  {error?.image && <div className="invalid-data">{error.image}</div>}
                 </div>
               </div>
 
@@ -195,6 +201,7 @@ export default function EditMeal({ visible, visibleToggle, item, updated }) {
                       <label htmlFor="non-vegetarian">non vegetarian</label>
                     </div>
                   </div>
+                  {error?.type && <div className="invalid-data">{error.type}</div>}
                 </div>
               </div>
 
@@ -227,6 +234,7 @@ export default function EditMeal({ visible, visibleToggle, item, updated }) {
                       <label htmlFor="inactive">inactive</label>
                     </div>
                   </div>
+                  {error?.status && <div className="invalid-data">{error.status}</div>}
                 </div>
               </div>
 
@@ -243,6 +251,7 @@ export default function EditMeal({ visible, visibleToggle, item, updated }) {
                     onChange={(e) => handleChange(e)}
                   ></textarea>
                 </div>
+                {error?.description && <div className="invalid-data">{error.description}</div>}
               </div>
             </div>
 

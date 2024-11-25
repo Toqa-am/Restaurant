@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import { addData } from "../../../../axiosConfig/API";
 
 export default function Customers({ visible, visibleToggle, updated }) {
+  const [error, setErrors] = useState([]);
   const [customer, setCustomer] = useState({
     name: "",
     email: "",
@@ -52,11 +53,13 @@ export default function Customers({ visible, visibleToggle, updated }) {
           status: 1,
           role: "",
         });
+        setErrors([]);
         setTimeout(() => {
           Swal.fire("Saved!", response.message, "success");
         }, 250);
       }
     } catch (error) {
+      setErrors(error.response?.data?.errors);
       Swal.fire("Error!", error.response?.data?.message, "error");
     }
   };
@@ -90,6 +93,7 @@ export default function Customers({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
+                  {error?.name && <div className="invalid-data">{error.name}</div>}
                 </div>
               </div>
 
@@ -107,6 +111,7 @@ export default function Customers({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
+                  {error?.email && <div className="invalid-data">{error.email}</div>}
                 </div>
               </div>
 
@@ -124,6 +129,7 @@ export default function Customers({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
+                  {error?.phone && <div className="invalid-data">{error.phone}</div>}
                 </div>
               </div>
 
@@ -141,6 +147,7 @@ export default function Customers({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
+                  {error?.password && <div className="invalid-data">{error.password}</div>}
                 </div>
               </div>
 
@@ -158,6 +165,7 @@ export default function Customers({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
+                  {error?.password_confirmation && <div className="invalid-data">{error.password_confirmation}</div>}
                 </div>
               </div>
 
@@ -193,6 +201,7 @@ export default function Customers({ visible, visibleToggle, updated }) {
                     </div>
                   </div>
                 </div>
+                {error?.status && <div className="invalid-data">{error.status}</div>}
               </div>
             </div>
 

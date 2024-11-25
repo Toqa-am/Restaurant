@@ -7,6 +7,7 @@ import { addData } from "../../../../axiosConfig/API";
 
 function Categories({ visible, visibleToggle, updated }) {
   const imageRef = useRef(null);
+  const [error, setErrors] = useState([]);
   const [category, setCategory] = useState({
     name: "",
     description: "",
@@ -57,11 +58,13 @@ function Categories({ visible, visibleToggle, updated }) {
           status: 1,
         });
         if (imageRef.current) imageRef.current.value = null;
+        setErrors([]);
         setTimeout(() => {
           Swal.fire("Saved!", response.message, "success");
         }, 250);
       }
     } catch (error) {
+      setErrors(error.response?.data?.errors);
       Swal.fire("Error!", error.response?.data?.message, "error");
     }
   };
@@ -96,6 +99,7 @@ function Categories({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
+                  {error?.name && <div className="invalid-data">{error.name}</div>}
                 </div>
               </div>
 
@@ -130,6 +134,7 @@ function Categories({ visible, visibleToggle, updated }) {
                       <label htmlFor="inactive">inactive</label>
                     </div>
                   </div>
+                  {error?.status && <div className="invalid-data">{error.status}</div>}
                 </div>
               </div>
 
@@ -147,6 +152,7 @@ function Categories({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
+                  {error?.image && <div className="invalid-data">{error.image}</div>}
                 </div>
               </div>
 
@@ -164,6 +170,7 @@ function Categories({ visible, visibleToggle, updated }) {
                     required
                   ></textarea>
                 </div>
+                {error?.description && <div className="invalid-data">{error.description}</div>}
               </div>
             </div>
 

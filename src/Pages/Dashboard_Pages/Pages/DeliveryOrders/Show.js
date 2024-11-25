@@ -62,8 +62,8 @@ export default function Show() {
         extras: userExtras,
         offers:offers,
       });
-      setPay(result.pay === 1 ? "Paid" : "Not Paid");
-      setStatus(result.status);
+      setPay(result.order.pay === 1 ? "Paid" : "Not Paid");
+      setStatus(result.order.status);
       setLoading(false);
     } catch (error) {
       setLoading(false);

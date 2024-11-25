@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { addData } from "../../../../axiosConfig/API";
 
 function DiningTables({ visible, visibleToggle, updated }) {
+  const [error, setErrors] = useState([]);
   const [diningTable, setDiningTable] = useState({
     floor: "",
     size: "",
@@ -42,12 +43,13 @@ function DiningTables({ visible, visibleToggle, updated }) {
           num: "",
           status: 1,
         });
-
+        setErrors([]);
         setTimeout(() => {
           Swal.fire("Saved!", response.message, "success");
         }, 250);
       }
     } catch (error) {
+      setErrors(error.response?.data?.errors);
       Swal.fire("Error!", error.response?.data?.message, "error");
     }
   };
@@ -81,6 +83,7 @@ function DiningTables({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
+                  {error?.num && <div className="invalid-data">{error.num}</div>}
                 </div>
               </div>
 
@@ -98,6 +101,7 @@ function DiningTables({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
+                  {error?.size && <div className="invalid-data">{error.size}</div>}
                 </div>
               </div>
 
@@ -115,6 +119,7 @@ function DiningTables({ visible, visibleToggle, updated }) {
                     value={diningTable.floor}
                     required
                   />
+                  {error?.floor && <div className="invalid-data">{error.floor}</div>}
                 </div>
               </div>
 
@@ -150,6 +155,7 @@ function DiningTables({ visible, visibleToggle, updated }) {
                     </div>
                   </div>
                 </div>
+                {error?.status && <div className="invalid-data">{error.status}</div>}
               </div>
             </div>
 

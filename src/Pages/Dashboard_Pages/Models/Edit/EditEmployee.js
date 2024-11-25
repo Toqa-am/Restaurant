@@ -19,6 +19,7 @@ export default function EditEmployee({
     password: "",
     password_confirmation: "",
   });
+  const [error, setErrors] = useState([]);
 
   useEffect(() => {
     if (item) setEmployee(item);
@@ -56,11 +57,13 @@ export default function EditEmployee({
 
       if (response.status === "success") {
         updated();
+        setErrors([]);
         setTimeout(() => {
           Swal.fire("Updated!", response.message, "success");
         }, 250);
       }
     } catch (error) {
+      setErrors(error.response?.data?.errors);
       Swal.fire("Error!", error.response?.data?.message, "error");
     }
   };
@@ -92,6 +95,7 @@ export default function EditEmployee({
                     value={employee.name}
                     onChange={(e) => handleChange(e)}
                   />
+                  {error?.name && <div className="invalid-data">{error.name}</div>}
                 </div>
               </div>
 
@@ -108,6 +112,7 @@ export default function EditEmployee({
                     value={employee.email}
                     onChange={(e) => handleChange(e)}
                   />
+                  {error?.email && <div className="invalid-data">{error.email}</div>}
                 </div>
               </div>
 
@@ -127,6 +132,7 @@ export default function EditEmployee({
                     <option value="casher">casher</option>
                     <option value="chef">chef</option>
                   </select>
+                  {error?.role && <div className="invalid-data">{error.role}</div>}
                 </div>
               </div>
 
@@ -143,6 +149,7 @@ export default function EditEmployee({
                     value={employee.phone}
                     onChange={(e) => handleChange(e)}
                   />
+                  {error?.phone && <div className="invalid-data">{error.phone}</div>}
                 </div>
               </div>
 
@@ -159,6 +166,7 @@ export default function EditEmployee({
                     value={employee.password}
                     onChange={(e) => handleChange(e)}
                   />
+                  {error?.password && <div className="invalid-data">{error.password}</div>}
                 </div>
               </div>
 
@@ -176,6 +184,7 @@ export default function EditEmployee({
                     onChange={(e) => handleChange(e)}
                   />
                 </div>
+                {error?.password_confirmation && <div className="invalid-data">{error.password_confirmation}</div>}
               </div>
             </div>
 

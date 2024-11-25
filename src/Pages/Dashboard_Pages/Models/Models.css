@@ -210,8 +210,12 @@ button {
   font-size: 20px;
 }
 
-.newColumn .errorMaxMan {
+.newColumn .errorMaxMan{
   color: red;
   font-size: 14px;
   text-transform: capitalize !important;
+}
+.invalid-data{
+  color: red;
+  font-size: 14px;
 }

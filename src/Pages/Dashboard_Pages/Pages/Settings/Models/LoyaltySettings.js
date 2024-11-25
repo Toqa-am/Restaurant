@@ -4,14 +4,14 @@ import { FaCheckCircle } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { addData, getData, imageStorageURL } from "../../../../../axiosConfig/API"; 
 
-export default function Information() {
-  const [settings, setSettings] = useState(null);
+export default function LoyaltySettings() {
+  const [LoyaltySettings, setLoyaltySettings] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetchSettings = useCallback(async () => {
     try {
-      const result = await getData("admin/settings");
-      setSettings(result);
+      const result = await getData("admin/loyalty-settings");
+      setLoyaltySettings(result);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -25,7 +25,7 @@ export default function Information() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setSettings((prevData) => ({
+    setLoyaltySettings((prevData) => ({
       ...prevData,
       [name]: value,
     }));
@@ -33,119 +33,91 @@ export default function Information() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
- 
-    const updatedSettings = { ...settings };
- 
-    if (!settings.logo || !(settings.logo instanceof File)) {
-        delete updatedSettings.logo;  
-    }
- 
+
+    const updatedSettings = { ...LoyaltySettings };
+
     try {
-        const response = await addData("admin/settings", updatedSettings, true);
- 
+        const response = await addData("admin/loyalty-settings", updatedSettings, true);
+
         if (response.status === "success") {
             Swal.fire("Updated!", response.message, "success");
         }
     } catch (error) {
         Swal.fire("Error!", error.response?.data?.message, "error");
     }
-  } 
+  };
 
   if (loading) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   return (
     <div className="AddTable">
-      <div className="title">Restaurant Information</div>
-      
-      {/* Displaying Logo
-      {settings.logo && (
-        <div className="logo-container">
-          <img src={`${imageStorageURL}/${settings.logo}`} alt="Restaurant Logo" className="logo" width={50}/>
-        </div>
-      )} */}
-
+      <div className="title">Loyalty Settings</div>
       <form onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-12 col-md-6">
             <div className="mb-3">
-              <label htmlFor="name" className="form-label">
-                Name <span className="star">*</span>
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                name="name"
-                id="name"
-                value={settings.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="col-12 col-md-6">
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">
-                Email <span className="star">*</span>
-              </label>
-              <input
-                type="email"
-                className="form-control email"
-                name="email"
-                id="email"
-                value={settings.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="col-12 col-md-6">
-            <div className="mb-3">
-              <label htmlFor="phone_1" className="form-label">
-                Phone 1 <span className="star">*</span>
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                name="phone1"
-                id="phone1"
-                value={settings.phone1}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="col-12 col-md-6">
-            <div className="mb-3">
-              <label htmlFor="phone_2" className="form-label">
-                Phone 2
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                name="phone2"
-                id="phone2"
-                value={settings.phone2}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          <div className="col-12 col-md-6">
-            <div className="mb-3">
-              <label htmlFor="tax" className="form-label">
-                Tax % <span className="star">*</span>
+              <label htmlFor="loyalty_points_expiry_days" className="form-label">
+                Loyalty Points Expiry Days <span className="star">*</span>
               </label>
               <input
                 type="number"
                 className="form-control"
-                name="tax"
-                id="tax"
-                value={settings.tax}
+                name="loyalty_points_expiry_days"
+                id="loyalty_points_expiry_days"
+                value={LoyaltySettings.loyalty_points_expiry_days}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="col-12 col-md-6">
+            <div className="mb-3">
+              <label htmlFor="loyalty_min_redeem_points" className="form-label">
+                Loyalty Min Redeem Points <span className="star">*</span>
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                name="loyalty_min_redeem_points"
+                id="loyalty_min_redeem_points"
+                value={LoyaltySettings.loyalty_min_redeem_points}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="col-12 col-md-6">
+            <div className="mb-3">
+              <label htmlFor="loyalty_max_redeem_points" className="form-label">
+                Loyalty Max Redeem Points <span className="star">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="loyalty_max_redeem_points"
+                id="loyalty_max_redeem_points"
+                value={LoyaltySettings.loyalty_max_redeem_points}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="col-12 col-md-6">
+            <div className="mb-3">
+              <label htmlFor="loyalty_max_discount_rate" className="form-label">
+                Loyalty Max Discount Rate
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="loyalty_max_discount_rate"
+                id="loyalty_max_discount_rate"
+                value={LoyaltySettings.loyalty_max_discount_rate}
                 onChange={handleChange}
               />
             </div>
@@ -153,32 +125,52 @@ export default function Information() {
 
           <div className="col-12 col-md-6">
             <div className="mb-3">
-              <label htmlFor="city" className="form-label">
-                City
+              <label htmlFor="min_order_price_for_points" className="form-label">
+                Min Order Price For Points <span className="star">*</span>
               </label>
               <input
-                type="text"
+                type="number"
                 className="form-control"
-                name="city"
-                id="city"
-                value={settings.city}
+                name="min_order_price_for_points"
+                id="min_order_price_for_points"
+                value={LoyaltySettings.min_order_price_for_points}
                 onChange={handleChange}
               />
             </div>
           </div>
-          <div className="col-12">
+
+          {/* Changing the last two fields to text inputs instead of textarea */}
+          <div className="col-12 col-md-6">
             <div className="mb-3">
-              <label htmlFor="address" className="form-label">
-                Address
+              <label htmlFor="price_per_point" className="form-label">
+                Price Per Point
               </label>
-              <textarea
+              <input
+                type="text"
                 className="form-control"
-                name="address"
-                id="address"
-                value={settings.address}
+                name="price_per_point"
+                id="price_per_point"
+                value={LoyaltySettings.price_per_point}
                 onChange={handleChange}
                 required
-              ></textarea>
+              />
+            </div>
+          </div>
+
+          <div className="col-12 col-md-6">
+            <div className="mb-3">
+              <label htmlFor="currency_per_point" className="form-label">
+                Currency Per Point
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="currency_per_point"
+                id="currency_per_point"
+                value={LoyaltySettings.currency_per_point}
+                onChange={handleChange}
+                required
+              />
             </div>
           </div>
         </div>

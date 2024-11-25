@@ -15,6 +15,7 @@ export default function Variations() {
   const [variations, setVariations] = useState();
   const [modalVisible, setModalVisible] = useState(false);
   const [newSize, setNewSize] = useState("");  
+  const [error, setErrors] = useState([]);
   const [sizeList, setSizeList] = useState([
     { value: 1, label: "small" },
     { value: 2, label: "medium" },
@@ -39,8 +40,8 @@ export default function Variations() {
     }
   };
 
- console.log(newSize);
- 
+//  console.log(newSize);
+
   
 
   const fetchVariations = useCallback(async (id) => {
@@ -114,7 +115,7 @@ export default function Variations() {
         } else {
           setMeal({ size: newSize.size });
         }
-
+        setErrors([]);
         setTimeout(() => {
           Swal.fire(
             method === "update" ? "Updated!" : "Saved!",
@@ -125,6 +126,7 @@ export default function Variations() {
       }
     } catch (error) {
       if (error.response) {
+        setErrors(error.response?.data?.errors);
         Swal.fire("Error response:!", error.response.data.error, "error");
       } else {
         Swal.fire("Error occurred:!", error.message, "error");
@@ -292,6 +294,7 @@ export default function Variations() {
                           </option>
                         ))}
                       </select>
+                      {error?.size && <div className="invalid-data">{error.size}</div>}
                     </div>
                   </div>
                 
@@ -310,6 +313,7 @@ export default function Variations() {
                       value={meal.number_of_pieces}
                       onChange={(e) => handleChange(e)}
                     />
+                    {error?.number_of_pieces && <div className="invalid-data">{error.number_of_pieces}</div>}
                   </div>
                 </div>
 
@@ -329,6 +333,7 @@ export default function Variations() {
                     />
                   </div>
                 </div>
+                {error?.cost && <div className="invalid-data">{error.cost}</div>}
               </div>
             </div>
 

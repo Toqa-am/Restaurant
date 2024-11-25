@@ -1,6 +1,6 @@
 // icons
 import { RiCommunityLine } from "react-icons/ri";
-import { SiSitecore } from "react-icons/si";
+import { FaGift } from "react-icons/fa"; 
 import { FaCodeBranch } from "react-icons/fa6";
 import { MdOutlineMarkEmailUnread } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
@@ -20,7 +20,7 @@ import { TbLicense } from "react-icons/tb";
 
 // component
 import Information from "../Pages/Settings/Models/Company";
-import Site from "../Pages/Settings/Models/Site";
+import LoyaltySettings from "../Pages/Settings/Models/LoyaltySettings";
 import Branched from "../Pages/Settings/Models/Branches";
 import Mail from "../Pages/Settings/Models/Mail";
 import OTP from "../Pages/Settings/Models/OTP";
@@ -47,10 +47,10 @@ const routesSettings = [
     role: ["admin"],
   },
   {
-    path: "/settings/site",
-    name: "site",
-    icon: SiSitecore,
-    component: Site,
+    path: "/settings/loyalty-settings",
+    name: "Loyalty Settings",
+    icon: FaGift ,
+    component: LoyaltySettings,
     role: ["admin"],
   },
   {

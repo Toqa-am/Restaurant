@@ -19,7 +19,7 @@ export default function EditAdministrator({
     password: "",
     password_confirmation: "",
   });
-
+  const [error, setErrors] = useState([]);
   useEffect(() => {
     if (item) setAdministrator(item);
   }, [item]);
@@ -59,11 +59,13 @@ export default function EditAdministrator({
 
       if (response.status === "success") {
         updated();
+        setErrors([]);
         setTimeout(() => {
           Swal.fire("Updated!", response.message, "success");
         }, 250);
       }
     } catch (error) {
+      setErrors(error.response?.data?.errors);
       Swal.fire("Error!", error.response?.data?.message, "error");
     }
   };
@@ -95,6 +97,7 @@ export default function EditAdministrator({
                     value={administrator.name}
                     onChange={(e) => handleChange(e)}
                   />
+                  {error?.name && <div className="invalid-data">{error.name}</div>}
                 </div>
               </div>
 
@@ -111,6 +114,7 @@ export default function EditAdministrator({
                     value={administrator.email}
                     onChange={(e) => handleChange(e)}
                   />
+                  {error?.email && <div className="invalid-data">{error.email}</div>}
                 </div>
               </div>
 
@@ -130,6 +134,7 @@ export default function EditAdministrator({
                     <option value="casher">casher</option>
                     <option value="chef">chef</option>
                   </select>
+                  {error?.role && <div className="invalid-data">{error.role}</div>}
                 </div>
               </div>
 
@@ -146,6 +151,7 @@ export default function EditAdministrator({
                     value={administrator.phone}
                     onChange={(e) => handleChange(e)}
                   />
+                  {error?.phone && <div className="invalid-data">{error.phone}</div>}
                 </div>
               </div>
 
@@ -162,6 +168,7 @@ export default function EditAdministrator({
                     value={administrator.password}
                     onChange={(e) => handleChange(e)}
                   />
+                  {error?.password && <div className="invalid-data">{error.password}</div>}
                 </div>
               </div>
 
@@ -179,6 +186,7 @@ export default function EditAdministrator({
                     onChange={(e) => handleChange(e)}
                   />
                 </div>
+                {error?.password_confirmation && <div className="invalid-data">{error.password_confirmation}</div>}
               </div>
             </div>
 
