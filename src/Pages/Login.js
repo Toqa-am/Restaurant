@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom/cjs/react-router-dom.min"
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import { settings } from "../Store/action";
 
 export function Login(props){
     const [signed, setSigned] = useState(0)
     const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [adminToken, setAdminToken] = useState(null)
+    const dispatch = useDispatch();
+
+    const [token, setToken] = useState(null)
     let history = useHistory();
 
     const [formData, setFormData] = useState({
@@ -54,16 +57,16 @@ export function Login(props){
 
         setSigned(0)
 
-        console.log(adminToken);
+        console.log(token);
 
         try {
             const response = await axios.post(props.loginEP, formData);
             setIsLoggedIn(true)
-            setAdminToken(response.access_token)
-            localStorage.setItem(props.tokenName, JSON.stringify(adminToken));
+            setToken(response.access_token)
+            localStorage.setItem(props.tokenName, JSON.stringify(token));
             history.push(props.redirect);
             console.log(response);
-            
+            let points=response.data.customer.loyalty_points;
 
             setErrors({
                 ...errors,
@@ -72,11 +75,41 @@ export function Login(props){
 
 
             localStorage.setItem(props.tokenName, JSON.stringify(response.data.access_token));
-            setAdminToken(JSON.parse(localStorage.getItem(props.tokenName)));
+            setToken(JSON.parse(localStorage.getItem(props.tokenName)));
 
 
 
             console.log('Form submitted successfully:', response.data);
+            if (props.customer=='true'){
+                try{
+
+                    const getInfo = await axios.get("http://127.0.0.1:8000/api/loyalty-settings", {
+                        headers: {
+                          Authorization: `Bearer ${JSON.parse(token)}`,
+                          "Content-Type": "multipart/form-data",
+                        },
+                      });
+                    console.log(getInfo);
+                    dispatch(settings(
+                        {
+                        points_num:points,
+                        max_points_num:getInfo.data.data.loyalty_max_redeem_points,
+                        min_points_num:getInfo.data.data.loyalty_min_redeem_points,
+                        max_discount:getInfo.data.data.loyalty_max_discount_rate,
+                        currency_per_point:getInfo.data.data.currency_per_point,
+                        min_order_price:getInfo.data.data.min_order_price_for_points,
+                        points_for_one_currency:getInfo.data.data.price_per_point
+                    }
+                    ))
+                    var info=getInfo.data.data;
+                    info.points_num=points;
+                    localStorage.setItem("Loyality_points_info", JSON.stringify(info))
+
+                    
+                }catch(error){
+
+                }
+            }
         } catch (error) {
             console.error('Error submitting form:', error);
          

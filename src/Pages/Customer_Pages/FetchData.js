@@ -164,7 +164,7 @@ const FetchData = () => {
       <div className="main-container">
         <Navbar />
         <div className="bg-light ">
-          <p>Loading...</p>;
+          <p>Loading...</p>
         </div>
       </div>
     );
@@ -173,7 +173,7 @@ const FetchData = () => {
       <div className="main-container">
         <Navbar />
         <div className="bg-light ">
-          <p>Error: {error.message}</p>;
+          <p>Error: {error.message}</p>
         </div>
       </div>
     );

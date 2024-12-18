@@ -182,10 +182,10 @@ export function Register() {
 
               <input
                 className="form-control"
-                type="text"
+                type="number"
                 id="phone"
                 name="phone"
-                pattern="^[0-9]{14}$"
+                pattern="^[0-9]{0:}$"
                 value={formData.phone}
                 onBlur={handleInputChange}
                 onChange={handleInputChange}
@@ -247,7 +247,8 @@ export function Register() {
                 formData.name === "" ||
                 formData.password_confirmation === "" ||
                 formData.password === "" ||
-                formData.email === ""
+                formData.email === ""||
+                formData.phone===""
               }
             >
               Submit

@@ -1,6 +1,5 @@
 
 import cloneDeep from 'lodash/cloneDeep'
-
 const getCartData = () => {
 
     let currentCart = localStorage.getItem("customerCartItems")
@@ -35,15 +34,40 @@ const getCartTotal = () => {
     }
 
 }
+const getLotalityInfo = () => {
 
+    let currentInfo = localStorage.getItem("Loyality_points_info")
+    if (currentInfo && currentInfo == {}) {
+        return [];
+    }
+    else if (!currentInfo) {
+        currentInfo = {}
+        localStorage.setItem("Loyality_points_info", JSON.stringify(currentInfo))
+        return JSON.parse(currentInfo);
+    }
+    else {
+        return JSON.parse(currentInfo);
 
+    }
+
+}
 const VALUE = {
     cartTotal: getCartTotal(),
     customerCartItems: getCartData(),
     searchStatement: "",
     itemQuant: 1,
     table_num: null,
-    table_id: null
+    table_id: null,
+    points_num:getLotalityInfo().points_num,
+    max_points_num:getLotalityInfo().loyalty_max_redeem_points,
+    min_points_num:getLotalityInfo().loyalty_min_redeem_points,
+    max_discount:getLotalityInfo().loyalty_max_discount_rate,
+    currency_per_point:getLotalityInfo().currency_per_point,
+    min_order_price:getLotalityInfo().min_order_price_for_points,
+    points_for_one_currency:getLotalityInfo().price_per_point,
+    tax:0,
+
+
 }
 export default function cartReducer(
     state = VALUE, action) {
@@ -313,7 +337,37 @@ export default function cartReducer(
                 ...state,
                 updated: state.updated,
             };
-
+            case "LOYALITY_POINTS_SETTINGS":
+                console.log("Action payload:", action.payload); // This should log the payload
+                return {
+                    ...state, // Spread the current state
+                    points_num: action.payload.points_num,
+                    max_points_num: action.payload.max_points_num,
+                    min_points_num: action.payload.min_points_num,
+                    max_discount: action.payload.max_discount,
+                    currency_per_point: action.payload.currency_per_point,
+                    min_order_price: action.payload.min_order_price,
+                    points_for_one_currency: action.payload.points_for_one_currency,
+                };
+                case "UPDATE_LOYALITY_POINTS":
+                    // Retrieve the data from localStorage and parse it into an object
+                    let newInfo = localStorage.getItem("Loyality_points_info");
+                    if (newInfo) {
+                        newInfo = JSON.parse(newInfo); // Parse the string into an object
+                        newInfo.points_num = action.payload; // Update the points number
+                        localStorage.setItem("Loyality_points_info", JSON.stringify(newInfo)); // Save the updated object
+                        console.log("Updated LocalStorage:", newInfo);
+                    } else {
+                        console.warn("No data found in LocalStorage for 'Loyality_points_info'");
+                    }
+                
+                    // Update the state
+                    return {
+                        ...state, // Spread the current state
+                        points_num: action.payload, // Update the specific property
+                    };
+                    
+                
 
 
 

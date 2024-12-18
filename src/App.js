@@ -15,8 +15,25 @@ import { Success } from "./Pages/Customer_Pages/PaymentSuccess";
 import { Email } from "./Pages/Customer_Pages/Email";
 import { Offers } from "./Pages/Customer_Pages/Offers";
 import NotFound from "./Pages/Customer_Pages/NotFound";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
 
 function App() {
+  // const [title,setTitle]=useState("");
+
+  // useEffect(() => {
+  //   const getTitle = async () => {
+  //     try {
+  //       const settings = await axios.get("http://127.0.0.1:8000/api/settings");
+  //       setTitle(settings.data.data.name);
+       
+  //     } catch (error) {}
+  //   };
+  //   getTitle()
+  //   document.title=title;
+
+  // }, []);
   return (
     <>
       <div className="App">

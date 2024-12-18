@@ -5,16 +5,28 @@ import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Navbar } from "../../Components/Customer/Navbar";
 
-import { emptyCart } from "../../Store/action";
+import { emptyCart, pointsUpdate } from "../../Store/action";
 import Swal from "sweetalert2";
 
 export default function Cart() {
+
   const cartTotal = useSelector((state) => state.cartTotal);
   const customerCartItems = useSelector((state) => state.customerCartItems);
   const tableId = useSelector((state) => state.table_id);
   const tableNum = useSelector((state) => state.table_num);
+  const points_num = useSelector((state) => state.points_num);
+  const max_points_num = useSelector((state) => state.max_points_num);
+  const min_points_num = useSelector((state) => state.min_points_num);
+  const max_discount = useSelector((state) => state.max_discount);
+  const currency_per_point = useSelector((state) => state.currency_per_point);
+  const min_order_price = useSelector((state) => state.min_order_price);
+  const points_for_one_currency = useSelector((state) => state.points_for_one_currency);
+  const [pointsErrors, setPointsErrors] = useState("")
+  const [points,setPoints] = useState("0");
+
   const [tableMan, settableMan] = useState();
   const [tables, setTables] = useState([]);
+  const [tax,setTax]=useState(0)
   const [error, setError] = useState("");
   let notes = "";
 
@@ -33,9 +45,19 @@ export default function Cart() {
       try {
         const tabs = await axios.get("http://127.0.0.1:8000/api/dining-tables");
         setTables(tabs.data.data);
+      } catch (error) { }
+    };
+
+    getTables();
+    const getTax = async () => {
+      try {
+        const settings = await axios.get("http://127.0.0.1:8000/api/settings");
+        setTax(settings.data.data.tax);
+        console.log(settings);
+        
       } catch (error) {}
     };
-    getTables();
+    getTax()
   }, []);
 
   function inputChg(event) {
@@ -49,6 +71,54 @@ export default function Cart() {
   function tableChg(id) {
     settableMan(id);
   }
+  function validateLoyalityPoints(event) {
+  setPoints(event.target.value);
+    console.log(event.target.value)
+    let p=event.target.value;
+    console.log(points);
+    
+    if (p > 0) {
+      let redeemedCurrency = p / points_for_one_currency
+      if (cartTotal < min_order_price) {
+        setPointsErrors(`Your order must be at least ${min_order_price} OMR`)
+      }
+      else if (p > max_points_num) {
+        setPointsErrors(`Maximum number of points to exchange is ${max_points_num}`)
+      }
+      else if (p < min_points_num) {
+        setPointsErrors(`Minimum number of points to exchange is ${min_points_num}`)
+      }
+      else if(cartTotal < min_order_price ){
+        setPointsErrors(`Minimum order price is ${min_order_price}`)
+
+      }
+      else if( points_num < min_points_num){
+        setPointsErrors(`Minimum Number of points is ${min_points_num}`)
+
+      }
+      else if (redeemedCurrency > cartTotal * 10 / 100) {
+        console.log(points_for_one_currency);
+
+        console.log(redeemedCurrency);
+
+        setPointsErrors(`You'r trying to get more than ${max_discount}% discount, max number of points you can exchange is ${cartTotal * 10 / 100 * 10}`)
+      }
+      else {
+        setPointsErrors("")
+
+      }
+    }
+    else {
+      setPointsErrors("")
+    }
+
+
+
+
+    console.log(pointsErrors);
+
+
+  }
   const paymentDetails = () => {
     paymentData.diningtable_id = tableId || tableMan;
     paymentData.total_cost = cartTotal;
@@ -57,18 +127,30 @@ export default function Cart() {
     paymentData.addon_ids = [];
     paymentData.extra_ids = [];
     paymentData.offer_ids = [];
+    paymentData.converted_points = parseFloat(points);
+    console.log(paymentData);
+    console.log(points);
+    
 
     customerCartItems.map((item) => {
       if (item.table_name === "meals") {
         let size;
         if (item.size === "Small") {
+          console.log(item.size);
+
           size = 1;
         } else if (item.size === "Medium") {
           size = 2;
+          console.log(item.size);
+
         } else if (item.size === "Big") {
           size = 3;
+          console.log(item.size);
+
         } else if (item.size === "Family") {
           size = 4;
+          console.log(item.size);
+
         }
 
         paymentData.meal_ids.push({
@@ -112,12 +194,19 @@ export default function Cart() {
     if (paymentData.offer_ids.length === 0) {
       delete paymentData.offer_ids;
     }
+    if (paymentData.converted_points == 0 || paymentData.converted_points == undefined || !paymentData.converted_points) {
+      delete paymentData.converted_points;
+    }
   };
   const checkOut = async (e) => {
+    console.log(points);
+    
     e.preventDefault();
-
+    paymentDetails();
+    console.log(paymentData);
     if (JSON.parse(localStorage.getItem("CustomerToken"))) {
-      paymentDetails();
+ 
+      
       if (paymentMethod === "dpay") {
         try {
           const response = await axios.post(
@@ -137,7 +226,7 @@ export default function Cart() {
 
           Swal.fire({
             title: "Done",
-            text: "Youre order have been placed",
+            text: "Youre order has been placed",
             icon: "success",
           });
         } catch (error) {
@@ -151,6 +240,13 @@ export default function Cart() {
             Swal.fire({
               title: "Error",
               text: "Please choose a table",
+              icon: "error",
+            });
+          }
+          else {
+            Swal.fire({
+              title: "Error",
+              text: error.response.data.message,
               icon: "error",
             });
           }
@@ -172,13 +268,34 @@ export default function Cart() {
           );
           dispatcher(emptyCart());
           setIsLoggedIn(true);
+          console.log(response);
+          console.log(paymentData);
+
 
           setError("");
           Swal.fire({
             title: "Done",
-            text: "Youre order have been placed",
+            text: "Youre order has been placed",
             icon: "success",
           });
+
+          try{
+            const getInfo = await axios.get("http://127.0.0.1:8000/api/customers", {
+              headers: {
+                Authorization: `Bearer ${JSON.parse(
+                  localStorage.getItem("CustomerToken")
+                )}`,
+                                "Content-Type": "multipart/form-data",
+              },
+            });
+            console.log(getInfo.data.data.loyalty_points);
+            dispatcher(pointsUpdate(getInfo.data.data.loyalty_points))
+            
+            
+          }
+          catch(error){
+            
+          }
         } catch (error) {
           if (error.response.data.message === "Unauthenticated.") {
             history.push("/customer/login");
@@ -242,6 +359,52 @@ export default function Cart() {
                     ))}
                   </select>
                 )}
+                <br></br>
+                <div className="d-flex justify-content-between align-items-center">
+                  <strong>
+                    <p>Your loyality points:</p>
+                  </strong>
+                  <div>
+                    {points_num}
+                  </div>
+
+
+                  <div className=" d-flex justify-content-between ">
+
+                    <input type="number" class="form-control" id="loyality_points" placeholder="0" onChange={validateLoyalityPoints}
+                      disabled={cartTotal < min_order_price || points_num < min_points_num}
+                    />
+                  </div>
+                  <div class="cust-tooltip">
+                    <i class="bi bi-info-circle p-1"></i>
+
+                    <span class="cust-tooltiptext">
+                      <ul>
+                        <li>
+                          Minimum order cost is {min_order_price} OMR to be able to use loyality points.
+                        </li>
+                        <br></br>
+                        <li>
+                          Maximum number of points to exchange: {max_points_num}.
+                        </li>     <br></br>
+                        <li>       Minimum number of points to exchange: {min_points_num}.
+                        </li>  <br></br>
+                        <li>       Maximum discount you can have is {max_discount}%.
+                        </li>    <br></br>
+                        <li>
+                          You get 1 OMR for every {points_for_one_currency} points.
+                        </li>
+                      </ul>
+
+                    </span>
+                  </div>
+
+
+                </div>
+                <span className="text-danger">
+                  {pointsErrors}
+                </span>
+
               </div>
               <div className="">
                 <strong className="text-left">
@@ -289,7 +452,7 @@ export default function Cart() {
                     onClick={(e) => {
                       checkOut(e);
                     }}
-                    disabled={customerCartItems.length === 0 ? true : false}
+                    disabled={ pointsErrors != "" || customerCartItems.length === 0 ? true : false}
                   >
                     Place order
                   </button>
@@ -304,9 +467,8 @@ export default function Cart() {
                 <CheckOutCard
                   key={item.name}
                   img={item.image}
-                  title={`${
-                    typeof item.size === "undefined" ? "" : item.size + "-"
-                  } ${item.name}`}
+                  title={`${typeof item.size === "undefined" ? "" : item.size + "-"
+                    } ${item.name}`}
                   price={item.cost || item.total_price_after_discount}
                   quant={item.quant}
                   desc={item.description || item.items}
@@ -319,8 +481,13 @@ export default function Cart() {
                 </div>
                 <hr />
                 <div className="d-flex justify-content-around">
+                  <span>Tax</span>
+                  <span>{tax}%</span>
+                </div>
+                <hr></hr>
+                <div className="d-flex justify-content-around">
                   <span>Total</span>
-                  <span>{cartTotal}</span>
+                  <span>{cartTotal+(cartTotal*tax)/100}</span>
                 </div>
               </div>
             </div>

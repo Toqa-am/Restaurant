@@ -78,3 +78,17 @@ export const search = (payload) => {
       payload: payload
     };
   };
+  
+  export const settings = (payload) => {
+    return {
+      type: 'LOYALITY_POINTS_SETTINGS',
+      payload: payload
+    };
+  };
+
+  export const pointsUpdate = (payload) => {
+    return {
+      type: 'UPDATE_LOYALITY_POINTS',
+      payload: payload
+    };
+  };

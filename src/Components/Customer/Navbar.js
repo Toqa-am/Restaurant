@@ -8,12 +8,26 @@ import FullCart from './FullCart';
 import { search } from '../../Store/action';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export function Navbar() {
     const dispatcher = useDispatch()
     const [updated,setUpdated]=useState(false)
+    const [logo,setlogo]=useState("");
+
     const cartTotal = useSelector((state) => state.cartTotal)
     const customerCartItems = useSelector((state) => state.customerCartItems)
+    useEffect(() => {
+        const getLogo = async () => {
+          try {
+            const settings = await axios.get("http://127.0.0.1:8000/api/settings");
+            setlogo(settings.data.data.logo);
+            console.log(settings);
+            
+          } catch (error) {}
+        };
+        getLogo()
+      }, []);
     
     useEffect(() => {
         localStorage.setItem("customerCartItems", JSON.stringify(customerCartItems))
@@ -36,11 +50,14 @@ export function Navbar() {
     return (
         <>
             <nav className="navbar sticky-top navbar-expand-lg navbar-light  d-flex justify-content-between py-0"
-            style={{backgroundColor:'white'}}
+            style={{backgroundColor:'white',padding:"15px",borderRadius: "15px"}}
             >
                 <Link to='/'>
                     <a className="navbar-brand" href="/">
-                        <img src={logo1} className="menuLogo" height={45}></img>
+                    {
+                        logo!==""? <img src={`http://127.0.0.1:8000/storage/${logo}`} className="menuLogo" height={45}></img>:<img src={logo1} className="menuLogo" height={45}></img>
+                    }
+                        
                     </a>
 
                 </Link>
