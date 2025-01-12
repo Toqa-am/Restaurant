@@ -59,7 +59,7 @@ function App() {
             <Route path="/auth" component={Auth} />
             <Route path="/admin/dashboard" component={Dashboard} />
             <Route path="/branch_2" component={Branch_2} />
-            <Route path="/admin/dashboard/settings" component={Settings} />
+            <Route path="/settings" component={Settings} />
 
 
             <Route exact path="/" component={FetchData} />
