@@ -18,25 +18,16 @@ export default function SalesReports({
     pay: "",
   });
 
-  const [filteredData, setFilteredData] = useState([]); 
-  const [originalData, setOriginalData] = useState([]); 
+  const [filteredData, setFilteredData] = useState([]);
 
-  useEffect(() => {
-    setFilteredData(data);
-    // setOriginalData(data); 
-  }, [data]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setSalesReports((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+   useEffect(() => {
+      setFilteredData(data);
+    }, [data]);
 
   const handleSearch = () => {
     const { from_date, to_date, PaymentType, id, total_cost, pay } = salesReports;
-    const filtered = originalData.filter((item) => {
+
+    const filtered = filteredData.filter((item) => {
       const createdAt = new Date(item.created_at);
       const fromDate = from_date ? new Date(from_date) : null;
       const toDate = to_date ? new Date(to_date) : null;
@@ -48,13 +39,22 @@ export default function SalesReports({
           (item.PaymentType &&
             item.PaymentType.toLowerCase().includes(PaymentType.toLowerCase()))) &&
         (id === "" || item.id === parseInt(id)) &&
-        (total_cost === "" || item.total_cost == parseFloat(total_cost)) &&
+        (total_cost === "" || parseFloat(item.total_cost) === parseFloat(total_cost)) &&
         (pay === "" || item.pay === parseInt(pay))
       );
     });
 
-    setFilteredData(filtered);
-    filtrated(filtered);
+    setFilteredData(filtered); 
+    filtrated(filtered); 
+  };
+
+  const handleChange = (e) => {
+    setFilteredData(JSON.parse(sessionStorage.getItem("origin_data")));
+    const { name, value} = e.target;
+    setSalesReports((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleClear = () => {
@@ -69,7 +69,8 @@ export default function SalesReports({
 
     setFilteredData(JSON.parse(sessionStorage.getItem("origin_data")));
     filtrated(JSON.parse(sessionStorage.getItem("origin_data")));
-   };
+
+  };
 
   return (
     <div className="headerTable">
@@ -79,10 +80,7 @@ export default function SalesReports({
         headers={headers}
       />
 
-      <div
-        className="salesReports FiltrationModel collapse"
-        id="collapseTarget"
-      >
+      <div className="salesReports FiltrationModel collapse" id="collapseTarget">
         <div className="row pb-4">
           <div className="row mt-3">
             <div className="col col-12 col-md-6 col-lg-3 mb-3">
@@ -183,7 +181,7 @@ export default function SalesReports({
           <div className="row mt-3">
             <div className="col col-3 d-flex gap-3">
               <button
-                type="search"
+                type="button"
                 className="btn btn-primary"
                 onClick={handleSearch}
               >
@@ -191,7 +189,7 @@ export default function SalesReports({
                 <span className="ps-2">Search</span>
               </button>
               <button
-                type="clear"
+                type="button"
                 className="btn btn-secondary"
                 onClick={handleClear}
               >

@@ -1,5 +1,5 @@
 import "./Header.css";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState , useCallback } from "react";
 import { useHistory, Link } from "react-router-dom";
 import { AiFillShop } from "react-icons/ai";
 import { IoBookmarks } from "react-icons/io5";
@@ -8,6 +8,7 @@ import Logo from "../../../assets/global/logo.png";
 import Profile from "./Profile";
 import Cookies from "js-cookie";
 import CustomAlert from "../CustomAlert/CustomAlert";
+import { getData , imageStorageURL} from "../../../axiosConfig/API";
 
 export default function Header() {
   const history = useHistory();
@@ -18,7 +19,20 @@ export default function Header() {
     window.location.pathname === "/branch_2" ? "2" : "1"
   );
 
+  const [logo, setLogo] = useState(null);
+
+  const fetchLogo = useCallback(async () => {
+    try {
+      const result = await getData(`admin/settings/logo`);
+      setLogo(result);
+      // console.log(result);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  }, []);
+
   useEffect(() => {
+    fetchLogo();
     if (Cookies.get("loginMessage")) {
       setAlert({ message: Cookies.get("loginMessage"), type: "success" });
       Cookies.remove("loginMessage");
@@ -62,7 +76,7 @@ export default function Header() {
   return (
     <div className="Header">
       <Link to="#" onClick={injectAppTitle}>
-        <img loading="lazy" src={Logo} className="logo" alt="logo" />
+        <img loading="lazy" src={`${imageStorageURL}/${logo?.image}`} className="logo" alt="logo" />
       </Link>
 
       <div className="navbar">

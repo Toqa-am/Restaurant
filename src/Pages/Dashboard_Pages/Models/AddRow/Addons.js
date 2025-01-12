@@ -74,7 +74,7 @@ export default function Addons({ visible, visibleToggle, updated }) {
       }
     } catch (error) {
       setErrors(error.response?.data?.errors);
-      // console.log(error.response?.data?.errors);
+      // // console.log(error.response?.data?.errors);
       Swal.fire("Error!", error.response?.data?.message, "error");
     }
   };
@@ -120,7 +120,9 @@ export default function Addons({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
-                  {error?.name && <div className="invalid-data">{error.name}</div>}
+                  {error?.name && (
+                    <div className="invalid-data">{error.name}</div>
+                  )}
                 </div>
               </div>
 
@@ -146,7 +148,9 @@ export default function Addons({ visible, visibleToggle, updated }) {
                       </option>
                     ))}
                   </select>
-                  {error?.category_id && <div className="invalid-data">{error.category_id}</div>}
+                  {error?.category_id && (
+                    <div className="invalid-data">{error.category_id}</div>
+                  )}
                 </div>
               </div>
 
@@ -164,7 +168,9 @@ export default function Addons({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
-                  {error?.cost && <div className="invalid-data">{error.cost}</div>}
+                  {error?.cost && (
+                    <div className="invalid-data">{error.cost}</div>
+                  )}
                 </div>
               </div>
 
@@ -199,7 +205,9 @@ export default function Addons({ visible, visibleToggle, updated }) {
                       <label htmlFor="non-vegetarian">non vegetarian</label>
                     </div>
                   </div>
-                  {error?.type && <div className="invalid-data">{error.type}</div>}
+                  {error?.type && (
+                    <div className="invalid-data">{error.type}</div>
+                  )}
                 </div>
               </div>
 
@@ -234,7 +242,9 @@ export default function Addons({ visible, visibleToggle, updated }) {
                       <label htmlFor="inactive">inactive</label>
                     </div>
                   </div>
-                  {error?.status && <div className="invalid-data">{error.status}</div>}
+                  {error?.status && (
+                    <div className="invalid-data">{error.status}</div>
+                  )}
                 </div>
               </div>
 
@@ -250,7 +260,9 @@ export default function Addons({ visible, visibleToggle, updated }) {
                     id="image"
                     onChange={(e) => handleChange(e)}
                   />
-                  {error?.image && <div className="invalid-data">{error.image}</div>}
+                  {error?.image && (
+                    <div className="invalid-data">{error.image}</div>
+                  )}
                 </div>
               </div>
 
@@ -268,7 +280,9 @@ export default function Addons({ visible, visibleToggle, updated }) {
                     required
                   ></textarea>
                 </div>
-                {error?.description && <div className="invalid-data">{error.description}</div>}
+                {error?.description && (
+                  <div className="invalid-data">{error.description}</div>
+                )}
               </div>
             </div>
             <div className="row">

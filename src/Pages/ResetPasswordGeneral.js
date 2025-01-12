@@ -8,8 +8,8 @@ export function ResetPasswordGeneral(props) {
   const [changed, setChanged] = useState(false);
 
   const location = useLocation();
-  console.log(JSON.parse(localStorage.getItem("customerCartItems")));
-  console.log(JSON.parse(localStorage.getItem("cartTotal")));
+  // console.log(JSON.parse(localStorage.getItem("customerCartItems")));
+  // console.log(JSON.parse(localStorage.getItem("cartTotal")));
 
   const searchParams = new URLSearchParams(location.search);
   const allParams = Object.fromEntries(searchParams);
@@ -60,11 +60,11 @@ export function ResetPasswordGeneral(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     // var url = `http://27.0.0.1:8000/api/auth/reset-password-form?token=${allParams.token}&email=${allParams.email}`
-    console.log(resetPasswordData);
+    // console.log(resetPasswordData);
     try {
       // "http://127.0.0.1:8000/api/auth/reset-password"
       const response = await axios.post(props.endpoint, resetPasswordData);
-      console.log(response.data);
+      // console.log(response.data);
       setChanged(true);
     } catch (error) {}
   };

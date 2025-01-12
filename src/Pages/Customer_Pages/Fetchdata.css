@@ -555,3 +555,69 @@ translate: -13px;
   }
   .para
   {margin-top:0px;}
+
+  .cust-tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  .cust-tooltiptext {
+    visibility: hidden;
+    width: 300px; /* Default width */
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+    border-radius: 5px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    left: -600%;
+    transform: translateX(-50%);
+    font-size: 14px; /* Default font size */
+    line-height: 1.5;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .cust-tooltip:hover .cust-tooltiptext {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s;
+  }
+  
+  /* Triangle below the tooltip */
+  .cust-tooltiptext::after {
+    content: '';
+    position: absolute;
+    top: 100%; /* Position it below the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+  }
+  
+  /* Responsive Adjustments */
+  @media screen and (max-width: 768px) {
+    .cust-tooltiptext {
+      width: 250px; /* Adjust width for tablets and small screens */
+      font-size: 12px; /* Smaller font size */
+    }
+  }
+  
+  @media screen and (max-width: 576px) {
+    .cust-tooltiptext {
+      width: 200px; /* Further reduce width for very small screens */
+      font-size: 10px; /* Even smaller font size */
+    }
+  }
+
+  @media screen and (max-width: 400px) {
+    .cust-tooltiptext {
+      bottom: auto;
+      top: 125%; /* Move the tooltip below the element */
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+  

@@ -9,9 +9,8 @@ import { RiMoneyDollarCircleFill, RiAlignItemLeftFill } from "react-icons/ri";
 import LineChartComponent from "./Charts/LineChartComponent";
 import AreaChartComponent from "./Charts/AreaChartComponent";
 import ImageTest from "../../../assets/global/profile.png";
-import { getData , imageStorageURL} from "../../../axiosConfig/API";
+import { getData, imageStorageURL } from "../../../axiosConfig/API";
 import { getUser, isAuth } from "../../../axiosConfig/Auth";
-
 
 export default function Dashboard() {
   const [startDate, setStartDate] = useState(new Date());
@@ -24,28 +23,25 @@ export default function Dashboard() {
   const [countTotalItems, setCountTotalItems] = useState("");
   const [userRole, setUserRole] = useState(null);
 
-
-
   // const data =sales;
-
 
   const fetchDataSales = useCallback(async () => {
     try {
       const result = await getData("admin/sales");
       sessionStorage.removeItem("origin_data");
 
-      const formattedSales = result.map(item => {
-        const sale = parseFloat(item.sales.replace(/,/g, '')) || 0;
+      const formattedSales = result.map((item) => {
+        const sale = parseFloat(item.sales.replace(/,/g, "")) || 0;
         return {
           date: item.date,
           sale,
         };
       });
 
-      setSales(formattedSales); 
-      console.log("formattedSales : ",formattedSales);
+      setSales(formattedSales);
+      // console.log("formattedSales : ",formattedSales);
     } catch (error) {
-      console.error("catch : ",error);
+      console.error("catch : ", error);
     }
   }, []);
 
@@ -82,15 +78,15 @@ export default function Dashboard() {
   const fetchCurrentMonthSalesSummary = useCallback(async () => {
     try {
       const result = await getData("admin/orders/currentMonthSalesSummary");
-      // console.log(result);
-      
+      // // console.log(result);
+
       sessionStorage.removeItem("origin_data");
       setCurrentMonthSalesSummary(result);
     } catch (error) {
       console.error(error.response?.data?.message);
     }
   }, []);
-  
+
   const fetchCountTotalItems = useCallback(async () => {
     try {
       const result = await getData("admin/count-total-items");
@@ -100,12 +96,17 @@ export default function Dashboard() {
       console.error(error.response?.data?.message);
     }
   }, []);
-  
 
   useEffect(() => {
     const hour = new Date().getHours();
-    setGreeting(hour < 12 ? "Good morning!" : hour < 18 ? "Good afternoon!" : "Good evening!");
-  
+    setGreeting(
+      hour < 12
+        ? "Good morning!"
+        : hour < 18
+        ? "Good afternoon!"
+        : "Good evening!"
+    );
+
     if (isAuth()) {
       const user = getUser();
       if (user) {
@@ -113,7 +114,7 @@ export default function Dashboard() {
       }
     }
   }, []);
-  
+
   useEffect(() => {
     if (userRole === "admin") {
       fetchCountActiveCustomers();
@@ -130,9 +131,8 @@ export default function Dashboard() {
     fetchCountTotalItems,
     fetchCurrentMonthSalesSummary,
     fetchCountActiveCustomers,
-    userRole
+    userRole,
   ]);
-  
 
   return (
     <div className="Dashboard">
@@ -163,10 +163,12 @@ export default function Dashboard() {
             <div className="icon">
               <RiMoneyDollarCircleFill />
             </div>
-            <div style={{display:"flex",flexDirection:"column"}}>
-            <h6 className="text-white " >Total Sales</h6>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <h6 className="text-white ">Total Sales</h6>
 
-            <h6 className="text-white mt-2">{currentMonthSalesSummary.total_sales_amount} OMR</h6>
+              <h6 className="text-white mt-2">
+                {currentMonthSalesSummary.total_sales_amount} OMR
+              </h6>
             </div>
           </div>
         </div>
@@ -175,11 +177,12 @@ export default function Dashboard() {
             <div className="icon">
               <BsFront />
             </div>
-            <div style={{display:"flex",flexDirection:"column"}}>
-            <h6 className="text-white">Total Orders</h6>
-            <h6 className="text-white mt-2">{currentMonthSalesSummary.total_orders} Order</h6>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <h6 className="text-white">Total Orders</h6>
+              <h6 className="text-white mt-2">
+                {currentMonthSalesSummary.total_orders} Order
+              </h6>
             </div>
-
           </div>
         </div>
         <div className="col col-12 col-sm-6 col-xl-3 p-2">
@@ -187,25 +190,26 @@ export default function Dashboard() {
             <div className="icon">
               <FaUserGroup />
             </div>
-            <div style={{display:"flex",flexDirection:"column"}}>
-
-            <h6 className="text-white">Total Customers</h6>
-            <h6 className="text-white mt-2">{countActiveCustomers.total_count} Customer</h6>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <h6 className="text-white">Total Customers</h6>
+              <h6 className="text-white mt-2">
+                {countActiveCustomers.total_count} Customer
+              </h6>
+            </div>
           </div>
-          </div>
-
         </div>
         <div className="col col-12 col-sm-6 col-xl-3 p-2">
           <div className="d-flex align-items-center gap-2 p-3 rounded-2">
             <div className="icon">
               <RiAlignItemLeftFill />
             </div>
-            <div style={{display:"flex",flexDirection:"column"}}>
-            <h6 className="text-white">Total Menu Items</h6>
-            <h6 className="text-white mt-2">{countTotalItems.total_count} Item</h6>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <h6 className="text-white">Total Menu Items</h6>
+              <h6 className="text-white mt-2">
+                {countTotalItems.total_count} Item
+              </h6>
+            </div>
           </div>
-          </div>
-
         </div>
       </div>
 
@@ -277,7 +281,12 @@ export default function Dashboard() {
                     key={index}
                   >
                     <div className="card-img">
-                      <img loading="lazy" src={`${imageStorageURL}/${item.image}`} alt={item.name}  style={{width:"100%",height:"80px"}}/>
+                      <img
+                        loading="lazy"
+                        src={`${imageStorageURL}/${item.image}`}
+                        alt={item.name}
+                        style={{ width: "100%", height: "80px" }}
+                      />
                     </div>
                     <div className="card-title">{item.name}</div>
                   </Link>
@@ -301,7 +310,12 @@ export default function Dashboard() {
                     key={index}
                   >
                     <div className="card-img">
-                      <img loading="lazy" src={`${imageStorageURL}/${item.image}`} alt={item.name} style={{width:"80px",height:"100px"}}/>
+                      <img
+                        loading="lazy"
+                        src={`${imageStorageURL}/${item.image}`}
+                        alt={item.name}
+                        style={{ width: "80px", height: "100px" }}
+                      />
                     </div>
                     <div className="card-text">
                       <p>{item.name}</p>

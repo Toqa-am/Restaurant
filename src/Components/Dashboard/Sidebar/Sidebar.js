@@ -100,11 +100,11 @@ export default function Sidebar() {
               key="77"
               id="77"
               className={`liRoute ${
-                isActive("/settings/company") ? "active" : ""
+                isActive("/settings/information") ? "active" : ""
               }`}
               onClick={() => handleClassActive(77)}
             >
-              <Link to="/settings/company">
+              <Link to="/settings/information">
                 <FaGear />
                 <span>settings</span>
               </Link>

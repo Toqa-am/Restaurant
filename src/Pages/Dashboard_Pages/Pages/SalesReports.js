@@ -12,8 +12,8 @@ export default function SalesReports() {
   const fetchSalesReports = useCallback(async () => {
     try {
       const result = await getData("admin/sales-reports");
-      console.log(result);
-      
+      // console.log(result);
+
       sessionStorage.removeItem("origin_data");
       setSalesReports(result);
     } catch (error) {

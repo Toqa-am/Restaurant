@@ -18,17 +18,18 @@ export default function Invoice({ visible, modalClose }) {
     try {
       const result = await getData("admin/settings");
       setInformation(result);
-      console.log(result);
+      // console.log(result);
     } catch (error) {
       console.error(error.response?.data?.message);
     }
   }, []);
-  
+
   const fetchOrder = useCallback(async (id) => {
     if (!id) return;
     try {
       const result = await getData(`admin/orders/invoice/${id}`);
       setOrder(result.order);
+      // // console.log(result.order);
       setMeals(result.meals);
       setAddons(result.addons);
       setExtras(result.extras);
@@ -46,7 +47,7 @@ export default function Invoice({ visible, modalClose }) {
   useEffect(() => {
     fetchInformation();
     fetchOrder(id);
-  }, [id, fetchOrder,fetchInformation]);
+  }, [id, fetchOrder, fetchInformation]);
 
   if (loading) return null;
 
@@ -64,9 +65,7 @@ export default function Invoice({ visible, modalClose }) {
             </button>
           </div>
 
-          <div className="message-qrCode">
-            {information.name}
-          </div>
+          <div className="message-qrCode">{information.name}</div>
 
           <div className="restaurant-address">
             {information.city && <p>city : {information.city}</p>}
@@ -75,15 +74,13 @@ export default function Invoice({ visible, modalClose }) {
             {information.phone2 && <p>tel 2: {information.phone2}</p>}
           </div>
 
-
           <div className="id_date">
             <p>
               <span>order id : {order.id} </span>
               {/* <span>{order.id}</span> */}
             </p>
             <p>
-              <span>Date Time : {order.created_at}
-              </span>
+              <span>Date Time : {order.created_at}</span>
             </p>
           </div>
 
@@ -99,16 +96,16 @@ export default function Invoice({ visible, modalClose }) {
               <tbody>
                 {meals.length > 0 && (
                   <>
-                  {meals.map((item, index) => (
-                    <tr key={index}>
-                      <td>x {item.quantity}</td>
-                      <td>
-                        <p>{item.name}</p>
-                        <p>size: {item.size}</p>
-                      </td>
-                      <td className="nowrap">{item.cost}</td>
-                    </tr>
-                  ))}
+                    {meals.map((item, index) => (
+                      <tr key={index}>
+                        <td>x {item.quantity}</td>
+                        <td>
+                          <p>{item.name}</p>
+                          <p>size: {item.size}</p>
+                        </td>
+                        <td className="nowrap">{item.cost}</td>
+                      </tr>
+                    ))}
                   </>
                 )}
 
@@ -144,7 +141,7 @@ export default function Invoice({ visible, modalClose }) {
                         <td>
                           <span>{offer.name}</span>
                           <span>items: {offer.items}</span>
-                        </td>                        
+                        </td>
                         <td className="nowrap">{offer.cost}</td>
                       </tr>
                     ))}
@@ -160,20 +157,19 @@ export default function Invoice({ visible, modalClose }) {
               <div className="col">{order.sub_total.toFixed(2)} OMR</div>
             </div>
 
-              {order.tax > 0 && (
-                <div className="row">
-                  <div className="col">TOTAL TAX</div>
-                  <div className="col">{order.tax.toFixed(2)} OMR</div>
-                </div>
-              )}
+            {order.tax > 0 && (
+              <div className="row">
+                <div className="col">TAX</div>
+                <div className="col">{order.tax.toFixed(2)} OMR</div>
+              </div>
+            )}
 
-              {order.discount > 0 && (
-                <div className="row">
-                  <div className="col">Discount</div>
-                  <div className="col">-{order.discount.toFixed(2)} OMR</div>
-                </div>
-              )}
-
+            {order.discount > 0 && (
+              <div className="row">
+                <div className="col">Discount</div>
+                <div className="col">-{order.discount} OMR</div>
+              </div>
+            )}
 
             {order.delivery_fee > 0 && (
               <div className="row">

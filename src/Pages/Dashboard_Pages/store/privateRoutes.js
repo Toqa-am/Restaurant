@@ -14,6 +14,8 @@ import ShowExtra from "../Pages/Extras/Show";
 import ShowAddon from "../Pages/Addons/Show";
 import ShowDeliveryOrder from "../Pages/DeliveryOrders/Show";
 import ShowTablesOrders from "../Pages/TablesOrders/Show";
+import ShowKitchenOrders from "../Pages/KitchenOrders/Show";
+
 import ShowOffer from "../Pages/Offers/Show";
 import ShowAdministrator from "../Pages/Administrators/Show";
 import ShowCustomer from "../Pages/Customers/Show";
@@ -59,18 +61,18 @@ const privateRoutes = [
     role: ["admin"],
   },
   {
-    path: "/admin/dashboard/delivery-orders/show/:id",
-    name: "show delivery order",
+    path: "/admin/dashboard/pos-orders/show/:id",
+    name: "show pos order",
     icon: LuFileSpreadsheet,
     component: ShowDeliveryOrder,
-    role: ["admin", "chef", "casher"],
+    role: ["admin", "casher"],
   },
   {
     path: "/admin/dashboard/table-orders/show/:id",
     name: "show table order",
     icon: LuFileSpreadsheet,
     component: ShowTablesOrders,
-    role: ["admin", "chef", "casher"],
+    role: ["admin", "casher"],
   },
   {
     path: "/admin/dashboard/offers/show/:id",
@@ -117,6 +119,13 @@ const privateRoutes = [
     path: "/admin/dashboard/change/password",
     name: "change password",
     component: ChangePassword,
+    role: ["admin", "chef", "casher"],
+  },
+  {
+    path: "/admin/dashboard/kitchen-orders/show/:id",
+    name: "show kitchen orders",
+    icon: LuFileSpreadsheet,
+    component: ShowDeliveryOrder,
     role: ["admin", "chef", "casher"],
   },
 ];

@@ -176,7 +176,7 @@ export function ListCard(pokemon) {
               data-bs-toggle="modal"
               data-bs-target={`#staticBackdrop-${pokemon.id}`}
               onClick={() => {
-                console.log(pokemon.item);
+                // console.log(pokemon.item);
               }}
             >
               <i class="bi bi-handbag-fill"></i>

@@ -13,8 +13,8 @@ export default function WithDrowReport() {
 
   const fetchSalesReports = useCallback(async () => {
     try {
-      const result = await getData("admin/withdrawals");   
-      // console.log(result);
+      const result = await getData("admin/withdrawals");
+      // // console.log(result);
       sessionStorage.removeItem("origin_data");
       setSalesReports(result);
     } catch (error) {
@@ -42,15 +42,15 @@ export default function WithDrowReport() {
       key: "employee_id",
     },
     {
-        title: "amount",
-        dataIndex: "amount",
-        key: "amount",
+      title: "amount",
+      dataIndex: "amount",
+      key: "amount",
     },
     {
-        title: "created_at",
-        dataIndex: "created_at",
-        key: "created_at",
-    } 
+      title: "date",
+      dataIndex: "created_at",
+      key: "created_at",
+    },
   ];
 
   const headers = [
@@ -73,7 +73,7 @@ export default function WithDrowReport() {
     {
       label: "created_at",
       key: "created_at",
-    } 
+    },
   ];
 
   return (

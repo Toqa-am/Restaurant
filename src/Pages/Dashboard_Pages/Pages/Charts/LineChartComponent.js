@@ -11,7 +11,7 @@ import {
 } from "recharts";
 
 export default function LineChartComponent({ data }) {
-  // console.log("data:" ,data);
+  // // console.log("data:" ,data);
 
   return (
     <ResponsiveContainer>

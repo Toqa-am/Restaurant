@@ -1,8 +1,7 @@
 import "./Invoice.css";
-import React, { useEffect, useState ,useCallback} from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { PrinterOutlined } from "@ant-design/icons";
 import { addData, getData } from "../../../../../axiosConfig/API";
-
 
 export default function Invoice({ visible, modalClose }) {
   const [invoiceItem, setInvoiceItem] = useState({});
@@ -10,45 +9,46 @@ export default function Invoice({ visible, modalClose }) {
   const [invoiceid, setinvoiceid] = useState("");
   const [information, setInformation] = useState([]);
 
+  let check = "mostafa";
 
-  let check = "mostafa"
+  let deletFn = () => {
+    // console.log(invoiceid);
+    window.print();
+    localStorage.setItem("invoiceId", JSON.stringify(""));
+  };
 
-  let deletFn =()=>{
-    console.log(invoiceid);
-    window.print()    
-    localStorage.setItem("invoiceId",  JSON.stringify(""));
+  const fetchOrderToInvoice = async () => {
+    try {
+      const storedId = JSON.parse(localStorage.getItem("invoiceId") || "");
+      setinvoiceid(storedId);
+      const order = await getData(`admin/orders/invoice/${storedId}`);
+      // // console.log(order);
+      setInvoiceItem(order);
+    } catch (error) {
+      console.error(error.response?.data?.message);
     }
+  };
+  // console.log(invoiceItem);
 
-    
-      const fetchOrderToInvoice = async () => {
-        try {
-          const storedId = JSON.parse(localStorage.getItem("invoiceId") || "");
-          setinvoiceid(storedId) 
-          const order = await getData(`admin/orders/invoice/${storedId}`);
-          // console.log(order);
-          setInvoiceItem(order)
-        } catch (error) {
-          console.error(error.response?.data?.message);
-        }
-      }
-      console.log(invoiceItem);
+  const fetchInformation = useCallback(async () => {
+    try {
+      const result = await getData("admin/settings");
+      setInformation(result);
+      // console.log(result);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  }, []);
 
-      const fetchInformation = useCallback(async () => {
-        try {
-          const result = await getData("admin/settings");
-          setInformation(result);
-          console.log(result);
-        } catch (error) {
-          console.error(error.response?.data?.message);
-        }
-      }, []);
-    
   useEffect(() => {
     // localStorage.setItem("invoiceId",  JSON.stringify(""));
 
-    const storedId = JSON.parse(localStorage.getItem("invoiceId") ||  localStorage.setItem("invoiceId",  JSON.stringify("")));
-    setinvoiceid(storedId)
-    fetchOrderToInvoice()
+    const storedId = JSON.parse(
+      localStorage.getItem("invoiceId") ||
+        localStorage.setItem("invoiceId", JSON.stringify(""))
+    );
+    setinvoiceid(storedId);
+    fetchOrderToInvoice();
     // const storeCartItem = JSON.parse(localStorage.getItem("cartItems") || []);
     // setInvoiceItem(storeCartItem);
     let totalCost = 0;
@@ -71,7 +71,7 @@ export default function Invoice({ visible, modalClose }) {
     // });
 
     setCartItemTotal(totalCost.toFixed(2));
-    fetchInformation()
+    fetchInformation();
   }, [fetchInformation]);
 
   const convert = (value) => {
@@ -88,21 +88,19 @@ export default function Invoice({ visible, modalClose }) {
 
   return (
     <div className={`modal-overlay invoice ${visible ? "visible" : ""}`}>
-    <div className="modal-container">
-      <div className="modal-content">
-        <div className="options">
-          <button className="btn btn-danger" onClick={modalClose}>
-            cancel
-          </button>
-          <button className="btn btn-success" onClick={deletFn}>
-            <PrinterOutlined />
-            print invoice
-          </button>
-        </div>
-  
-        <div className="message-qrCode">
-            {information.name}
+      <div className="modal-container">
+        <div className="modal-content">
+          <div className="options">
+            <button className="btn btn-danger" onClick={modalClose}>
+              cancel
+            </button>
+            <button className="btn btn-success" onClick={deletFn}>
+              <PrinterOutlined />
+              print invoice
+            </button>
           </div>
+
+          <div className="message-qrCode">{information.name}</div>
 
           <div className="restaurant-address">
             {information.city && <p>city : {information.city}</p>}
@@ -110,139 +108,138 @@ export default function Invoice({ visible, modalClose }) {
             {information.phone1 && <p>tel 1: {information.phone1}</p>}
             {information.phone2 && <p>tel 2: {information.phone2}</p>}
           </div>
-  
-        <div className="id_date">
-          <p>
-            <span>order id : </span>
-            <span>{invoiceItem?.order?.id}</span>
-          </p>
-          <p>
-            <span>Date : {invoiceItem?.order?.created_at}</span>
-            {/* <span>{"11:54 pm"}</span> */}
-          </p>
-        </div>
-  
-        <div className="menu">
-          <table>
-            <thead>
-              <tr>
-                <th key="0">qty</th>
-                <th key="1">item description</th>
-                <th key="2">price</th>
-              </tr>
-            </thead>
-  
-            <tbody>
-              {  invoiceItem?.meals &&
-              invoiceItem.meals?.length > 0  ? (
-                invoiceItem.meals.map((item, index) => (
-                  <tr key={`${index}`}>
-                    <td>x {item.quantity}</td>
-                    <td>
-                      <span>{item.name}</span>
-                      <span>size: {convert(item.size)}</span>
-                    </td>
-                    <td className="nowrap">{item.cost}</td>
-                  </tr>
-                ))
-              ) : (
-                ""
+
+          <div className="id_date">
+            <p>
+              <span>order id : </span>
+              <span>{invoiceItem?.order?.id}</span>
+            </p>
+            <p>
+              <span>Date : {invoiceItem?.order?.created_at}</span>
+              {/* <span>{"11:54 pm"}</span> */}
+            </p>
+          </div>
+
+          <div className="menu">
+            <table>
+              <thead>
+                <tr>
+                  <th key="0">qty</th>
+                  <th key="1">item description</th>
+                  <th key="2">price</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {invoiceItem?.meals && invoiceItem.meals?.length > 0
+                  ? invoiceItem.meals.map((item, index) => (
+                      <tr key={`${index}`}>
+                        <td>x {item.quantity}</td>
+                        <td>
+                          <span>{item.name}</span>
+                          <span>size: {convert(item.size)}</span>
+                        </td>
+                        <td className="nowrap">{item.cost}</td>
+                      </tr>
+                    ))
+                  : ""}
+              </tbody>
+
+              {/* Addons */}
+              {invoiceItem?.addons && invoiceItem.addons?.length > 0 && (
+                <tbody>
+                  {invoiceItem.addons.map((addon, index) => (
+                    <tr className="addons" key={`${index}`}>
+                      <td>x {addon.quantity}</td>
+                      <td>{addon.name}</td>
+                      <td className="nowrap">{addon.cost}</td>
+                    </tr>
+                  ))}
+                </tbody>
               )}
-            </tbody>
-  
-            {/* Addons */}
-            { invoiceItem?.addons &&
-            invoiceItem.addons?.length > 0 && (
-              <tbody>
-                {invoiceItem.addons.map((addon, index) => (
-                  <tr className="addons" key={`${index}`}>
-                    <td>x {addon.quantity}</td>
-                    <td>{addon.name}</td>
-                    <td className="nowrap">{addon.cost}</td>
-                  </tr>
-                ))}
-              </tbody>
-            )}
-  
-            {/* Extras */}
-            {invoiceItem?.extras &&
-            invoiceItem.extras?.length > 0 && (
-              <tbody>
-                {invoiceItem.extras.map((extra, index) => (
-                  <tr className="extras" key={`${index}`}>
-                    <td>x {extra.quantity}</td>
-                    <td>{extra.name}</td>
-                    <td className="nowrap">{extra.cost}</td>
-                  </tr>
-                ))}
 
+              {/* Extras */}
+              {invoiceItem?.extras && invoiceItem.extras?.length > 0 && (
+                <tbody>
+                  {invoiceItem.extras.map((extra, index) => (
+                    <tr className="extras" key={`${index}`}>
+                      <td>x {extra.quantity}</td>
+                      <td>{extra.name}</td>
+                      <td className="nowrap">{extra.cost}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              )}
 
-              </tbody>
-            )}
-
-          {invoiceItem?.offers &&
-          invoiceItem.offers?.length > 0 && (
-              <tbody>
-                {invoiceItem.offers.map((offer, index) => (
-                  <tr className="extras" key={`${index}`}>
-                    <td>x {offer.quantity}</td>
-                    <td>
-                      <span>{offer.name}</span>
-                      <span>items: {offer.items}</span>
-                    </td>
-                    <td className="nowrap">{offer.cost}</td>
-                  </tr>
-                ))}
-              </tbody>
-            )}
-          </table>
-        </div>
-  
-        <div className="total">
-          <div className="row">
-            <div className="col">SUBTOTAL</div>
-            <div className="col">
-              {invoiceItem?.order?.sub_total ? invoiceItem.order.sub_total.toFixed(2) : "0.00"} OMR
-            </div>
+              {invoiceItem?.offers && invoiceItem.offers?.length > 0 && (
+                <tbody>
+                  {invoiceItem.offers.map((offer, index) => (
+                    <tr className="extras" key={`${index}`}>
+                      <td>x {offer.quantity}</td>
+                      <td>
+                        <span>{offer.name}</span>
+                        <span>items: {offer.items}</span>
+                      </td>
+                      <td className="nowrap">{offer.cost}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              )}
+            </table>
           </div>
-  
-          <div className="row">
-            <div className="col">TOTAL TAX</div>
-            <div className="col"> {invoiceItem?.order?.tax} OMR </div>
-            
-          </div>
-  
-          {
-            invoiceItem?.order?.delivery_fee ?
-          
+
+          <div className="total">
             <div className="row">
-            <div className="col">Delivery Fee</div>
-            <div className="col">{invoiceItem?.order?.delivery_fee ? invoiceItem.order.delivery_fee.toFixed(2) : "0.00"} OMR</div>
+              <div className="col">SUBTOTAL</div>
+              <div className="col">
+                {invoiceItem?.order?.sub_total
+                  ? invoiceItem.order.sub_total.toFixed(2)
+                  : "0.00"}{" "}
+                OMR
+              </div>
             </div>
-            :"" 
-          }
-  
-          <div className="row fw-bold">
-            <div className="col">TOTAL</div>
-            <div className="col">{invoiceItem?.order?.total_cost} OMR</div>
+
+            <div className="row">
+              <div className="col">TOTAL TAX</div>
+              <div className="col"> {invoiceItem?.order?.tax} OMR </div>
+            </div>
+
+            {invoiceItem?.order?.delivery_fee ? (
+              <div className="row">
+                <div className="col">Delivery Fee</div>
+                <div className="col">
+                  {invoiceItem?.order?.delivery_fee
+                    ? invoiceItem.order.delivery_fee.toFixed(2)
+                    : "0.00"}{" "}
+                  OMR
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
+
+            <div className="row fw-bold">
+              <div className="col">TOTAL</div>
+              <div className="col">{invoiceItem?.order?.total_cost} OMR</div>
+            </div>
           </div>
-        </div>
-  
-        <div className="payment">payment type <strong>{invoiceItem?.order?.payment_type}</strong> </div>
-  
-        <div className="messageThank">
-          <p>thank you</p>
-          <p>please come again</p>
-        </div>
-  
-        {/* <div className="powered_by">
+
+          <div className="payment">
+            payment type <strong>{invoiceItem?.order?.payment_type}</strong>{" "}
+          </div>
+
+          <div className="messageThank">
+            <p>thank you</p>
+            <p>please come again</p>
+          </div>
+
+          {/* <div className="powered_by">
           <label>powered_by</label>
           <div>resta</div> - restaurant menu maker and contactless menu
           ordering system
         </div> */}
+        </div>
       </div>
     </div>
-  </div>
-  
-  )
+  );
 }

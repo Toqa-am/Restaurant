@@ -14,7 +14,7 @@ export default function EditCustomer({
   const [customer, setCustomer] = useState({
     name: "",
     email: "",
-    role: "",
+    // role: "",
     phone: "",
     password: "",
     password_confirmation: "",
@@ -42,7 +42,6 @@ export default function EditCustomer({
     const formData = new FormData();
     formData.append("name", customer.name);
     formData.append("email", customer.email);
-    formData.append("role", customer.role);
     formData.append("phone", customer.phone);
     formData.append("password", customer.password);
     formData.append("password_confirmation", customer.password_confirmation);
@@ -116,34 +115,6 @@ export default function EditCustomer({
                 </div>
               </div>
 
-              <div className="col-6">
-                <div className="mb-3">
-                  <label htmlFor="role" className="form-label">
-                    role
-                  </label>
-                  <select
-                    className="form-control"
-                    name="role"
-                    id="role"
-                    value={customer.role}
-                    onChange={(e) => handleChange(e)}
-                  >
-                    <option value="admin" disabled={customer.role === "admin"}>
-                      admin
-                    </option>
-                    <option
-                      value="casher"
-                      disabled={customer.role === "casher"}
-                    >
-                      casher
-                    </option>
-                    <option value="chef" disabled={customer.role === "chef"}>
-                      chef
-                    </option>
-                  </select>
-                  {error?.role && <div className="invalid-data">{error.role}</div>}
-                </div>
-              </div>
 
               <div className="col-6">
                 <div className="mb-3">

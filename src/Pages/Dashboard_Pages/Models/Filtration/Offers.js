@@ -49,22 +49,22 @@ export default function Offers({
 
   const handleSearch = () => {
     const { name, start_data, end_data, discount, status } = offers;
-  
-    console.log("Filter Inputs:", { name, start_data, end_data, discount, status });
-    console.log("Original Data:", filteredData);
-  
+
+    // // console.log("Filter Inputs:", { name, start_data, end_data, discount, status });
+    // // console.log("Original Data:", filteredData);
+
     const filtered = filteredData.filter((item) => {
-      const itemStartDate = new Date(item.startDate).getTime(); 
-      const itemEndDate = new Date(item.endDate).getTime(); 
+      const itemStartDate = new Date(item.startDate).getTime();
+      const itemEndDate = new Date(item.endDate).getTime();
       const startDate = start_data ? new Date(start_data).getTime() : null;
       const endDate = end_data ? new Date(end_data).getTime() : null;
-    
-      // console.log("Checking item:", item);
-      // console.log("Item Start Date:", itemStartDate);
-      // console.log("Item End Date:", itemEndDate);
-      // console.log("Start Date:", startDate);
-      // console.log("End Date:", endDate);
-    
+
+      // // console.log("Checking item:", item);
+      // // console.log("Item Start Date:", itemStartDate);
+      // // console.log("Item End Date:", itemEndDate);
+      // // console.log("Start Date:", startDate);
+      // // console.log("End Date:", endDate);
+
       return (
         (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
         (!start_data || (startDate && itemStartDate >= startDate)) &&
@@ -73,15 +73,12 @@ export default function Offers({
         (status === "" || item.status === parseInt(status))
       );
     });
-    
-  
-    console.log("Filtered Data:", filtered);
-  
+
+    // // console.log("Filtered Data:", filtered);
+
     setFilteredData(filtered);
     filtrated(filtered);
   };
-  
-  
 
   const handleClear = () => {
     setOffers({

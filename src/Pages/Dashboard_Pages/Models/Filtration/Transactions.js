@@ -5,6 +5,7 @@ import { FaSearch } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { addData } from "../../../../axiosConfig/API";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export default function Transactions({
   handleModalToggle,
@@ -25,13 +26,34 @@ export default function Transactions({
   const [balance, setBalance] = useState({});
   const fetchBalance = async () => {
     try {
+      const token = Cookies.get("token_resta");
+      if (!token) {
+        console.error("Token is missing, redirecting to login.");
+        window.location.href = "/auth/login";
+        return;
+      }
+
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/admin/current-balance"
+        "http://127.0.0.1:8000/api/admin/current-balance",
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
+
       setBalance(response.data);
-      console.log(response);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching balance:", error);
+
+      if (error.response && error.response.status === 401) {
+        console.error("Unauthorized, token might be invalid or expired.");
+        Cookies.remove("token_resta");
+        Cookies.remove("admin_resta");
+        Cookies.set("logoutMessage", "Session expired, please login again.");
+        window.location.href = "/auth/login";
+      }
     }
   };
   const handleOnChange = (e) => {
@@ -65,22 +87,35 @@ export default function Transactions({
   }
 
   const handleSearch = () => {
-    const { created_at, payment_method, order_id, amount } = transactions;
+    const { created_at, payment_method, order_id, amount, start_date, end_date } = transactions;
+  
+    const startDate = start_date ? new Date(start_date) : null;
+    const endDate = end_date ? new Date(end_date) : null;
+  
+    if (startDate) startDate.setHours(0, 0, 0, 0);
+    if (endDate) endDate.setHours(23, 59, 59, 999);
+  
     const filtered = filteredData.filter((item) => {
+      const itemDate = new Date(item.created_at);
+      itemDate.setHours(0, 0, 0, 0);
+  
+      const isInRange =
+        (!startDate || itemDate >= startDate) && (!endDate || itemDate <= endDate);
+  
       return (
+        isInRange &&
         (!created_at || item.created_at <= created_at) &&
         (!payment_method ||
-          item.payment_method
-            .toLowerCase()
-            .includes(payment_method.toLowerCase())) &&
+          item.payment_method.toLowerCase().includes(payment_method.toLowerCase())) &&
         (order_id === "" || item.order_id === parseInt(order_id)) &&
         (amount === "" || item.amount === parseInt(amount))
       );
     });
-
+  
     setFilteredData(filtered);
     filtrated(filtered);
   };
+  
 
   const handleClear = () => {
     setTransactions({
@@ -88,6 +123,8 @@ export default function Transactions({
       payment_method: "",
       order_id: "",
       amount: "",
+      start_date: "",
+      end_date: "",
     });
     setFilteredData(JSON.parse(sessionStorage.getItem("origin_data")));
     filtrated(JSON.parse(sessionStorage.getItem("origin_data")));
@@ -115,7 +152,7 @@ export default function Transactions({
           const response = await addData("admin/withdrawals", {
             amount: custObj.amount,
           });
-          console.log("response", response);
+          // console.log("response", response);
           if (response.status === "success") {
             fetchBalance();
             setAmountwithDraw({ amount: "" });
@@ -147,20 +184,6 @@ export default function Transactions({
       >
         <div className="row pb-4">
           <div className="row mt-3">
-            {/* <div className="col col-12 col-md-6 col-lg-3 mb-3">
-              <label htmlFor="created_at" className="mb-2">
-                date
-              </label>
-              <input
-                type="datetime-local"
-                className="form-control"
-                name="created_at"
-                id="created_at"
-                value={transactions.date}
-                onChange={(e) => handleChange(e)}
-              />
-            </div> */}
-            {/* form send id */}
             <form onSubmit={handleSubmit}>
               <div class="form-group">
                 <label for="exampleInputPassword1">
@@ -215,6 +238,34 @@ export default function Transactions({
                 name="order_id"
                 id="order_id"
                 value={transactions.order_id}
+                onChange={(e) => handleChange(e)}
+              />
+            </div>
+
+            <div className="col col-12 col-md-6 col-lg-3 mb-3">
+              <label htmlFor="start_date" className="mb-2">
+                Start Date
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                name="start_date"
+                id="start_date"
+                value={transactions.start_date}
+                onChange={(e) => handleChange(e)}
+              />
+            </div>
+
+            <div className="col col-12 col-md-6 col-lg-3 mb-3">
+              <label htmlFor="end_date" className="mb-2">
+                End Date
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                name="end_date"
+                id="end_date"
+                value={transactions.end_date}
                 onChange={(e) => handleChange(e)}
               />
             </div>

@@ -19,6 +19,7 @@ export default function Pos() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalPagesOffers, setTotalPagesOffers] = useState(1);
+  const [tax, setTax] = useState([]);
 
   const [categories, setCategories] = useState([]);
   const [inputSearch, setInputSearch] = useState({ filter: "" });
@@ -30,41 +31,49 @@ export default function Pos() {
   const [modalMoreDetailsVisible, setModalMoreDetailsVisible] = useState(false);
   const [filteredData, setFilteredData] = useState();
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [offersItems , setOffersItems ] = useState([])
-  const [showOffers, setShowOffers] = useState(false);  // Add this state
+  const [offersItems, setOffersItems] = useState([]);
+  const [showOffers, setShowOffers] = useState(false); // Add this state
   const toggleOffers = () => {
-    setShowOffers(!showOffers);  // Toggle between offers and meals
+    setShowOffers(!showOffers); // Toggle between offers and meals
   };
 
-  const fetchOffersItems = async()=>{
+  const fetchOffersItems = async () => {
     try {
       const offersResult = await getData("offers/items");
-      // console.log(offersResult);  
-      setOffersItems(offersResult)
+      // // console.log(offersResult);
+      setOffersItems(offersResult);
       sessionStorage.removeItem("origin_data");
-      setTotalPagesOffers(Math.ceil(offersItems.length / pagination_length))
+      setTotalPagesOffers(Math.ceil(offersItems.length / pagination_length));
     } catch (error) {
       console.error(error.response?.data?.message);
     }
-  }
+  };
 
+  const fetchTax = async () => {
+    try {
+      const taxResult = await getData("settings");
+      // console.log(taxResult.tax);
+      setTax(taxResult.tax);
+      sessionStorage.removeItem("origin_data");
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  };
 
-  const f = async()=>{
+  const f = async () => {
     try {
       const offersResult = await getData("admin/items-reports");
-      console.log(offersResult);  
+      // // console.log(offersResult)
       sessionStorage.removeItem("origin_data");
     } catch (error) {
       console.error(error.response?.data?.message);
     }
-  }
-
-
+  };
 
   const fetchMenuItem = useCallback(async () => {
     try {
       const result = await getData("menu");
-      console.log(result);
+      // // console.log(result);
 
       const allItems = [...result.addons, ...result.meals, ...result.extras];
 
@@ -77,7 +86,6 @@ export default function Pos() {
     }
   }, []);
 
-
   const fetchCategories = useCallback(async () => {
     try {
       const result = await getData("categories");
@@ -89,13 +97,16 @@ export default function Pos() {
 
   const indexOfLastItem = currentPage * pagination_length;
   const indexOfFirstItem = indexOfLastItem - pagination_length;
-  const currentItems = showOffers ? offersItems: meals.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = showOffers
+    ? offersItems
+    : meals.slice(indexOfFirstItem, indexOfLastItem);
 
   useEffect(() => {
-    f()
+    f();
     fetchCategories();
     fetchMenuItem();
-    fetchOffersItems()
+    fetchOffersItems();
+    fetchTax();
   }, [fetchCategories, fetchMenuItem]);
 
   const handleChange = (e) => {
@@ -121,11 +132,16 @@ export default function Pos() {
     setMeals(originMeals);
   };
 
-  const handleFilter = (newType = filtrationMeal.type, newCategory = selectedCategory) => {
-    const originMeals = JSON.parse(sessionStorage.getItem("origin_meals")) || [];
+  const handleFilter = (
+    newType = filtrationMeal.type,
+    newCategory = selectedCategory
+  ) => {
+    const originMeals =
+      JSON.parse(sessionStorage.getItem("origin_meals")) || [];
 
     const filteredMeals = originMeals.filter((item) => {
-      const matchesCategory = newCategory === null || item.category_id === newCategory;
+      const matchesCategory =
+        newCategory === null || item.category_id === newCategory;
       const matchesType = newType === "" || item.type === newType;
 
       return matchesCategory && matchesType;
@@ -153,7 +169,6 @@ export default function Pos() {
       handleFilter(filtrationMeal.type, id);
     }
   };
-
 
   const addToCart = (item) => {
     setCartItem(item);
@@ -240,8 +255,6 @@ export default function Pos() {
     handleFilter(newType, selectedCategory);
   };
 
-
-
   return (
     <div className="Pos">
       <div className="posMenuItem">
@@ -298,34 +311,38 @@ export default function Pos() {
               </div>
 
               <div className="d-flex justify-content-between  align-items-center">
-              <div className="col  col-sm-6 col-md-6 col-lg-3 mb-3">
-                <label className="mb-2">Type</label>
-                <div className="d-flex gap-2 align-items-center">
-                  <input
-                    type="radio"
-                    name="type"
-                    id="vegetarian"
-                    checked={filtrationMeal.type === "vegetarian"}
-                    onChange={(e) => handleChangeV(e)}
-                  />
-                  <label htmlFor="vegetarian">Veg</label>
-                  <input
-                    type="radio"
-                    name="type"
-                    id="non-vegetarian"
-                    checked={filtrationMeal.type === "non-vegetarian"}
-                    onChange={(e) => handleChangeV(e)}
-                  />
-                  <label htmlFor="non-vegetarian">Non Veg</label>
+                <div className="col  col-sm-6 col-md-6 col-lg-3 mb-3">
+                  <label className="mb-2">Type</label>
+                  <div className="d-flex gap-2 align-items-center">
+                    <input
+                      type="radio"
+                      name="type"
+                      id="vegetarian"
+                      checked={filtrationMeal.type === "vegetarian"}
+                      onChange={(e) => handleChangeV(e)}
+                    />
+                    <label htmlFor="vegetarian">Veg</label>
+                    <input
+                      type="radio"
+                      name="type"
+                      id="non-vegetarian"
+                      checked={filtrationMeal.type === "non-vegetarian"}
+                      onChange={(e) => handleChangeV(e)}
+                    />
+                    <label htmlFor="non-vegetarian">Non Veg</label>
+                  </div>
                 </div>
-              </div>
 
-              <div>
-       <button    className={showOffers ? "btn btn-danger" : "btn btn-success"} 
-            onClick={toggleOffers}>
-              {showOffers ? "Show Meals" : "Show Offers"}
-    </button>
-              </div>
+                <div>
+                  <button
+                    className={
+                      showOffers ? "btn btn-danger" : "btn btn-success"
+                    }
+                    onClick={toggleOffers}
+                  >
+                    {showOffers ? "Show Meals" : "Show Offers"}
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -348,35 +365,53 @@ export default function Pos() {
                     <div className="card-body p-2">
                       <p className="fw-bold pb-2">{item.name}</p>
                       <div>
-                        {item.meal_size_costs && item.meal_size_costs.length > 0 ? (
+                        {item.meal_size_costs &&
+                        item.meal_size_costs.length > 0 ? (
                           <>
-                            <span className="fw-bold itemPrice">{item.meal_size_costs[0].cost} OMR</span>
-                            <button className="addCartBtn" onClick={() => addToCart(item)}>
+                            <span className="fw-bold itemPrice">
+                              {item.meal_size_costs[0].cost} OMR
+                            </span>
+                            <button
+                              className="addCartBtn"
+                              onClick={() => addToCart(item)}
+                            >
                               <FaShoppingBag /> add
                             </button>
                           </>
                         ) : item.cost ? (
                           <>
-                            <span className="fw-bold itemPrice">{item.cost} OMR</span>
-                            <button className="addCartBtn" onClick={() => addToCart(item)}>
+                            <span className="fw-bold itemPrice">
+                              {item.cost} OMR
+                            </span>
+                            <button
+                              className="addCartBtn"
+                              onClick={() => addToCart(item)}
+                            >
                               <FaShoppingBag /> add
                             </button>
                           </>
                         ) : item.total_price_after_discount ? (
                           <>
-                            <span className="fw-bold itemPrice strikethrough">{item.total_price_before_discount} ORM</span>
-                            <span className="fw-bold itemPrice">{item.total_price_after_discount} ORM</span>
+                            <span className="fw-bold itemPrice strikethrough">
+                              {item.total_price_before_discount} ORM
+                            </span>
+                            <span className="fw-bold itemPrice">
+                              {item.total_price_after_discount} ORM
+                            </span>
 
-                            <button className="addCartBtn" onClick={() => addToCart(item)}>
+                            <button
+                              className="addCartBtn"
+                              onClick={() => addToCart(item)}
+                            >
                               <FaShoppingBag /> add
                             </button>
                           </>
-                        ) 
-                         : (
-                          <p className="price_not_available">cost not available</p>
+                        ) : (
+                          <p className="price_not_available">
+                            cost not available
+                          </p>
                         )}
                       </div>
-
                     </div>
                   </div>
                 ))}
@@ -395,8 +430,6 @@ export default function Pos() {
             <p>There are no items in this category.</p>
           )}
         </div>
-
-
 
         <button
           className="btn btn-primary openPosCartItems"

@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 import { Table } from "antd";
 import { BsEye } from "react-icons/bs";
 import Breadcrumb from "../../../../Components/Dashboard/Features/Breadcrumb";
-import Filtration from "../../Models/Filtration/DeliveryOrders";
+import Filtration from "../../Models/Filtration/KitchenOrders";
 import UpdateMultiStatus from "../Actions/UpdateMultiStatus";
 import { getData } from "../../../../axiosConfig/API";
 
-export default function DeliveryOrders() {
+export default function KitchenOrders() {
   const componentRef = useRef();
   const [deliveryOrders, setDeliveryOrders] = useState([]);
   const [modalVisibleToggle, setModalVisibleToggle] = useState(false);
@@ -17,7 +17,10 @@ export default function DeliveryOrders() {
     try {
       const result = await getData("admin/orders");
       sessionStorage.removeItem("origin_data");
-      const filteredOrders = result.filter(table => table.created_by === 1);
+      console.log(result);
+      const filteredOrders = result.filter(
+        table => table.status !== "Accepted" && table.status !== "Cancelled"
+      );    
       setDeliveryOrders(filteredOrders);
     } catch (error) {
       console.error(error.response?.data?.message);
@@ -65,7 +68,7 @@ export default function DeliveryOrders() {
           list={[
             { value: "Not Started", label: "Not Started" },
             { value: "In Progress", label: "In Progress" },
-            { value: "Cancelled", label: "Cancelled" },
+            // { value: "Cancelled", label: "Cancelled" },
             { value: "Accepted", label: "Accepted" },
           ]}
         />
@@ -76,7 +79,7 @@ export default function DeliveryOrders() {
       key: "action",
       render: (item) => (
         <Link
-          to={`/admin/dashboard/pos-orders/show/${item.id}`}
+          to={`/admin/dashboard/kitchen-orders/show/${item.id}`}
           className="eyeIcon"
           data-tooltip="view"
           style={{ "--c": "#1772FF", "--bg": "#E2EDFB" }}

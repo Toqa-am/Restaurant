@@ -29,15 +29,15 @@ export default function Show() {
     meals: "",
     addons: "",
     extras: "",
-    offers:" ",
+    offers: " ",
   });
 
   const sizeMap = {
     1: "Small",
     2: "Medium",
     3: "Big",
-    4: "Family"
-};
+    4: "Family",
+  };
 
   useEffect(() => {
     if (isAuth()) {
@@ -51,7 +51,7 @@ export default function Show() {
     try {
       const result = await getData(`admin/orders/${id}`);
       setDeliveryOrder(result.order);
-      // console.log(result);
+      // // console.log(result);
       setUserMeals(result.order.order_meals);
       setUserAddons(result.order.order_addons);
       setUserExtras(result.order.order_extras);
@@ -61,7 +61,7 @@ export default function Show() {
         meals: userMeals,
         addons: userAddons,
         extras: userExtras,
-        offers:offers,
+        offers: offers,
       });
       setPay(result.order.pay === 1 ? "Paid" : "Not Paid");
       setStatus(result.order.status);
@@ -74,7 +74,7 @@ export default function Show() {
 
   useEffect(() => {
     fetchOrder(id);
-    console.log(imageStorageURL);
+    // console.log(imageStorageURL);
   }, [id, fetchOrder]);
 
   const handlePayChange = async (e) => {
@@ -210,7 +210,6 @@ export default function Show() {
               </div>
             )}
 
-            
             {deliveryOrder.notes && (
               <div className="table_id">
                 <label>Notes: </label>
@@ -218,20 +217,19 @@ export default function Show() {
               </div>
             )}
 
-             {deliveryOrder.address && (
+            {deliveryOrder.address && (
               <div className="table_id">
                 <label>Address: </label>
                 <b>{deliveryOrder.address}</b>
               </div>
             )}
 
-             {deliveryOrder.phone && (
+            {deliveryOrder.phone && (
               <div className="table_id">
                 <label>Phone: </label>
                 <b>{deliveryOrder.phone}</b>
               </div>
             )}
-
           </div>
 
           <div className="options">
@@ -291,12 +289,16 @@ export default function Show() {
 
             <div className="section">
               <div className="cards">
-              {/* meals */}
-              {userMeals && userMeals.length > 0 && (
+                {/* meals */}
+                {userMeals && userMeals.length > 0 && (
                   <>
                     <h3>The meals</h3>
                     {userMeals.map((meal, index) => (
-                      <div className="card" data-id={meal.quantity} key={meal.id || index}>
+                      <div
+                        className="card"
+                        data-id={meal.quantity}
+                        key={meal.id || index}
+                      >
                         <div className="card-img">
                           <img
                             loading="lazy"
@@ -308,7 +310,8 @@ export default function Show() {
                           <p className="name fw-bold">{meal.meal.name}</p>
                           <p className="name">Size: {sizeMap[meal.size]}</p>
                           <p className="quantity">
-                            Quantity choice: <span className="fw-bold">{meal.quantity} pcs</span>
+                            Quantity choice:{" "}
+                            <span className="fw-bold">{meal.quantity} pcs</span>
                           </p>
                           <b className="total">Price: {meal.total_cost} OMR</b>
                         </div>
@@ -322,7 +325,11 @@ export default function Show() {
                   <>
                     <h3>The Addons</h3>
                     {userAddons.map((addon, index) => (
-                      <div className="card" data-id={addon.quantity} key={addon.id || index}>
+                      <div
+                        className="card"
+                        data-id={addon.quantity}
+                        key={addon.id || index}
+                      >
                         <div className="card-img">
                           <img
                             loading="lazy"
@@ -333,7 +340,10 @@ export default function Show() {
                         <div className="card-text">
                           <p className="name fw-bold">{addon.addon.name}</p>
                           <p className="quantity">
-                            Quantity choice: <span className="fw-bold">{addon.quantity} pcs</span>
+                            Quantity choice:{" "}
+                            <span className="fw-bold">
+                              {addon.quantity} pcs
+                            </span>
                           </p>
                           <b className="total">Price: {addon.total_cost} OMR</b>
                         </div>
@@ -341,7 +351,6 @@ export default function Show() {
                     ))}
                   </>
                 )}
-
 
                 {/* Extras */}
                 {Object(userExtras).length > 0 &&
@@ -374,7 +383,7 @@ export default function Show() {
                     </>
                   ))}
 
-                    {/* offers */}
+                {/* offers */}
                 {Object(offers).length > 0 &&
                   offers.map((offer, index) => (
                     <>
@@ -399,7 +408,7 @@ export default function Show() {
                               {offer.quantity} pcs
                             </span>
                           </p>
-                          <p className="name fw-bold" >items : </p>
+                          <p className="name fw-bold">items : </p>
                           <p className="name">{orderOffers[index].items}</p>
                           <b className="total">price: {offer.total_cost} OMR</b>
                         </div>
@@ -411,41 +420,56 @@ export default function Show() {
           </div>
 
           <div className="sections sections-right">
-          <div className="section">
-            <div className="title">
-              <b>subTotal</b>
-              <b>{(deliveryOrder.total_cost - deliveryOrder.tax - deliveryOrder.delivery_fee).toFixed(2)} OMR</b>
-            </div>
+            <div className="section">
+              <div className="title">
+                <b>subTotal</b>
+                <b>
+                  {(
+                    parseFloat(deliveryOrder.total_cost || 0) -
+                    parseFloat(deliveryOrder.tax || 0) +
+                    parseFloat(deliveryOrder.discount || 0)
+                  ).toFixed(2)}{" "}
+                  OMR
+                </b>
+              </div>
 
-            {/* Conditionally render tax if it's greater than 0 */}
-            {deliveryOrder.tax > 0 && (
+              {/* Conditionally render tax if it's greater than 0 */}
+              {deliveryOrder.tax > 0 && (
+                <div className="details">
+                  <b>Tax</b>
+                  <b>{deliveryOrder.tax.toFixed(2)} OMR</b>
+                </div>
+              )}
+
+              {/* {deliveryOrder.tax > 0 && (
               <div className="details">
                 <b>Tax</b>
                 <b>{deliveryOrder.tax.toFixed(2)} OMR</b>
               </div>
-            )}
+            )} */}
 
-            {/* Conditionally render delivery fee if it's greater than 0 */}
-            {deliveryOrder.delivery_fee > 0 && (
-              <div className="details">
-                <b>Delivery Fee</b>
-                <b>{deliveryOrder.delivery_fee.toFixed(2)} OMR</b>
+              {deliveryOrder.discount > 0 && (
+                <div className="details">
+                  <b>discount</b>
+                  <b>-{deliveryOrder.discount} OMR</b>
+                </div>
+              )}
+
+              {/* Conditionally render delivery fee if it's greater than 0 */}
+              {deliveryOrder.delivery_fee > 0 && (
+                <div className="details">
+                  <b>Delivery Fee</b>
+                  <b>{deliveryOrder.delivery_fee} OMR</b>
+                </div>
+              )}
+
+              {/* Calculate and display the grand total */}
+              <div className="details total">
+                <b>Grand Total</b>
+                <b>{Number(deliveryOrder.total_cost)} OMR</b>
               </div>
-            )}
-
-            {/* Calculate and display the grand total */}
-            <div className="details total">
-              <b>Grand Total</b>
-              <b>
-                
-                {(
-                  Number(deliveryOrder.total_cost)
-                ).toFixed(2)} OMR
-              </b>
             </div>
           </div>
-        </div>
-
         </div>
       </div>
 

@@ -5,7 +5,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Navbar } from "../../Components/Customer/Navbar";
 
-import { emptyCart, pointsUpdate } from "../../Store/action";
+import { emptyCart, pointsUpdate, settings } from "../../Store/action";
 import Swal from "sweetalert2";
 
 export default function Cart() {
@@ -53,11 +53,30 @@ export default function Cart() {
       try {
         const settings = await axios.get("http://127.0.0.1:8000/api/settings");
         setTax(settings.data.data.tax);
-        console.log(settings);
         
       } catch (error) {}
     };
     getTax()
+    const updatepoints = async () => {
+
+      try{
+        const getInfo = await axios.get("http://127.0.0.1:8000/api/customers", {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("CustomerToken")
+            )}`,
+                            "Content-Type": "multipart/form-data",
+          },
+        });
+        dispatcher(pointsUpdate(getInfo.data.data.loyalty_points))
+        
+        
+      }
+      catch(error){
+        
+      }
+}
+updatepoints()
   }, []);
 
   function inputChg(event) {
@@ -73,9 +92,7 @@ export default function Cart() {
   }
   function validateLoyalityPoints(event) {
   setPoints(event.target.value);
-    console.log(event.target.value)
     let p=event.target.value;
-    console.log(points);
     
     if (p > 0) {
       let redeemedCurrency = p / points_for_one_currency
@@ -97,9 +114,7 @@ export default function Cart() {
 
       }
       else if (redeemedCurrency > cartTotal * 10 / 100) {
-        console.log(points_for_one_currency);
 
-        console.log(redeemedCurrency);
 
         setPointsErrors(`You'r trying to get more than ${max_discount}% discount, max number of points you can exchange is ${cartTotal * 10 / 100 * 10}`)
       }
@@ -115,7 +130,6 @@ export default function Cart() {
 
 
 
-    console.log(pointsErrors);
 
 
   }
@@ -128,28 +142,21 @@ export default function Cart() {
     paymentData.extra_ids = [];
     paymentData.offer_ids = [];
     paymentData.converted_points = parseFloat(points);
-    console.log(paymentData);
-    console.log(points);
     
-
     customerCartItems.map((item) => {
       if (item.table_name === "meals") {
         let size;
         if (item.size === "Small") {
-          console.log(item.size);
 
           size = 1;
         } else if (item.size === "Medium") {
           size = 2;
-          console.log(item.size);
 
         } else if (item.size === "Big") {
           size = 3;
-          console.log(item.size);
 
         } else if (item.size === "Family") {
           size = 4;
-          console.log(item.size);
 
         }
 
@@ -199,11 +206,9 @@ export default function Cart() {
     }
   };
   const checkOut = async (e) => {
-    console.log(points);
     
     e.preventDefault();
     paymentDetails();
-    console.log(paymentData);
     if (JSON.parse(localStorage.getItem("CustomerToken"))) {
  
       
@@ -230,7 +235,6 @@ export default function Cart() {
             icon: "success",
           });
         } catch (error) {
-          console.error(error);
           if (error.response.data.message === "Unauthenticated.") {
             history.push("/customer/login");
           } else if (
@@ -268,9 +272,7 @@ export default function Cart() {
           );
           dispatcher(emptyCart());
           setIsLoggedIn(true);
-          console.log(response);
-          console.log(paymentData);
-
+          
 
           setError("");
           Swal.fire({
@@ -288,7 +290,6 @@ export default function Cart() {
                                 "Content-Type": "multipart/form-data",
               },
             });
-            console.log(getInfo.data.data.loyalty_points);
             dispatcher(pointsUpdate(getInfo.data.data.loyalty_points))
             
             
@@ -369,35 +370,32 @@ export default function Cart() {
                   </div>
 
 
-                  <div className=" d-flex justify-content-between ">
-
-                    <input type="number" class="form-control" id="loyality_points" placeholder="0" onChange={validateLoyalityPoints}
-                      disabled={cartTotal < min_order_price || points_num < min_points_num}
-                    />
-                  </div>
-                  <div class="cust-tooltip">
-                    <i class="bi bi-info-circle p-1"></i>
-
-                    <span class="cust-tooltiptext">
-                      <ul>
-                        <li>
-                          Minimum order cost is {min_order_price} OMR to be able to use loyality points.
-                        </li>
-                        <br></br>
-                        <li>
-                          Maximum number of points to exchange: {max_points_num}.
-                        </li>     <br></br>
-                        <li>       Minimum number of points to exchange: {min_points_num}.
-                        </li>  <br></br>
-                        <li>       Maximum discount you can have is {max_discount}%.
-                        </li>    <br></br>
-                        <li>
-                          You get 1 OMR for every {points_for_one_currency} points.
-                        </li>
-                      </ul>
-
-                    </span>
-                  </div>
+                  <div className="d-flex justify-content-between">
+  <input
+    type="number"
+    className="form-control"
+    id="loyality_points"
+    placeholder="0"
+    onChange={validateLoyalityPoints}
+    disabled={cartTotal < min_order_price || points_num < min_points_num}
+  />
+</div>
+<div className="cust-tooltip">
+  <i className="bi bi-info-circle p-1"></i>
+  <span className="cust-tooltiptext">
+    <ul>
+      <li>Minimum order cost is {min_order_price} OMR to be able to use loyality points.</li>
+      <br />
+      <li>Maximum number of points to exchange: {max_points_num}.</li>
+      <br />
+      <li>Minimum number of points to exchange: {min_points_num}.</li>
+      <br />
+      <li>Maximum discount you can have is {max_discount}%.</li>
+      <br />
+      <li>You get 1 OMR for every {points_for_one_currency} points.</li>
+    </ul>
+  </span>
+</div>
 
 
                 </div>
@@ -477,7 +475,7 @@ export default function Cart() {
               <div className="border rounded p-2">
                 <div className="d-flex justify-content-around">
                   <span>Subtotal</span>
-                  <span>{cartTotal}</span>
+                  <span>{cartTotal} OMR</span>
                 </div>
                 <hr />
                 <div className="d-flex justify-content-around">
@@ -487,7 +485,7 @@ export default function Cart() {
                 <hr></hr>
                 <div className="d-flex justify-content-around">
                   <span>Total</span>
-                  <span>{cartTotal+(cartTotal*tax)/100}</span>
+                  <span>{cartTotal+(cartTotal*tax)/100} OMR</span>
                 </div>
               </div>
             </div>

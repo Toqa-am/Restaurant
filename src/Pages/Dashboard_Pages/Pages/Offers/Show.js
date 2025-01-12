@@ -28,14 +28,12 @@ export default function ShowItem() {
       const result = await getData(`admin/offers/${id}`);
       setOffer(result);
       setLoading(false);
-      console.log(result)
+      // console.log(result)
     } catch (error) {
       setLoading(false);
       console.error(error.response?.data?.message);
     }
   }, []);
-
-
 
   useEffect(() => {
     fetchOffer(id);
@@ -44,7 +42,14 @@ export default function ShowItem() {
   if (loading) return <p>loading...</p>;
 
   return (
-    <div className="Show" style={{backgroundColor:"white",boxSizing:"border-box",paddingLeft:"10px"}}>      
+    <div
+      className="Show"
+      style={{
+        backgroundColor: "white",
+        boxSizing: "border-box",
+        paddingLeft: "10px",
+      }}
+    >
       <div className="tabs">
         <Tabs defaultActiveKey="1">
           <TabPane

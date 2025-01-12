@@ -81,7 +81,7 @@ export default function Profile() {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    console.log(file);
+    // console.log(file);
   };
 
   return (

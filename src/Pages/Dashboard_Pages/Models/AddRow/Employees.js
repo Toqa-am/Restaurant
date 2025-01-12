@@ -46,12 +46,12 @@ function Employees({ visible, visibleToggle, updated }) {
 
     try {
       const response = await addData("admin/employees", formData);
-      console.log(response);
-      
+      // console.log(response);
+
       if (response.request_status === "success") {
         setErrors([]);
         setTimeout(() => {
-          Swal.fire("Saved!", response.message , "success");
+          Swal.fire("Saved!", response.message, "success");
         }, 250);
         updated();
         setEmployee({
@@ -64,7 +64,6 @@ function Employees({ visible, visibleToggle, updated }) {
           role: "",
           identity_card: "",
         });
-       
       }
     } catch (error) {
       setErrors(error.response?.data?.errors);
@@ -101,7 +100,9 @@ function Employees({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
-                  {error?.name && <div className="invalid-data">{error.name}</div>}
+                  {error?.name && (
+                    <div className="invalid-data">{error.name}</div>
+                  )}
                 </div>
               </div>
 
@@ -119,7 +120,9 @@ function Employees({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
-                  {error?.email && <div className="invalid-data">{error.email}</div>}
+                  {error?.email && (
+                    <div className="invalid-data">{error.email}</div>
+                  )}
                 </div>
               </div>
 
@@ -137,7 +140,9 @@ function Employees({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
-                  {error?.phone && <div className="invalid-data">{error.phone}</div>}
+                  {error?.phone && (
+                    <div className="invalid-data">{error.phone}</div>
+                  )}
                 </div>
               </div>
 
@@ -155,7 +160,9 @@ function Employees({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
-                  {error?.identity_card && <div className="invalid-data">{error.identity_card}</div>}
+                  {error?.identity_card && (
+                    <div className="invalid-data">{error.identity_card}</div>
+                  )}
                 </div>
               </div>
 
@@ -173,7 +180,9 @@ function Employees({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
-                  {error?.password && <div className="invalid-data">{error.password}</div>}
+                  {error?.password && (
+                    <div className="invalid-data">{error.password}</div>
+                  )}
                 </div>
               </div>
 
@@ -191,7 +200,11 @@ function Employees({ visible, visibleToggle, updated }) {
                     onChange={(e) => handleChange(e)}
                     required
                   />
-                  {error?.password_confirmation && <div className="invalid-data">{error.password_confirmation}</div>}
+                  {error?.password_confirmation && (
+                    <div className="invalid-data">
+                      {error.password_confirmation}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -213,7 +226,9 @@ function Employees({ visible, visibleToggle, updated }) {
                     <option value="casher">casher</option>
                     <option value="chef">chef</option>
                   </select>
-                  {error?.role && <div className="invalid-data">{error.role}</div>}
+                  {error?.role && (
+                    <div className="invalid-data">{error.role}</div>
+                  )}
                 </div>
               </div>
 
@@ -249,7 +264,9 @@ function Employees({ visible, visibleToggle, updated }) {
                     </div>
                   </div>
                 </div>
-                {error?.status && <div className="invalid-data">{error.status}</div>}
+                {error?.status && (
+                  <div className="invalid-data">{error.status}</div>
+                )}
               </div>
             </div>
 

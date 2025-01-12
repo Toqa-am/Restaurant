@@ -12,9 +12,9 @@ export function ResetPasswordGeneral(props) {
 
   const location = useLocation();
   const dispatcher = useDispatch();
-  console.log(JSON.parse(localStorage.getItem("cartItems")));
-  console.log(JSON.parse(localStorage.getItem("cartTotal")));
-  console.log("khgc");
+  // console.log(JSON.parse(localStorage.getItem("cartItems")));
+  // console.log(JSON.parse(localStorage.getItem("cartTotal")));
+  // console.log("khgc");
   // dispatcher(updateAfterRefresh([JSON.parse(localStorage.getItem('cartItems')),JSON.parse(localStorage.getItem('cartTotal'))]))
 
   const searchParams = new URLSearchParams(location.search);

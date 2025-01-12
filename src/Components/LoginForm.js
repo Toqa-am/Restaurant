@@ -16,7 +16,7 @@ export function LoginForm(props) {
 
     setSigned(0);
 
-    console.log(accessToken);
+    // console.log(accessToken);
     // 'http://127.0.0.1:8000a104662b1f91d250a1b.serveo.neta104662b1f91d250a1b.serveo.neta104662b1f91d250a1b.serveo.neta104662b1f91d250a1b.serveo.neta104662b1f91d250a1b.serveo.neta104662b1f91d250a1b.serveo.neta104662b1f91d250a1b.serveo.net/api/admin/login'
 
     try {
@@ -34,7 +34,7 @@ export function LoginForm(props) {
       );
       setAccessToken(JSON.parse(localStorage.getItem("accessToken")));
 
-      console.log("Form submitted successfully:", response.data);
+      // console.log("Form submitted successfully:", response.data);
     } catch (error) {
       console.error("Error submitting form:", error);
 

@@ -26,8 +26,8 @@
 }
 
 .Header .logo {
-  width:200px !important;
-  height: 22px;
+  width:50px !important;
+  /* height: 22px; */
 }
 
 .Header .navbar {

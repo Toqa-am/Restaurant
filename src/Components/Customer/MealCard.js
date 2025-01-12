@@ -23,7 +23,7 @@ export function MealCard(props) {
             data-bs-toggle="modal"
             data-bs-target={`#staticBackdrop-${props.id}`}
             onClick={() => {
-              console.log(props);
+              // console.log(props);
             }}
           >
             <FontAwesomeIcon

@@ -23,14 +23,16 @@ export default function ActionsFilter({
   const [isListPrintVisible, setIsListPrintVisible] = useState(false);
   const [pathname, setPathname] = useState();
 
+  // console.log("Received Balance:", balance);
+
   // const [balance, setBalance] = useState({});
   // const f = async () => {
   //   try {
   //     const response = await axios.get('http://127.0.0.1:8000/api/admin/current-balance');
   //     setBalance(response.data)
-  //     console.log(response);
+  //     // console.log(response);
   //   } catch (error) {
-  //     console.log(error);
+  //     // console.log(error);
   //   }
   // };
 

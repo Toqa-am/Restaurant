@@ -198,7 +198,7 @@ export function OfferGridCard(pokemon) {
                 data-bs-toggle="modal"
                 data-bs-target={`#staticBackdrop-${pokemon.pokemon.id}`}
                 onClick={() => {
-                  console.log(pokemon.pokemon.item);
+                  // console.log(pokemon.pokemon.item);
                 }}
               >
                 {" "}

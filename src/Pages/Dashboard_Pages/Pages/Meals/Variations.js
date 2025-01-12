@@ -14,7 +14,7 @@ export default function Variations() {
   const componentRef = useRef();
   const [variations, setVariations] = useState();
   const [modalVisible, setModalVisible] = useState(false);
-  const [newSize, setNewSize] = useState("");  
+  const [newSize, setNewSize] = useState("");
   const [error, setErrors] = useState([]);
   const [sizeList, setSizeList] = useState([
     { value: 1, label: "small" },
@@ -40,21 +40,19 @@ export default function Variations() {
     }
   };
 
-//  console.log(newSize);
-
-  
+  //  // console.log(newSize);
 
   const fetchVariations = useCallback(async (id) => {
     if (!id) return;
     try {
-      const result = await getData(`admin/meals/${id}/size-costs`);      
+      const result = await getData(`admin/meals/${id}/size-costs`);
       const sizesInResult = result.map((record) => record.size);
       const updatedSize = sizeList.filter(
         (item) => !sizesInResult.includes(item.value)
       );
-      
+
       setSizeList(updatedSize);
-      // console.log(updatedSize);
+      // // console.log(updatedSize);
       setVariations(result);
     } catch (error) {
       console.error(error.response?.data?.message || error.message);
@@ -68,23 +66,24 @@ export default function Variations() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
     const formData = new FormData();
-    // formData.append("size", parseInt(sizeList[0].value)); 
-    if(newSize.size){
+    // formData.append("size", parseInt(sizeList[0].value));
+    if (newSize.size) {
       formData.append("size", newSize.size);
-    }else{
+    } else {
       formData.append("size", meal.size);
     }
 
     // if (meal.number_of_pieces !== null && Number.isInteger(meal.number_of_pieces)) {
     //   formData.append("number_of_pieces", meal.number_of_pieces);
-    // }   
-    formData.append("number_of_pieces", meal.number_of_pieces ? meal.number_of_pieces : 0);
- 
+    // }
+    formData.append(
+      "number_of_pieces",
+      meal.number_of_pieces ? meal.number_of_pieces : 0
+    );
+
     formData.append("cost", meal.cost);
     formData.append("meal_id", meal.meal_id);
-
 
     try {
       let response;
@@ -92,7 +91,7 @@ export default function Variations() {
 
       if (method === "update") {
         formData.append("_method", "put");
-        
+
         response = await updateData(
           `admin/meals/size-cost/${meal.id}`,
           formData,
@@ -142,10 +141,9 @@ export default function Variations() {
 
   const handleEdit = (item) => {
     setMeal(item);
-    setNewSize({ value: parseInt(item.size), label: convert(item.size) }); 
+    setNewSize({ value: parseInt(item.size), label: convert(item.size) });
     setModalVisible(true);
   };
-  
 
   const handleClose = () => {
     setMeal({
@@ -219,8 +217,7 @@ export default function Variations() {
       ),
     },
   ];
-  console.log(meal);
-  
+  // console.log(meal);
 
   return (
     <div className="SubModel">
@@ -266,38 +263,35 @@ export default function Variations() {
             </div>
             <div className="modal-body">
               <div className="row">
-               
-                  <div className="col col-12 col-sm-6">
-                    <div className="mb-3">
-                      <label htmlFor="size" className="form-label">
-                        SIZE 
-                      </label>
-                      <select
-                        className="form-control"
-                        name="size"
-                        id="size"
-                        value={meal.size}
-                        onChange={(e) => handleChange(e)}
-                        required
-                      >
-                     
-
-                         (
-                          <option value={meal.size} key="0" selected>
-                            {convert(parseInt(meal.size))}
-                          </option>
-                        )
-
-                        {sizeList.map((item) => (
-                          <option value={item.value} key={item.value}>
-                            {item.label}
-                          </option>
-                        ))}
-                      </select>
-                      {error?.size && <div className="invalid-data">{error.size}</div>}
-                    </div>
+                <div className="col col-12 col-sm-6">
+                  <div className="mb-3">
+                    <label htmlFor="size" className="form-label">
+                      SIZE
+                    </label>
+                    <select
+                      className="form-control"
+                      name="size"
+                      id="size"
+                      value={meal.size}
+                      onChange={(e) => handleChange(e)}
+                      required
+                    >
+                      (
+                      <option value={meal.size} key="0" selected>
+                        {convert(parseInt(meal.size))}
+                      </option>
+                      )
+                      {sizeList.map((item) => (
+                        <option value={item.value} key={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </select>
+                    {error?.size && (
+                      <div className="invalid-data">{error.size}</div>
+                    )}
                   </div>
-                
+                </div>
 
                 <div className="col col-12 col-sm-6">
                   <div className="mb-3">
@@ -313,7 +307,11 @@ export default function Variations() {
                       value={meal.number_of_pieces}
                       onChange={(e) => handleChange(e)}
                     />
-                    {error?.number_of_pieces && <div className="invalid-data">{error.number_of_pieces}</div>}
+                    {error?.number_of_pieces && (
+                      <div className="invalid-data">
+                        {error.number_of_pieces}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -333,7 +331,9 @@ export default function Variations() {
                     />
                   </div>
                 </div>
-                {error?.cost && <div className="invalid-data">{error.cost}</div>}
+                {error?.cost && (
+                  <div className="invalid-data">{error.cost}</div>
+                )}
               </div>
             </div>
 

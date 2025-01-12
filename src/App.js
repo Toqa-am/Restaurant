@@ -20,20 +20,34 @@ import { useEffect, useState } from "react";
 
 
 function App() {
-  // const [title,setTitle]=useState("");
+  const [logo,setLogo]=useState("");
+  const [title,setTitle]=useState("");
 
-  // useEffect(() => {
-  //   const getTitle = async () => {
-  //     try {
-  //       const settings = await axios.get("http://127.0.0.1:8000/api/settings");
-  //       setTitle(settings.data.data.name);
-       
-  //     } catch (error) {}
-  //   };
-  //   getTitle()
-  //   document.title=title;
+  // const [iconUrl, setIconUrl] = useState("/default-icon.ico")
+  // const [logo,setLogo]=useState("");
+  useEffect(() => {
+    const getLogo= async () => {
+      try {
+        const settings = await axios.get("http://127.0.0.1:8000/api/settings");
+        console.log(settings.data.data)
+        setLogo(settings.data.data.logo);
+        setTitle(settings.data.data.name);
+      } catch (error) {}
+    };
+    getLogo()
+  }, []);
 
-  // }, []);
+  useEffect(() => {
+    // Update the browser tab title
+    document.title = title;
+  }, [title]); // Update title whenever tabTitle changes
+
+  useEffect(() => {
+    const favicon = document.querySelector("link[rel='icon']") || document.createElement("link");
+    favicon.rel = "icon";
+    favicon.href = `http://127.0.0.1:8000/storage/${logo}`;
+    document.head.appendChild(favicon);
+  }, [logo]); 
   return (
     <>
       <div className="App">
@@ -45,7 +59,7 @@ function App() {
             <Route path="/auth" component={Auth} />
             <Route path="/admin/dashboard" component={Dashboard} />
             <Route path="/branch_2" component={Branch_2} />
-            <Route path="/settings" component={Settings} />
+            <Route path="/admin/dashboard/settings" component={Settings} />
 
 
             <Route exact path="/" component={FetchData} />

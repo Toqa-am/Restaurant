@@ -27,7 +27,7 @@ export default function Settings() {
             <div className="col-12">
               <ul>
                 <li key="0" onClick={() => handleClassActive()}>
-                  <Link to="/settings/company" element={<Company />}>
+                  <Link to="/settings/information" element={<Company />}>
                     settings
                   </Link>
                 </li>

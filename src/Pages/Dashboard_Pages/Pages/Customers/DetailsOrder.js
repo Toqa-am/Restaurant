@@ -22,21 +22,21 @@ export default function DetailsOrder() {
     1: "Small",
     2: "Medium",
     3: "Big",
-    4: "Family"
-};
-const statusMap = {
-  "Not Started": 1,
-  "In Progressing": 2,
-  "Cancelled": 3,
-  "Accepted": 4
-};
+    4: "Family",
+  };
+  const statusMap = {
+    "Not Started": 1,
+    "In Progressing": 2,
+    Cancelled: 3,
+    Accepted: 4,
+  };
 
   const fetchOrder = useCallback(async (id) => {
     if (!id) return;
     try {
       const result = await getData(`admin/orders/${id}`);
       setDeliveryOrder(result.order);
-      console.log(result);
+      // console.log(result);
       setUserMeals(result.order.order_meals);
       setUserAddons(result.order.order_addons);
       setUserExtras(result.order.order_extras);
@@ -85,7 +85,6 @@ const statusMap = {
             <p>
               <label>order id:</label>
               <b>#{deliveryOrder.id}</b>
-              
             </p>
             <p>{deliveryOrder.created_at}</p>
             <p>Status :{deliveryOrder.status}</p>
@@ -109,117 +108,122 @@ const statusMap = {
             <div className="cards">
               {/* meals */}
               {userMeals && userMeals.length > 0 && (
-                  <>
-                    <h3>The meals</h3>
-                    {userMeals.map((meal, index) => (
-                      <div className="card" data-id={meal.quantity} key={meal.id || index}>
-                        <div className="card-img">
-                          <img
-                            loading="lazy"
-                            src={`${imageStorageURL}/${meal.meal.image}`}
-                            alt={meal.meal.name}
-                          />
-                        </div>
-                        <div className="card-text">
-                          <p className="name">{meal.meal.name}</p>
-                          <p className="name">Size: {sizeMap[meal.size]}</p>
-                          <p className="quantity">
-                            Quantity choice: <span className="fw-bold">{meal.quantity} </span>
-                          </p>
-                          <b className="total">{meal.total_cost} OMR</b>
-                        </div>
+                <>
+                  <h3>The meals</h3>
+                  {userMeals.map((meal, index) => (
+                    <div
+                      className="card"
+                      data-id={meal.quantity}
+                      key={meal.id || index}
+                    >
+                      <div className="card-img">
+                        <img
+                          loading="lazy"
+                          src={`${imageStorageURL}/${meal.meal.image}`}
+                          alt={meal.meal.name}
+                        />
                       </div>
-                    ))}
-                  </>
-                )}
-
-                {/* Addons */}
-                {userAddons && userAddons.length > 0 && (
-                  <>
-                    <h3>The Addons</h3>
-                    {userAddons.map((addon, index) => (
-                      <div className="card" data-id={addon.quantity} key={addon.id || index}>
-                        <div className="card-img">
-                          <img
-                            loading="lazy"
-                            src={`${imageStorageURL}/${addon.addon.image}`}
-                            alt={addon.addon.name}
-                          />
-                        </div>
-                        <div className="card-text">
-                          <p className="name fw-bold">{addon.addon.name}</p>
-                          <p className="quantity">
-                            Quantity choice: <span className="fw-bold">{addon.quantity} </span>
-                          </p>
-                          <b className="total">{addon.total_cost} OMR</b>
-                        </div>
+                      <div className="card-text">
+                        <p className="name">{meal.meal.name}</p>
+                        <p className="name">Size: {sizeMap[meal.size]}</p>
+                        <p className="quantity">
+                          Quantity choice:{" "}
+                          <span className="fw-bold">{meal.quantity} </span>
+                        </p>
+                        <b className="total">{meal.total_cost} OMR</b>
                       </div>
-                    ))}
-                  </>
-                )}
-
-
-                {/* Extras */}
-                {Object(userExtras).length > 0 &&
-                  userExtras.map((extra, index) => (
-                    <>
-                      {index < 1 ? <h3>the extras</h3> : false}
-                      <div
-                        className="card"
-                        data-id={extra.quantity}
-                        key={extra.id}
-                      >
-                        <div className="card-img">
-                          <img
-                            loading="lazy"
-                            src={`${imageStorageURL}/${extra.extra_image}`}
-                            alt={extra.extra.name}
-                          />
-                        </div>
-                        <div className="card-text">
-                          <p className="name fw-bold">{extra.extra.name}</p>
-                          <p className="quantity">
-                            quantity choice:
-                            <span className="fw-bold">
-                              {extra.quantity} 
-                            </span>
-                          </p>
-                          <b className="total">Price: {extra.total_cost} OMR</b>
-                        </div>
-                      </div>
-                    </>
+                    </div>
                   ))}
+                </>
+              )}
 
-                    {/* offers */}
-                {Object(offers).length > 0 &&
-                  offers.map((offer, index) => (
-                    <>
-                      {index < 1 ? <h3>the offers</h3> : false}
-                      <div
-                        className="card"
-                        data-id={offer.quantity}
-                        key={offer.id}
-                      >
-                        <div className="card-img">
-                          <img
-                            loading="lazy"
-                            src={`${imageStorageURL}/${offer.offer_image}`}
-                            alt={offer.offer.name}
-                          />
-                        </div>
-                        <div className="card-text">
-                          <p className="name fw-bold">{offer.offer.name}</p>
-                          <p className="quantity">
-                            quantity choice:
-                            <span className="fw-bold">
-                              {offer.quantity} 
-                            </span>
-                          </p>
-                          <b className="total">price: {offer.total_cost} OMR</b>
-                        </div>
+              {/* Addons */}
+              {userAddons && userAddons.length > 0 && (
+                <>
+                  <h3>The Addons</h3>
+                  {userAddons.map((addon, index) => (
+                    <div
+                      className="card"
+                      data-id={addon.quantity}
+                      key={addon.id || index}
+                    >
+                      <div className="card-img">
+                        <img
+                          loading="lazy"
+                          src={`${imageStorageURL}/${addon.addon.image}`}
+                          alt={addon.addon.name}
+                        />
                       </div>
-                    </>
+                      <div className="card-text">
+                        <p className="name fw-bold">{addon.addon.name}</p>
+                        <p className="quantity">
+                          Quantity choice:{" "}
+                          <span className="fw-bold">{addon.quantity} </span>
+                        </p>
+                        <b className="total">{addon.total_cost} OMR</b>
+                      </div>
+                    </div>
                   ))}
+                </>
+              )}
+
+              {/* Extras */}
+              {Object(userExtras).length > 0 &&
+                userExtras.map((extra, index) => (
+                  <>
+                    {index < 1 ? <h3>the extras</h3> : false}
+                    <div
+                      className="card"
+                      data-id={extra.quantity}
+                      key={extra.id}
+                    >
+                      <div className="card-img">
+                        <img
+                          loading="lazy"
+                          src={`${imageStorageURL}/${extra.extra_image}`}
+                          alt={extra.extra.name}
+                        />
+                      </div>
+                      <div className="card-text">
+                        <p className="name fw-bold">{extra.extra.name}</p>
+                        <p className="quantity">
+                          quantity choice:
+                          <span className="fw-bold">{extra.quantity}</span>
+                        </p>
+                        <b className="total">Price: {extra.total_cost} OMR</b>
+                      </div>
+                    </div>
+                  </>
+                ))}
+
+              {/* offers */}
+              {Object(offers).length > 0 &&
+                offers.map((offer, index) => (
+                  <>
+                    {index < 1 ? <h3>the offers</h3> : false}
+                    <div
+                      className="card"
+                      data-id={offer.quantity}
+                      key={offer.id}
+                    >
+                      <div className="card-img">
+                        <img
+                          loading="lazy"
+                          src={`${imageStorageURL}/${offer.offer_image}`}
+                          alt={offer.offer.name}
+                        />
+                      </div>
+                      <div className="card-text">
+                        <p className="name fw-bold">{offer.offer.name}</p>
+                        <p className="quantity">
+                          quantity choice:
+                          <span className="fw-bold">{offer.quantity}</span>
+                        </p>
+                        <b className="total">price: {offer.total_cost} OMR</b>
+                      </div>
+                    </div>
+                  </>
+                ))}
             </div>
           </div>
         </div>
@@ -257,7 +261,7 @@ const statusMap = {
                 }}
               >
                 {pay === "Paid" ? "Paid" : "Not Paid"}
-              </span>           
+              </span>
             </p>
           </div>
         </div>

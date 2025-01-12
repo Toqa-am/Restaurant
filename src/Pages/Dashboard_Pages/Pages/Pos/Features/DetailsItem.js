@@ -9,10 +9,10 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
   const [selectedExtras, setSelectedExtras] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [notes, setNotes] = useState();
-  const x = {...cartItem}
-  console.log(x);
-  
-// console.log(selectedAddons);
+  const x = { ...cartItem };
+  // console.log(x);
+
+  // // console.log(selectedAddons);
 
   // useEffect(() => {
   //   if (cartItem) {
@@ -21,52 +21,59 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
   //   }
   // }, [cartItem]);
 
-  console.log(cartItem);
-  
+  // console.log(cartItem);
 
   useEffect(() => {
-    if (cartItem && cartItem.meal_size_costs && cartItem.meal_size_costs.length > 0) {
+    if (
+      cartItem &&
+      cartItem.meal_size_costs &&
+      cartItem.meal_size_costs.length > 0
+    ) {
       setMealSize(cartItem.meal_size_costs);
-      setSelectedSize(cartItem.meal_size_costs[0].size); 
+      setSelectedSize(cartItem.meal_size_costs[0].size);
     } else {
-      setMealSize([]); 
-      setSelectedSize(null); 
+      setMealSize([]);
+      setSelectedSize(null);
     }
   }, [cartItem]);
-  
-  const handleSelectItem = (item, type) => {   
-    const elementId = type === "addon" ? `addon_${item.id}` : `extra_${item.id}`;
-    console.log("Element ID:", elementId);
+
+  const handleSelectItem = (item, type) => {
+    const elementId =
+      type === "addon" ? `addon_${item.id}` : `extra_${item.id}`;
+    // console.log("Element ID:", elementId);
     const element = document.getElementById(elementId);
-    console.log("Found Element:", element);  
+    // console.log("Found Element:", element);
     if (element) {
-      console.log("Element found:", element); 
-  
-      const computedStyle = window.getComputedStyle(element);  
-      const borderValue = computedStyle.border; 
-      if (borderValue === "1.77778px solid rgb(11, 94, 215)" || borderValue === "1.77778px solid #0B5ED7") {
-        console.log("Removing border");
-        element.style.border = "none"; 
-      } else { 
-        console.log("Adding border");
+      // console.log("Element found:", element);
+
+      const computedStyle = window.getComputedStyle(element);
+      const borderValue = computedStyle.border;
+      if (
+        borderValue === "1.77778px solid rgb(11, 94, 215)" ||
+        borderValue === "1.77778px solid #0B5ED7"
+      ) {
+        // console.log("Removing border");
+        element.style.border = "none";
+      } else {
+        // console.log("Adding border");
         element.style.border = "2px solid #0B5ED7";
       }
     } else {
-      console.error("Element not found for ID:", elementId); 
+      console.error("Element not found for ID:", elementId);
     }
-  
+
     const finalTotal = document.getElementById("finalTotal");
     finalTotal.classList.add("scalable");
     setTimeout(() => finalTotal.classList.remove("scalable"), 125);
-  
-    const updateFunction = type === "addon" ? setSelectedAddons : setSelectedExtras;
-  
+
+    const updateFunction =
+      type === "addon" ? setSelectedAddons : setSelectedExtras;
+
     updateFunction((prev) => {
       if (!Array.isArray(prev)) prev = [];
-  
+
       const exists = prev.find((i) => i.id === item.id);
-      
-  
+
       if (exists) {
         if (exists.quantity === 1) {
           return prev.filter((i) => i.id !== item.id);
@@ -80,8 +87,7 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
       }
     });
   };
-  
-  
+
   const qtyAddonsOrExtra = (items, id) => {
     let item = Object(items).length > 0 && items.find((i) => i.id === id);
     return item ? item.quantity : 0;
@@ -90,7 +96,12 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
     let totalCost = 0;
 
     if (selectedSize !== 0 && quantity !== 0) {
-      totalCost +=mealSize && mealSize.length > 0? mealSize.find((size) => size.size === selectedSize)?.cost * quantity : cartItem.cost ? cartItem.cost  * quantity : cartItem.total_price_after_discount * quantity  ;
+      totalCost +=
+        mealSize && mealSize.length > 0
+          ? mealSize.find((size) => size.size === selectedSize)?.cost * quantity
+          : cartItem.cost
+          ? cartItem.cost * quantity
+          : cartItem.total_price_after_discount * quantity;
     }
 
     if (Object(selectedAddons).length > 0) {
@@ -104,7 +115,6 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
         totalCost += extra.cost * extra.quantity;
       });
     }
-   
 
     return totalCost.toFixed(2);
   }, [selectedSize, quantity, selectedAddons, selectedExtras]);
@@ -131,32 +141,30 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
   };
 
   const handleAddToCart = () => {
-    const addons = Array.isArray(selectedAddons) ? selectedAddons : [];    
+    const addons = Array.isArray(selectedAddons) ? selectedAddons : [];
     const extras = Array.isArray(selectedExtras) ? selectedExtras : [];
     let storeItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-    console.log(storeItems);
-    
+    // console.log(storeItems);
 
     let newItem = {
       id: cartItem.id,
       name: cartItem.name,
-      costOffers:cartItem.total_price_after_discount,
-    
+      costOffers: cartItem.total_price_after_discount,
+
       sizes: [
         {
           size: selectedSize,
           cost: mealSize.find((size) => size.size === selectedSize)?.cost || 0,
-          quantity
+          quantity,
         },
       ],
       addons: addons.map(({ id, name, cost, image, quantity }) => ({
-        id ,
+        id,
         name,
         cost,
         image,
         quantity,
-        UniqueId : `${Date.now()}-${Math.random()}`
-
+        UniqueId: `${Date.now()}-${Math.random()}`,
       })),
 
       extras: extras.map(({ id, name, cost, image, quantity }) => ({
@@ -165,49 +173,45 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
         cost,
         image,
         quantity,
-        UniqueId : `${Date.now()}-${Math.random()}`
-
+        UniqueId: `${Date.now()}-${Math.random()}`,
       })),
     };
 
-    let addoons ={
-      name:cartItem.name,
-      cost:cartItem.cost,
-      id:cartItem.id,
+    let addoons = {
+      name: cartItem.name,
+      cost: cartItem.cost,
+      id: cartItem.id,
+    };
 
-    }
+    let extraas = {
+      name: cartItem.name,
+      cost: cartItem.cost,
+      id: cartItem.id,
+    };
 
-    let extraas ={
-      name:cartItem.name,
-      cost:cartItem.cost,
-      id:cartItem.id,
-
+    let offers = {
+      name: cartItem.name,
+      cost: cartItem.costOffers,
+      id: cartItem.id,
+    };
+    if (cartItem.table_name === "addons") {
+      newItem.addoons = addoons;
     }
-
-    let offers ={
-      name:cartItem.name,
-      cost:cartItem.costOffers,
-      id:cartItem.id,
-    }
-    if(cartItem.table_name === "addons"){
-    newItem.addoons = addoons;
-    }
-    if(cartItem.table_name === "extras"){
+    if (cartItem.table_name === "extras") {
       newItem.extraas = extraas;
-      }
+    }
 
-    if(cartItem.table_name === "offers"){
+    if (cartItem.table_name === "offers") {
       newItem.offers = offers;
-      }
+    }
 
-    // filtering if same meal add not add it unless he choose other size 
+    // filtering if same meal add not add it unless he choose other size
 
     // storeItems = storeItems.filter(item => {
     //   const sameName = item.name === newItem.name;
     //   const sameSize = item.sizes.some(size => size.size === newItem.sizes[0].size);
     //   return !(sameName && sameSize);
     // });
-
 
     const finalizeCartUpdate = () => {
       storeItems.push(newItem);
@@ -250,7 +254,6 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
       : "none";
   };
 
-
   return (
     <div className={`modal-overlay DetailsItem ${visible ? "visible" : ""}`}>
       <div className="modal-container">
@@ -268,14 +271,15 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
               <div className="item-text">
                 <b>{cartItem.name}</b>
                 <p>{cartItem.description}</p>
-               { cartItem.items?  <details >{cartItem.items}</details> :""}
+                {cartItem.items ? <details>{cartItem.items}</details> : ""}
                 <b>
-                
-                  {
-  mealSize && mealSize.length > 0
-    ? mealSize.find((size) => size.size === selectedSize)?.cost || 0
-    : cartItem.cost ? cartItem.cost : cartItem.total_price_after_discount
-} OMR
+                  {mealSize && mealSize.length > 0
+                    ? mealSize.find((size) => size.size === selectedSize)
+                        ?.cost || 0
+                    : cartItem.cost
+                    ? cartItem.cost
+                    : cartItem.total_price_after_discount}{" "}
+                  OMR
                 </b>
               </div>
             </div>
@@ -295,11 +299,11 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
             </div>
 
             <div className="sizes">
-            {
-  mealSize && mealSize.length > 0
-    ? <label>Meal Size Costs</label>
-    :""
-} 
+              {mealSize && mealSize.length > 0 ? (
+                <label>Meal Size Costs</label>
+              ) : (
+                ""
+              )}
               <div>
                 {mealSize.map((size) => (
                   <div key={size.id} className="size">
@@ -353,7 +357,7 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
                           {/* {Object.keys(selectedAddons).length > 0 && (
   <div className="bg-info"> mostafa </div>
 )}                       */}
-  </div>
+                        </div>
                       )
                   )}
                 </div>
@@ -413,7 +417,8 @@ export default function DetailsItem({ visible, cartItem, modalClose }) {
               className="btn form-control mt-3 fw-bold"
               onClick={() => handleAddToCart()}
             >
-              Add To Cart - <span id="finalTotal"> {updateFinalTotal()} OMR</span>
+              Add To Cart -{" "}
+              <span id="finalTotal"> {updateFinalTotal()} OMR</span>
             </button>
           </div>
         </form>

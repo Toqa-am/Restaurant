@@ -18,7 +18,7 @@ export default function Show() {
     try {
       const result = await getData("admin/settings");
       setInformation(result);
-      console.log(result);
+      // console.log(result);
     } catch (error) {
       console.error(error.response?.data?.message);
     }
@@ -38,7 +38,7 @@ export default function Show() {
   useEffect(() => {
     fetchInformation();
     fetchDiningTable(id);
-  }, [id, fetchDiningTable,fetchInformation]);
+  }, [id, fetchDiningTable, fetchInformation]);
 
   const downloadQRCode = (item) => {
     const canvas = document.getElementById(`canvas_${item.id}`);
@@ -101,9 +101,7 @@ export default function Show() {
           <div className="logo">
             <img loading="lazy" src={Logo} alt="Logo" />
           </div>
-          <div className="message-qrCode">
-            {information.name}
-          </div>
+          <div className="message-qrCode">{information.name}</div>
 
           <div className="restaurant-address">
             {information.city && <p>city : {information.city}</p>}

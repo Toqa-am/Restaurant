@@ -21,6 +21,7 @@ import { TbLicense } from "react-icons/tb";
 // component
 import Information from "../Pages/Settings/Models/Company";
 import LoyaltySettings from "../Pages/Settings/Models/LoyaltySettings";
+import Logo from "../Pages/Settings/Models/Logo";
 import Branched from "../Pages/Settings/Models/Branches";
 import Mail from "../Pages/Settings/Models/Mail";
 import OTP from "../Pages/Settings/Models/OTP";
@@ -40,7 +41,7 @@ import License from "../Pages/Settings/Models/License";
 
 const routesSettings = [
   {
-    path: "/settings/company",
+    path: "/settings/information",
     name: "Restaurant Information",
     icon: RiCommunityLine,
     component: Information,
@@ -51,6 +52,13 @@ const routesSettings = [
     name: "Loyalty Settings",
     icon: FaGift ,
     component: LoyaltySettings,
+    role: ["admin"],
+  },
+  {
+    path: "/settings/logo",
+    name: "Restaurant Logo",
+    icon: RiCommunityLine,
+    component: Logo,
     role: ["admin"],
   },
   {

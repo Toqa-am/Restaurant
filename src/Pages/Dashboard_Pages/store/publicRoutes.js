@@ -20,6 +20,8 @@ import Extras from "../Pages/Extras/Extras";
 import Addons from "../Pages/Addons/Addons";
 import Pos from "../Pages/Pos/Pos";
 import DeliveryOrders from "../Pages/DeliveryOrders/DeliveryOrders";
+import KitchenOrders from "../Pages/KitchenOrders/KitchenOrders";
+
 import TablesOrders from "../Pages/TablesOrders/TablesOrders";
 import Offers from "../Pages/Offers/Offers";
 import Administrators from "../Pages/Administrators/Administrators";
@@ -97,11 +99,11 @@ const routes = [
       },
       {
         id: 8,
-        path: "/admin/dashboard/delivery-orders",
+        path: "/admin/dashboard/pos-orders",
         name: " Pos Menu Order",
         icon: TbTruckDelivery,
         component: DeliveryOrders,
-        role: ["admin", "chef", "casher"],
+        role: ["admin", "casher"],
       },
       {
         id: 9,
@@ -109,7 +111,15 @@ const routes = [
         name: "Table Orders",
         icon: GiStorkDelivery,
         component: TablesOrders,
-        role: ["admin", "chef", "casher"],
+        role: ["admin", "casher"],
+      },
+      {
+        id: 17,
+        path: "/admin/dashboard/kitchen-orders",
+        name: "Kitchen Orders",
+        icon: GiStorkDelivery,
+        component: KitchenOrders,
+        role: ["admin", "chef"],
       },
     ],
   },
