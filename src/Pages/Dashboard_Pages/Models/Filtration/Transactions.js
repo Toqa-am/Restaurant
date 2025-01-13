@@ -258,7 +258,7 @@ export default function Transactions({
 
             <div className="col col-12 col-md-6 col-lg-3 mb-3">
               <label htmlFor="end_date" className="mb-2">
-                End Date
+                To Date
               </label>
               <input
                 type="date"

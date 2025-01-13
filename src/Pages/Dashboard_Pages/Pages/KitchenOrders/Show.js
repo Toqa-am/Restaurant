@@ -262,9 +262,9 @@ export default function Show() {
               <option value="In Progress" disabled={status === "In Progress"}>
                 In Progress
               </option>
-              {/* <option value="Cancelled" disabled={status === "Cancelled"}>
+              <option value="Cancelled" disabled={status === "Cancelled"}>
                 Cancelled
-              </option> */}
+              </option>
               <option value="Accepted" disabled={status === "Accepted"}>
                 Accepted
               </option>

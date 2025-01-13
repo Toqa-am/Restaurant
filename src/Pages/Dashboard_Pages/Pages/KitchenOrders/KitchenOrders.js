@@ -68,7 +68,7 @@ export default function KitchenOrders() {
           list={[
             { value: "Not Started", label: "Not Started" },
             { value: "In Progress", label: "In Progress" },
-            // { value: "Cancelled", label: "Cancelled" },
+            { value: "Cancelled", label: "Cancelled" },
             { value: "Accepted", label: "Accepted" },
           ]}
         />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, } from "react";
 import { HiXMark } from "react-icons/hi2";
 import ActionsFilter from "./ActionsFilter";
 import { FaSearch } from "react-icons/fa";
@@ -90,7 +90,7 @@ export default function WithDrawals({
   }
 
   const handleSearch = () => {
-    const { created_at, name, id, amount, employee_id, start_date, end_date } = salesReports;
+    const { name, id, amount, employee_id, start_date, end_date } = salesReports;
     const originalData = JSON.parse(sessionStorage.getItem("origin_data"));
   
     const startDate = start_date ? new Date(start_date) : null;
@@ -251,7 +251,7 @@ export default function WithDrawals({
 
             <div className="col col-12 col-md-6 col-lg-3 mb-3">
               <label htmlFor="end_date" className="mb-2">
-                End Date
+                To Date
               </label>
               <input
                 type="date"

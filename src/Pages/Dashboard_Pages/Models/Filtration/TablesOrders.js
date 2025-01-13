@@ -45,9 +45,25 @@ export default function TablesOrders({
   };
 
   const handleSearch = () => {
-    const { customer_id, total_cost, status } = tablesOrders;
+    const { id, customer_id, created_at, total_cost, status ,start_date, end_date} = deliveryOrders;
+    
+    const startDate = start_date ? new Date(start_date) : null;
+    const endDate = end_date ? new Date(end_date) : null;
+  
+    if (startDate) startDate.setHours(0, 0, 0, 0);
+    if (endDate) endDate.setHours(23, 59, 59, 999);
+  
     const filtered = filteredData.filter((item) => {
+      
+      const itemDate = new Date(item.created_at);
+      itemDate.setHours(0, 0, 0, 0);
+  
+      const isInRange =
+        (!startDate || itemDate >= startDate) && (!endDate || itemDate <= endDate);
+  
       return (
+        isInRange &&
+        (!created_at || item.created_at <= created_at) &&
         (customer_id === "" || item.customer_id === parseInt(customer_id)) &&
         (total_cost === "" || item.total_cost === parseInt(total_cost)) &&
         (!status || item.status === status)
@@ -63,6 +79,8 @@ export default function TablesOrders({
       customer_id: "",
       total_cost: "",
       status: "",
+      start_date: "",
+      end_date: "",
     });
     setFilteredData(JSON.parse(sessionStorage.getItem("origin_data")));
     filtrated(JSON.parse(sessionStorage.getItem("origin_data")));
@@ -114,6 +132,34 @@ export default function TablesOrders({
                 name="total_cost"
                 id="total_cost"
                 value={tablesOrders.total_cost}
+                onChange={(e) => handleChange(e)}
+              />
+            </div>
+
+            <div className="col col-12 col-md-6 col-lg-3 mb-3">
+              <label htmlFor="start_date" className="mb-2">
+                Start Date
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                name="start_date"
+                id="start_date"
+                value={tablesOrders.start_date}
+                onChange={(e) => handleChange(e)}
+              />
+            </div>
+
+            <div className="col col-12 col-md-6 col-lg-3 mb-3">
+              <label htmlFor="end_date" className="mb-2">
+                To Date
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                name="end_date"
+                id="end_date"
+                value={tablesOrders.end_date}
                 onChange={(e) => handleChange(e)}
               />
             </div>
